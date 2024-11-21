@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import logo from "@/app/assets/newlogo.png";
+import logo from "../../../Assets/newlogo.png";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast, { Toaster } from 'react-hot-toast';
