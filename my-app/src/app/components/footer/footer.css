@@ -1,0 +1,118 @@
+.footer-component{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+}
+.footer-component-in{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.footer-component-in-top{
+    border-bottom: 1px solid grey;
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-component-in-top-one{
+    width: 19%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-component-in-top-two{
+    width: 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-component-in-main{
+    padding: 1rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-component-main-in{
+    width: 98%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-component-main-in-one{
+    width: 60%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.Logo{
+    height: 15vh;
+}
+.footer-component-main-in-two{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.footer-component-main-in-two p{
+    margin-top: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+.footer-component-main-in-two-icons{
+    margin-top: 0.5rem;
+    width: 45%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-component-main-in-two-icons a{
+    background-color: black;
+    border: 2px solid gold;
+    border-radius: 2rem;
+    padding: 0.5rem;
+    color: gold;
+}
+.footer-component-main-in-two-icons a:hover{
+    transform: translateY(-0.5rem);
+    transition: 0.5s;
+}
+.footer-component-main-in-two-number{
+    margin-top: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.footer-component-main-in-two-number a{
+    font-size: 1rem;
+    font-weight: 400;
+}
+.footer-in-component-copyright{
+    border-top: 2px solid grey;
+    padding: 0.5rem;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-in-component-copyright p{
+    font-size: 1rem;
+    font-weight: 400;
+}
+.footer-in-component-copyright a{
+    font-size: 1rem;
+    font-weight: 400;
+    color: gold;
+}
+.footer-in-component-copyright span{
+    color: gold;
+}
