@@ -3,8 +3,8 @@ import Image from "next/image";
 import React from 'react';
 import Link from "next/link";
 import { FaFacebookF, FaInstagram, FaYoutube,  } from 'react-icons/fa';
-import Logo from "@/app/Assets/newlogo.png";
-import SACLogo from "@/app/Assets/sac_logo.png";
+import Logo from "../../Assets/newlogo.png";
+import SACLogo from "../../Assets/sac_logo.png";
 import { useRouter } from 'next/navigation';
 const Footer = () => {
     const router = useRouter();
