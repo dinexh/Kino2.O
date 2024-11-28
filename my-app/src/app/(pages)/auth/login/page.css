@@ -192,7 +192,19 @@
     transform: translateY(-2px);
     background: linear-gradient(135deg, #DAA520, #FFD700);
 }
-
+.forgot-password {
+    margin-top: 1rem;
+    text-align: center;
+}
+.forgot-password p {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.5);
+}
+.forgot-password p:hover {
+    color: #FFD700;
+    text-decoration: underline;
+}
 @media all and (max-width: 500px) {
     .LoginComponent-in {
         padding: 1.5rem;
@@ -233,4 +245,41 @@
         padding: 0.8rem;
         font-size: 0.9rem;
     }
+}
+
+.password-input-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-container input {
+    width: 100%;
+    padding-right: 3rem;
+}
+
+.password-toggle-button {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    color: rgba(255, 215, 0, 0.7);
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+    border-radius: 50%;
+}
+
+.password-toggle-button:hover {
+    color: #FFD700;
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.password-toggle-button:active {
+    transform: translateY(-50%) scale(0.95);
 }

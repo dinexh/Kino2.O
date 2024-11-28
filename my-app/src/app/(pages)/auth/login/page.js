@@ -4,6 +4,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 import "./page.css";
 
@@ -14,6 +15,7 @@ const Login = () => {
     username: "",
     password: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -65,6 +67,9 @@ const Login = () => {
     }));
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="LoginComponent">
@@ -86,17 +91,30 @@ const Login = () => {
               />
             </div>
             <div className="Login-in-two">
-              <input
-                type="password"
-                value={userData.password}
-                onChange={handleInput}
-                name="password"
-                placeholder="Password"
-                autoComplete="current-password"
-              />
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={userData.password}
+                  onChange={handleInput}
+                  name="password"
+                  placeholder="Password"
+                  autoComplete="current-password"
+                />
+                <button 
+                  type="button" 
+                  className="password-toggle-button"
+                  onClick={togglePasswordVisibility}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+                </button>
+              </div>
             </div>
             <div className="Login-in-three">
               <button onClick={handleLogin}>Login</button>
+              <div className="forgot-password">
+                <p>Forgot Password?</p>
+              </div>
             </div>
           </div>
         </div>
