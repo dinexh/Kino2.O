@@ -1,3 +1,5 @@
+import { Inter } from 'next/font/google'
+const inter = Inter({ subsets: ['latin'] })
 import "./globals.css";
 export const metadata = {
   title: "Chitramela - Film Festival",
@@ -7,7 +9,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={classname}>
+       <body className={inter.className}>
         {children}
       </body>
     </html>
