@@ -30,6 +30,8 @@
 }
 .dashboard-nav-in-three {
     flex: 0 0 auto;
+    display: flex;
+    align-items: center;
 }
 .logout-btn {
     display: flex;
@@ -56,5 +58,15 @@
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
     border: 0;
+}
+.user-role {
+    margin-right: 1rem;
+    padding: 0.5rem;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+.user-role span {
+    color: #fff;
+    font-size: 0.9rem;
 }
  

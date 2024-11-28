@@ -23,12 +23,6 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    if (!userData.username || !userData.password) {
-      setIsLoading(false);
-      toast.error("Please fill all fields");
-      return;
-    }
-
     try {
       const response = await axios.post("/api/auth/login", userData, {
         headers: {
@@ -38,8 +32,6 @@ const Login = () => {
       });
 
       console.log("Full response:", response);
-      console.log("Response data:", response.data);
-      console.log("Response status:", response.status);
 
       if (!response.data) {
         setIsLoading(false);
@@ -47,35 +39,40 @@ const Login = () => {
         return;
       }
 
-      const { role, user, userRole } = response.data;
-      const actualRole = role || user?.role || userRole;
-
-      if (!actualRole) {
+      if (!response.data.token) {
         setIsLoading(false);
-        console.error("Response data structure:", response.data);
-        toast.error("Role information not found in response");
+        toast.error("No authentication token received");
         return;
       }
+
+      const userRole = response.data.user?.role;
+      console.log("Detected user role:", userRole);
 
       const roleRoutes = {
         admin: "/admin/dashboard",
-        administrative: "/administrative/dashboard"
+        Admin: "/admin/dashboard",
+        administrative: "/adminstrative/dashboard",
+        Administrative: "/adminstrative/dashboard"
       };
 
-      const targetRoute = roleRoutes[actualRole.toLowerCase()];
+      const targetRoute = roleRoutes[userRole];
+      console.log("Target route:", targetRoute);
+
       if (!targetRoute) {
         setIsLoading(false);
-        toast.error(`Unauthorized access: Invalid role (${actualRole})`);
+        toast.error(`Unauthorized access: Invalid role (${userRole})`);
         return;
       }
 
+      localStorage.setItem('token', response.data.token);
+
       toast.success("Login successful");
-      router.push(targetRoute);
-      
+      console.log("Starting navigation to:", targetRoute);
+
+      router.replace(targetRoute);
+
     } catch (error) {
-      console.error("Full error object:", error);
-      console.error("Response data:", error.response?.data);
-      console.error("Response status:", error.response?.status);
+      console.error("Login error:", error);
       const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
       toast.error(errorMessage);
     } finally {

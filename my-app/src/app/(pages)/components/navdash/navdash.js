@@ -3,14 +3,57 @@ import Image from 'next/image';
 import logo from '../../../Assets/newlogo.png';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const DashboardNav = ({ 
-    userRole = 'Administrator',
-    onLogout 
-}) => { 
+const DashboardNav = ({ onLogout }) => { 
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [userRole, setUserRole] = useState('');
+
+    useEffect(() => {
+        const fetchUserRole = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                console.log('Token from localStorage:', token);
+                
+                if (!token) {
+                    console.log('No token found, redirecting to login');
+                    router.replace('/auth/login');
+                    return;
+                }
+
+                const response = await fetch('/api/auth/user', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include',
+                });
+                
+                console.log('Response status:', response.status);
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('User data:', data);
+                    setUserRole(data.role || 'User');
+                } else {
+                    const errorData = await response.json();
+                    console.error('Error response:', errorData);
+                    
+                    if (response.status === 401) {
+                        console.log('Unauthorized, clearing token and redirecting');
+                        localStorage.removeItem('token');
+                        router.replace('/auth/login');
+                    }
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        };
+
+        fetchUserRole();
+    }, [router]);
 
     const handleLogout = async () => {
         setIsLoading(true);
@@ -60,6 +103,9 @@ const DashboardNav = ({
                     <h2>Chitramela {userRole} Portal</h2>
                 </div>
                 <div className="dashboard-nav-in-three">
+                    {/* <div className="user-role">
+                        <span>Role: {userRole}</span>
+                    </div> */}
                     <button 
                         className="logout-btn"
                         onClick={handleLogout}

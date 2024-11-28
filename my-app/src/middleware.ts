@@ -2,21 +2,37 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  // Check for authentication cookie
-  const authToken = request.cookies.get('auth-token')
+  const path = request.nextUrl.pathname;
   
-  // Protected routes that require authentication
-  const protectedPaths = ['/admin/dashboard', '/administrative/dashboard']
+  // Define public paths
+  const isPublicPath = path === '/auth/login';
   
-  if (protectedPaths.some(path => request.nextUrl.pathname.startsWith(path))) {
-    if (!authToken) {
-      return NextResponse.redirect(new URL('/auth/login', request.url))
-    }
+  // Get token from cookies
+  const token = request.cookies.get('token')?.value || '';
+
+  console.log('Current path:', path);
+  console.log('Token present:', !!token);
+
+  // If trying to access login page with token, redirect to appropriate dashboard
+  if (isPublicPath && token) {
+    return NextResponse.redirect(new URL('/admin/dashboard', request.url));
   }
 
-  return NextResponse.next()
+  // If trying to access protected route without token, redirect to login
+  if (!isPublicPath && !token) {
+    const loginUrl = new URL('/auth/login', request.url);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Allow the request to proceed
+  return NextResponse.next();
 }
 
+// Update matcher to be more specific
 export const config = {
-  matcher: ['/admin/:path*', '/administrative/:path*']
+  matcher: [
+    '/auth/login',
+    '/admin/:path*',
+    '/adminstrative/:path*',
+  ]
 }
