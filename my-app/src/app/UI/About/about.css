@@ -1,63 +1,189 @@
+:root {
+  --color-teal: rgba(9, 147, 150, 1);
+  --color-primary: #099396;
+  --color-secondary: #0cc0c4;
+  --color-text-light: #ffffff;
+}
+
 .about-container {
   padding: 2rem;
   color: white;
+  min-height: 100vh;
+}
+
+.about-content-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto auto;
+  gap: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 .about-header {
+  grid-column: 3;
+  grid-row: 1;
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  align-items: flex-start;
 }
 
 .about-header h2 {
-  font-size: 1.5rem;
+  font-size: 2.5rem;
+  font-weight: bold;
 }
 
 .about-header .about {
   color: #ffd700;
 }
 
-.about-cards-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  max-width: 75rem;
+/* Position cards in first row */
+.about-card:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.about-card:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Position logo in second row */
+.about-logo-wrapper {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: center;
+}
+
+/* Position cards in second row */
+.about-card:nth-child(3) {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.about-card:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
 }
 
 .about-card {
-  background-color: rgba(40, 40, 40, 0.9);
-  padding: 1.5rem;
-  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(9, 147, 150, 0.3);
+  border-radius: 15px;
+  padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  max-width: 20rem;
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(9, 147, 150, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+
+.about-card:hover::before {
+  transform: translateX(100%);
+}
+
+.about-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-teal);
+  box-shadow: 0 10px 30px rgba(9, 147, 150, 0.15);
 }
 
 .about-card h3 {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
   color: #ffffff;
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .about-card p {
   color: #cccccc;
-  font-size: 0.9rem;
-  line-height: 1.4;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .read-more {
-  background: #4a154b;
+  background-image: linear-gradient(45deg, blue, red);
+  background-size: 200% auto;
+  background-position: 0% 0%;
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 0.75rem;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-weight: 600;
   text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 5px 15px rgba(9, 147, 150, 0.3);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  font-size: 0.875rem;
   width: fit-content;
 }
 
 .read-more:hover {
-  background-color: #5a1b5b;
+  background-position: 100% 0%;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(9, 147, 150, 0.4);
+}
+
+@media (max-width: 1024px) {
+  .about-content-wrapper {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+  }
+
+  .about-header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .about-card:nth-child(1) { grid-column: 1; grid-row: 2; }
+  .about-card:nth-child(2) { grid-column: 2; grid-row: 2; }
+  .about-logo-wrapper { grid-column: 1 / -1; grid-row: 3; margin: 2rem 0; }
+  .about-card:nth-child(3) { grid-column: 1; grid-row: 4; }
+  .about-card:nth-child(4) { grid-column: 2; grid-row: 4; }
+}
+
+@media (max-width: 768px) {
+  .about-content-wrapper {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .about-card:nth-child(n) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .about-logo-wrapper {
+    grid-column: 1;
+    margin: 1rem 0;
+  }
+
+  .about-card {
+    max-width: 100%;
+  }
 }
