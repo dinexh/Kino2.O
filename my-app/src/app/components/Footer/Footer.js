@@ -1,7 +1,6 @@
 "use client";
 import React from 'react';
 import { useRouter } from 'next/navigation';
-
 import './footer.css';
 import Image from "next/image";
 import Link from "next/link";
