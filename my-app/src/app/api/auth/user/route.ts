@@ -4,7 +4,7 @@ import mysql from 'mysql2/promise';
 
 export async function GET() {
     try {
-        const headersList = headers();
+        const headersList = await headers();
         const authHeader = headersList.get('Authorization');
         
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
