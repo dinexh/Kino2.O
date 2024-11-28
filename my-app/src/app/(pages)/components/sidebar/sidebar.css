@@ -1,0 +1,75 @@
+.dashboard-sidenav {
+    width: 15%;
+    background-color: black;
+    color: gold;
+    height: calc(100vh - 60px);
+    position: fixed;
+}
+.dashboard-sidebnav-in {
+    width: 95%;
+    height: 100%;
+    margin: 0 auto;
+}
+.admin-info {
+    width: 100%;
+    padding: 1rem;
+    border-bottom: 1px solid grey;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+.admin-info-in {
+    width: 95%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.admin-info-in h3 {
+    margin: 0;
+    font-size: 1rem;
+    color: white;
+}
+.dashboard-sidebnav-menu {
+    width: 100%;
+    padding: 0.5rem;
+}
+.dashboard-sidebnav-menu-in {
+    width: 100%;
+}
+.dashboard-nav-links {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+}
+.dashboard-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+    color: white;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+}
+.dashboard-nav-link:hover {
+    background: #1a1a1a;
+    border-left: 4px solid gold;
+    padding-left: calc(1rem - 4px);
+}
+.dashboard-nav-link svg {
+    width: 18px;
+    height: 18px;
+    min-width: 18px;
+}
+.dashboard-nav-link span {
+    font-size: 0.9rem;
+}
+.user-role {
+    font-size: 0.9rem;
+    color: #666;
+    display: block;
+    margin-top: 4px;
+} 

@@ -1,6 +1,6 @@
-import './DashboardNav.css';
+import './navdash.css';
 import Image from 'next/image';
-import logo from '../../../../../assets/newlogo.png';
+import logo from '../../../Assets/newlogo.png';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
