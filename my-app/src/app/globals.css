@@ -30,3 +30,25 @@
   position: relative;
   z-index: 1;
 }
+
+:root {
+    --color-primary: #099396;
+    --color-secondary: #06666a;
+    --color-teal: #099396;
+    --color-text: #ffffff;
+    --color-text-light: #ffffff;
+    --color-background: #000000;
+    --color-border: rgba(9, 147, 150, 0.2);
+    --color-shadow: rgba(0, 0, 0, 0.3);
+    
+    /* Add transition variables */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+    
+    /* Add spacing variables */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+}

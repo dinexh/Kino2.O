@@ -28,7 +28,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-  ],
+, "src/app/Data/gallery.js", "src/app/Data/faqs.js", "src/app/Data/rules.js", "src/app/components/Nav/nav.js"  ],
   "exclude": [
     "node_modules"
   ]
