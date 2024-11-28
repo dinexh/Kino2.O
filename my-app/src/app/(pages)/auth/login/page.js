@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Toaster } from 'react-hot-toast';
 
 import "./page.css";
 
@@ -16,16 +17,17 @@ const Login = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!userData.username || !userData.password) {
+      setIsLoading(false);
       toast.error("Please fill all fields");
       return;
     }
-
-    setIsLoading(true);
 
     try {
       const response = await axios.post("/api/auth/login", userData, {
@@ -35,27 +37,49 @@ const Login = () => {
         withCredentials: true,
       });
 
-      if (response.status === 200) {
+      console.log("Full response:", response);
+      console.log("Response data:", response.data);
+      console.log("Response status:", response.status);
+
+      if (!response.data) {
         setIsLoading(false);
-        toast.success("Login successful");
-        const role = response.data.role;
-        const roleRoutes = {
-          admin: "/admin/dashboard",
-          administrative: "/administrative/dashboard"
-        };
-
-        const targetRoute = roleRoutes[role.toLowerCase()];
-        if (!targetRoute) {
-          toast.error("Unauthorized access");
-          return;
-        }
-
-        router.push(targetRoute);
+        toast.error("Empty response from server");
+        return;
       }
+
+      const { role, user, userRole } = response.data;
+      const actualRole = role || user?.role || userRole;
+
+      if (!actualRole) {
+        setIsLoading(false);
+        console.error("Response data structure:", response.data);
+        toast.error("Role information not found in response");
+        return;
+      }
+
+      const roleRoutes = {
+        admin: "/admin/dashboard",
+        administrative: "/administrative/dashboard"
+      };
+
+      const targetRoute = roleRoutes[actualRole.toLowerCase()];
+      if (!targetRoute) {
+        setIsLoading(false);
+        toast.error(`Unauthorized access: Invalid role (${actualRole})`);
+        return;
+      }
+
+      toast.success("Login successful");
+      router.push(targetRoute);
+      
     } catch (error) {
-      setIsLoading(false);
+      console.error("Full error object:", error);
+      console.error("Response data:", error.response?.data);
+      console.error("Response status:", error.response?.status);
       const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
       toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -73,6 +97,28 @@ const Login = () => {
 
   return (
     <div className="LoginComponent">
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          success: {
+            duration: 3000,
+            style: {
+              background: '#4CAF50',
+              color: 'white',
+            },
+          },
+          error: {
+            duration: 4000,
+            style: {
+              background: '#EF5350',
+              color: 'white',
+            },
+          },
+          loading: {
+            duration: Infinity,
+          },
+        }}
+      />
       <div className="LoginComponent-in">
         <div className="Login-one">
       
@@ -111,7 +157,12 @@ const Login = () => {
               </div>
             </div>
             <div className="Login-in-three">
-              <button onClick={handleLogin}>Login</button>
+              <button 
+                onClick={handleLogin} 
+                disabled={isLoading}
+              >
+                {isLoading ? "Logging in..." : "Login"}
+              </button>
               <div className="forgot-password">
                 <p>Forgot Password?</p>
               </div>
