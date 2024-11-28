@@ -1,4 +1,4 @@
-import './sideBar.css';
+import './sidebar.css';
 import Link from 'next/link';
 import { 
     FaChartBar, 
