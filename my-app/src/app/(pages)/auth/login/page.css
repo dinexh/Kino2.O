@@ -14,8 +14,6 @@
     background-color: #0a0a0a;
     overflow: hidden;
 }
-
-/* Film festival doodle pattern */
 .LoginComponent::before {
     content: '';
     position: absolute;
@@ -118,7 +116,7 @@
 }
 
 .Login-two {
-    height: 40vh;
+    height: 50vh;
     width: 40%;
     padding: 1rem;
     border-radius: 15px;
@@ -136,6 +134,7 @@
     align-items: center;
     justify-content: center;
     gap: 1.8rem;
+    text-align: center;
 }
 
 .Login-in-one,

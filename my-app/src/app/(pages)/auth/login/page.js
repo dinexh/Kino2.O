@@ -70,11 +70,11 @@ const Login = () => {
     <div className="LoginComponent">
       <div className="LoginComponent-in">
         <div className="Login-one">
-          <h1>Chitramela Admin Dashboard</h1>
-    
+      
         </div>
         <div className="Login-two">
           <div className="Login-two-in">
+          <h1>Chitramela Admin Dashboard</h1>
             <div className="Login-in-one">
               <input
                 type="text"
