@@ -26,7 +26,7 @@ const About = () => {
         </div>
         
         <div className="about-card">
-          <h3>Who's Organizing KL Chitramela</h3>
+          <h3>Who &apos;s Organizing KL Chitramela</h3>
           <p>A student-led organization supported by the university.</p>
           <button className="read-more">READ MORE</button>
         </div>

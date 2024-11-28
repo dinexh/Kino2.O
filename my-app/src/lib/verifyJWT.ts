@@ -8,7 +8,7 @@ interface JWTPayload {
 
 export async function verifyJWT() {
   const cookieStore = cookies();
-  const token = cookieStore.get('JWT')?.value;
+  const token = (await cookieStore).get('JWT')?.value;
 
   if (!token) {
     return { valid: false, payload: null };
