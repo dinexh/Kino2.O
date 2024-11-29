@@ -49,12 +49,6 @@ const DashboardSidenav = () => {
     return (
         <aside className="dashboard-sidenav">
             <div className="dashboard-sidebnav-in">
-                <div className="admin-info">
-                    <div className="admin-info-in">
-                        <h3>{userData.userName}</h3>
-                        <span className="user-role">{userData.userRole}</span>
-                    </div>
-                </div>
                 <div className="dashboard-sidebnav-menu">
                     <div className="dashboard-sidebav-menu-in">
                         <div className="dashboard-nav-links">

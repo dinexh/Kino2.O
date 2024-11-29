@@ -42,8 +42,7 @@ const DashboardPage = () => {
               <Sidebar />
             </div>
             <div className="DC-one">
-              {/* Your Dashboard content */}
-              <h1>Welcome to Dashboard</h1>
+      
             </div>
           </div>
         </div>

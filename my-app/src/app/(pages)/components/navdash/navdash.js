@@ -8,6 +8,43 @@ import { useState, useEffect } from 'react';
 const DashboardNav = ({ onLogout }) => { 
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    useEffect(() => {
+        const fetchUserName = async () => {
+            try {
+                const token = localStorage.getItem('token');
+                
+                if (!token) {
+                    router.replace('/auth/login');
+                    return;
+                }
+
+                const response = await fetch('/api/auth/user', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setUserName(data.name || 'User');
+                    setUserRole(data.role || 'User');
+                } else {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        router.replace('/auth/login');
+                    }
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        };
+
+        fetchUserName();
+    }, [router]);
+    const [userName , setUserName] = useState('');
     const [userRole, setUserRole] = useState('');
 
     useEffect(() => {
@@ -103,9 +140,10 @@ const DashboardNav = ({ onLogout }) => {
                     <h2>Chitramela {userRole} Portal</h2>
                 </div>
                 <div className="dashboard-nav-in-three">
-                    {/* <div className="user-role">
-                        <span>Role: {userRole}</span>
-                    </div> */}
+                    <div className="user-role">
+                        <span>{userName}</span>
+                        <span>{userRole}</span>
+                    </div>
                     <button 
                         className="logout-btn"
                         onClick={handleLogout}
