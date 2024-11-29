@@ -1,11 +1,12 @@
 "use client";
-// UI Imports
+// Components Imports
 import Nav from "./components/Nav/nav";
+import Footer from "./components/Footer/Footer";
+// UI Imports
 import Hero from "./UI/Hero/page";
 import CountdownTimer from './UI/Counter/page'
 import About from './UI/About/page'
 import Events from './UI/Events/page'
-import Footer from "./components/Footer/Footer";
 import Gallery from './UI/Gallery/page'
 import FAQ from './UI/FAQ/page' 
 
