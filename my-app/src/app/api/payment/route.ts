@@ -16,73 +16,56 @@ export async function POST(request: Request) {
         }
         
         connection = await pool.getConnection();
-        console.log('Database connection established');
         
         try {
             await connection.beginTransaction();
-            console.log('Transaction started');
             
             // Insert payment record
             const [result] = await connection.execute(
                 `INSERT INTO payments 
-                (id_number, amount, payment_status, transaction_id) 
-                VALUES (?, ?, ?, ?)`,
+                (id_number, event_id, amount, payment_status, transaction_id) 
+                VALUES (?, ?, ?, ?, ?)`,
                 [
                     data.idNumber,
-                    250.00,
+                    data.eventId,
+                    data.amount,
                     'Pending',
                     data.paymentId
                 ]
             );
-            console.log('Payment record inserted:', result);
 
-            // Update registration status
+            // Update event registration status
             const [updateResult] = await connection.execute(
-                `UPDATE registrations 
-                SET registration_status = 'Confirmed' 
-                WHERE id_number = ?`,
-                [data.idNumber]
+                `UPDATE event_registrations 
+                SET registration_status = 'Pending' 
+                WHERE id_number = ? AND event_id = ?`,
+                [data.idNumber, data.eventId]
             );
-            console.log('Registration status updated:', updateResult);
 
             await connection.commit();
-            console.log('Transaction committed');
             
-            return NextResponse.json({ success: true, data: result });
+            return NextResponse.json({ 
+                success: true, 
+                message: 'Payment recorded successfully',
+                data: {
+                    paymentId: result.insertId,
+                    transactionId: data.paymentId
+                }
+            });
         } catch (error) {
             console.error('Database operation error:', error);
-            console.error('Error details:', {
-                message: error.message,
-                code: error.code,
-                sqlState: error.sqlState,
-                sqlMessage: error.sqlMessage
-            });
             await connection.rollback();
             throw error;
         }
     } catch (error) {
         console.error('Payment error:', error);
-        console.error('Full error details:', {
-            message: error.message,
-            code: error.code,
-            stack: error.stack
-        });
         return NextResponse.json(
-            { 
-                error: 'Payment verification failed',
-                details: error.message,
-                code: error.code
-            },
+            { error: 'Payment processing failed', details: error.message },
             { status: 500 }
         );
     } finally {
         if (connection) {
-            try {
-                await connection.release();
-                console.log('Connection released successfully');
-            } catch (releaseError) {
-                console.error('Error releasing connection:', releaseError);
-            }
+            await connection.release();
         }
     }
 } 

@@ -2,7 +2,6 @@
 
 import { pool } from "../../../../config/db";
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
     try {
@@ -12,9 +11,10 @@ export async function POST(req: NextRequest) {
         const { username, password } = body;
 
         try {
+            // Check in users table with either username or email
             const [rows] = await pool.query(
-                'SELECT * FROM users WHERE username = ? AND password = ?',
-                [username, password]
+                'SELECT u.*, r.id_number, r.phone, r.college FROM users u LEFT JOIN registrations r ON (u.username = r.username OR u.email = r.email) WHERE (u.username = ? OR u.email = ?) AND u.password = ?',
+                [username, username, password]
             );
             console.log('Query result:', rows);
 
@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
             const user = users[0];
             console.log('User found:', { ...user, password: '[REDACTED]' });
 
-            // Generate a real token (you should implement proper token generation)
             const token = Buffer.from(Date.now().toString()).toString('base64');
 
             const response = NextResponse.json({
@@ -38,13 +37,15 @@ export async function POST(req: NextRequest) {
                 user: {
                     id: user.id,
                     username: user.username,
-                    name: user.name,
+                    email: user.email,
                     role: user.role,
+                    id_number: user.id_number,
+                    phone: user.phone,
+                    college: user.college
                 },
                 token: token
             });
 
-            // Set the authentication token
             response.cookies.set({
                 name: 'token',
                 value: token,
@@ -57,22 +58,12 @@ export async function POST(req: NextRequest) {
             return response;
 
         } catch (dbError: any) {
-            console.error('Database error:', {
-                message: dbError.message,
-                code: dbError.code,
-                errno: dbError.errno,
-                sqlMessage: dbError.sqlMessage,
-                sqlState: dbError.sqlState
-            });
+            console.error('Database error:', dbError);
             return NextResponse.json(
-                { 
-                    message: "Database error", 
-                    details: dbError.message 
-                },
+                { message: "Database error", details: dbError.message },
                 { status: 500 }
             );
         }
-
     } catch (error: any) {
         console.error('Server error:', error);
         return NextResponse.json(

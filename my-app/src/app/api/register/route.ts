@@ -23,29 +23,43 @@ export async function POST(request: Request) {
             
             // First, create user entry
             const [userResult] = await connection.execute(
-                `INSERT INTO users (username, password, role) 
-                VALUES (?, ?, ?)`,
+                `INSERT INTO users (username, email, password, role) 
+                VALUES (?, ?, ?, ?)`,
                 [
-                    data.name, // Using name as username
-                    'defaultpassword123', // You might want to handle this differently
-                    'User'
+                    data.username,
+                    data.email,
+                    data.password,
+                    'Registered'
+                ]
+            );
+
+            // Then store the college ID
+            const [collegeIdResult] = await connection.execute(
+                `INSERT INTO college_ids 
+                (id_number, original_filename, stored_filename, file_path, file_size, mime_type) 
+                VALUES (?, ?, ?, ?, ?, ?)`,
+                [
+                    data.idNumber,
+                    data.collegeId.originalFilename,
+                    data.collegeId.storedFilename,
+                    data.collegeId.filePath,
+                    data.collegeId.size,
+                    data.collegeId.type
                 ]
             );
             
-            // Then create registration entry
+            // Finally create registration entry
             const [regResult] = await connection.execute(
                 `INSERT INTO registrations 
-                (id_number, username, email, phone, college, college_idcard, gender, referral, registration_status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                (id_number, username, email, phone, college, gender, registration_status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)`,
                 [
                     data.idNumber,
-                    data.name, // username from users table
+                    data.username,
                     data.email,
                     data.phoneNumber,
                     data.college,
-                    null, // college_idcard path - handle file upload separately
-                    data.gender.charAt(0).toUpperCase() + data.gender.slice(1), // Capitalize first letter
-                    data.referralName || null,
+                    data.gender,
                     'Pending'
                 ]
             );
@@ -56,26 +70,25 @@ export async function POST(request: Request) {
             return NextResponse.json({ 
                 success: true, 
                 message: 'Registration successful',
-                data: regResult 
+                data: {
+                    userId: userResult.insertId,
+                    idNumber: data.idNumber
+                }
             });
         } catch (error) {
             console.error('Database operation error:', error);
-            console.error('Error details:', {
-                message: error.message,
-                code: error.code,
-                sqlState: error.sqlState,
-                sqlMessage: error.sqlMessage
-            });
             await connection.rollback();
             
             if (error.code === 'ER_DUP_ENTRY') {
                 let errorMessage = 'This record already exists';
                 if (error.message.includes('username')) {
                     errorMessage = 'This username is already taken';
-                } else if (error.message.includes('id_number')) {
-                    errorMessage = 'This ID number is already registered';
                 } else if (error.message.includes('email')) {
                     errorMessage = 'This email is already registered';
+                } else if (error.message.includes('id_number')) {
+                    errorMessage = 'This ID number is already registered';
+                } else if (error.message.includes('phone')) {
+                    errorMessage = 'This phone number is already registered';
                 }
                 
                 return NextResponse.json(
@@ -88,27 +101,13 @@ export async function POST(request: Request) {
         }
     } catch (error) {
         console.error('Registration error:', error);
-        console.error('Full error details:', {
-            message: error.message,
-            code: error.code,
-            stack: error.stack
-        });
         return NextResponse.json(
-            { 
-                error: 'Registration failed', 
-                details: error.message,
-                code: error.code 
-            },
+            { error: 'Registration failed', details: error.message },
             { status: 500 }
         );
     } finally {
         if (connection) {
-            try {
-                await connection.release();
-                console.log('Connection released successfully');
-            } catch (releaseError) {
-                console.error('Error releasing connection:', releaseError);
-            }
+            await connection.release();
         }
     }
 } 
