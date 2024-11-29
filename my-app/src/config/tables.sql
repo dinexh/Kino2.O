@@ -7,10 +7,13 @@ CREATE TABLE users (
     username VARCHAR(255) UNIQUE NOT NULL,    -- Username for login
     email VARCHAR(255) UNIQUE NOT NULL,       -- Email for login
     password VARCHAR(255) NOT NULL,           -- Encrypted password
-    role ENUM('SuperAdmin', 'Admin', 'Registered') NOT NULL DEFAULT 'Registered',
+    role ENUM('SuperAdmin', 'Admin') NOT NULL,
     active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Modify the password column to accommodate longer hashed passwords
+ALTER TABLE users MODIFY COLUMN password VARCHAR(255) NOT NULL;
 
 -- Creating the `college_ids` table to store ID card files
 CREATE TABLE college_ids (

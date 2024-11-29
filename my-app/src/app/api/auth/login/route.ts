@@ -2,6 +2,7 @@
 
 import { pool } from "../../../../config/db";
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from 'bcryptjs';
 
 export async function POST(req: NextRequest) {
     try {
@@ -11,10 +12,10 @@ export async function POST(req: NextRequest) {
         const { username, password } = body;
 
         try {
-            // Check in users table with either username or email
+            // Modified query to only get users with valid roles
             const [rows] = await pool.query(
-                'SELECT u.*, r.id_number, r.phone, r.college FROM users u LEFT JOIN registrations r ON (u.username = r.username OR u.email = r.email) WHERE (u.username = ? OR u.email = ?) AND u.password = ?',
-                [username, username, password]
+                'SELECT u.*, r.id_number, r.phone, r.college FROM users u LEFT JOIN registrations r ON (u.username = r.username OR u.email = r.email) WHERE (u.username = ? OR u.email = ?) AND u.role IN ("SuperAdmin", "Admin")',
+                [username, username]
             );
             console.log('Query result:', rows);
 
@@ -28,9 +29,32 @@ export async function POST(req: NextRequest) {
             }
 
             const user = users[0];
+            
+            // Verify password using bcrypt
+            const isValidPassword = await bcrypt.compare(password, user.password);
+            
+            if (!isValidPassword) {
+                return NextResponse.json(
+                    { message: "Invalid credentials" },
+                    { status: 401 }
+                );
+            }
+
             console.log('User found:', { ...user, password: '[REDACTED]' });
 
             const token = Buffer.from(Date.now().toString()).toString('base64');
+
+            // Add role-specific data to the response
+            const roleSpecificData = {
+                SuperAdmin: {
+                    permissions: ['all'],
+                    dashboardRoute: '/super-admin/dashboard'
+                },
+                Admin: {
+                    permissions: ['limited'],
+                    dashboardRoute: '/admin/dashboard'
+                }
+            };
 
             const response = NextResponse.json({
                 message: "Authenticated",
@@ -41,7 +65,8 @@ export async function POST(req: NextRequest) {
                     role: user.role,
                     id_number: user.id_number,
                     phone: user.phone,
-                    college: user.college
+                    college: user.college,
+                    ...roleSpecificData[user.role as keyof typeof roleSpecificData]
                 },
                 token: token
             });
