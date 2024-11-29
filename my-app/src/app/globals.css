@@ -52,3 +52,51 @@
     --spacing-md: 2rem;
     --spacing-lg: 4rem;
 }
+
+/* .home-component-counter-about{
+  background: url(./Assets/about-bg.png);
+} */
+
+
+html {
+  scroll-behavior: smooth;
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+.animate-in {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.scroll-hidden {
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-scrollbar);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-scrollbar-hover);
+}

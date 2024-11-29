@@ -19,8 +19,10 @@ export default function Home() {
               <Nav />
             </div>
             <Hero />
+            <div className="home-component-counter-about">
             <CountdownTimer />
             <About />
+            </div>
             <Events />
             <Gallery />
             <FAQ />

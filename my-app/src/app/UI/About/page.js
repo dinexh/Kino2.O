@@ -1,24 +1,37 @@
+"use client"
 import Image from 'next/image';
 import FilmBackground from '../../components/Background/FilmBackground';
 import './about.css';
-import logo from '../../Assets/newlogo.png';
+import logo from '../../Assets/about-img.webp';
+import { about1, about2 } from '../../Data/about';
+import { useState } from 'react';
+import Modal from '../../components/Modal/Modal';
 
 const About = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+
+  const openModal = (activity) => {
+    setSelectedActivity(activity);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedActivity(null);
+  };
+
   return (
     <div className="about-container">
       <FilmBackground />
       <div className="about-content-wrapper">
-        <div className="about-card">
-          <h3>What is KL Chitramela?</h3>
-          <p>A 48-hour film festival for aspiring filmmakers.</p>
-          <button className="read-more">READ MORE</button>
-        </div>
-        
-        <div className="about-card">
-          <h3>Why KL Chitramela?</h3>
-          <p>To showcase emerging filmmakers on a global scale.</p>
-          <button className="read-more">READ MORE</button>
-        </div>
+        {about1.map((about, index) => (
+          <div className="about-card" key={about.id || index}>
+            <h3>{about.title}</h3>
+            <p>{about.description}</p>
+            <button className="read-more" onClick={() => openModal(about)}>READ MORE</button>
+          </div>
+        ))}
 
         <div className="about-header">
           <h2>
@@ -32,23 +45,31 @@ const About = () => {
             src={logo}
             alt="Chitramela Logo"
             className="about-logo"
-            width={300}
-            height={200}
+            width={350}
+            height={300}
             priority
           />
         </div>
 
-        <div className="about-card">
-          <h3>About KL SAC Film Technology</h3>
-          <p>A student-led organization dedicated to film technology.</p>
-          <button className="read-more">READ MORE</button>
-        </div>
-        
-        <div className="about-card">
-          <h3>Who&apos;s Organizing KL Chitramela</h3>
-          <p>A student-led organization supported by the university.</p>
-          <button className="read-more">READ MORE</button>
-        </div>
+        {about2.map((about, index) => (
+          <div className="about-card" key={about.id || index}>
+            <h3>{about.title}</h3>
+            <p>{about.description}</p>
+            <button className="read-more" onClick={() => openModal(about)}>READ MORE</button>
+          </div>
+        ))}
+
+        <Modal 
+          isOpen={isModalOpen} 
+          onClose={closeModal}
+        >
+          {selectedActivity && (
+            <div className="event-modal-content">
+              <h2>{selectedActivity.title}</h2>
+              <p>{selectedActivity.fullContent}</p>
+            </div>
+          )}
+        </Modal>
       </div>
     </div>
   );

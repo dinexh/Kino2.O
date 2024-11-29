@@ -46,15 +46,24 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 2rem 0;
 }
+
+.footer-component-main-in-zero{
+    font-size: .9rem;
+    width: 35%;
+    font-weight: 200;
+}
+
 .footer-component-main-in-one{
-    width: 60%;
+    width: 46%;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
 }
 .Logo{
     height: 15vh;
+    width: 18vw;
 }
 .footer-component-main-in-two{
     width: 20%;
@@ -137,3 +146,4 @@
     color: gold;
     transition: color 0.3s ease;
 }
+

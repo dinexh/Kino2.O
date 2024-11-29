@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import './events.css';
 import { activities } from '../../Data/activities';
 import Modal from '../../components/Modal/Modal';
+import { rules } from '../../Data/rules';
 
 const Events = () => {
   const eventsRef = useRef(null);
@@ -33,7 +34,7 @@ const Events = () => {
   return (
     <div className="events-container" ref={eventsRef} id="events">
       <div className="events-header">
-        <h2>Get to know our events</h2>
+        <h2>Events</h2>
       </div>
       <div className="events-cards-wrapper">
         <div className="events-cards-container" ref={activitiesRef}>
@@ -78,7 +79,10 @@ const Events = () => {
 
       <Modal 
         isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedActivity(null);
+        }}
         event={selectedActivity}
       >
         {selectedActivity && (
@@ -91,7 +95,7 @@ const Events = () => {
                   src={selectedActivity.image} 
                   alt={selectedActivity.title} 
                   width={400}
-                  height={300}
+                  height={400}
                   objectFit="cover"
                 />
               </div>
@@ -104,8 +108,9 @@ const Events = () => {
                 <button 
                   className="register-button"
                   onClick={() => {
-                    // Add registration logic here
+                    console.log(`Registered for ${selectedActivity.title}`);
                     setIsModalOpen(false);
+                    setSelectedActivity(null);
                   }}
                 >
                   Register Now
@@ -114,12 +119,65 @@ const Events = () => {
             </div>
 
             <div className="event-modal-rules">
-              <h3>Rules and Guidelines</h3>
-              <ul>
-                <li>The event is open to all registered participants</li>
-                <li>Each participant must have a valid registration to compete</li>
-                <li>Participants must follow all event guidelines</li>
-              </ul>
+              <h1>Rules and Guidelines</h1>
+              {rules.find(r => r.id === selectedActivity.rulesId) ? (
+                <div className="rules-container">
+                  {/* Title */}
+                  <h3 className="rules-title" style={{color: "#ffffff"}}>
+                    {rules.find(r => r.id === selectedActivity.rulesId)?.title}
+                  </h3>
+
+                  {/* Eligibility */}
+                  {rules.find(r => r.id === selectedActivity.rulesId)?.eligibility && (
+                    <div className="rules-section">
+                      <h4>Eligibility:</h4>
+                      <ul>
+                        {rules.find(r => r.id === selectedActivity.rulesId)?.eligibility?.map((rule, index) => (
+                          <li key={index}>{rule}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {/* Submission Guidelines */}
+                  {rules.find(r => r.id === selectedActivity.rulesId)?.submissionGuidelines && (
+                    <div className="rules-section">
+                      <h4>Submission Guidelines:</h4>
+                      <ul>
+                        {rules.find(r => r.id === selectedActivity.rulesId)?.submissionGuidelines?.map((guideline, index) => (
+                          <li key={index}>{guideline}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Judging Criteria */}
+                  {rules.find(r => r.id === selectedActivity.rulesId)?.judgingCriteria && (
+                    <div className="rules-section">
+                      <h4>Judging Criteria:</h4>
+                      <ul>
+                        {rules.find(r => r.id === selectedActivity.rulesId)?.judgingCriteria?.map((criteria, index) => (
+                          <li key={index}>{criteria}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Content Guidelines */}
+                  {rules.find(r => r.id === selectedActivity.rulesId)?.contentGuidelines && (
+                    <div className="rules-section">
+                      <h4>Content Guidelines:</h4>
+                      <ul>
+                        {rules.find(r => r.id === selectedActivity.rulesId)?.contentGuidelines?.map((guideline, index) => (
+                          <li key={index}>{guideline}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <p>No rules available for this activity.</p>
+              )}
             </div>
           </div>
         )}
