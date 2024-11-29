@@ -4,8 +4,10 @@ import FilmBackground from '../../components/Background/FilmBackground'
 import './counter.css'
 
 const CountdownTimer = () => {
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
   const calculateTimeLeft = () => {
-    const targetDate = new Date('2024-01-04T00:00:00').getTime();
+    const targetDate = new Date('2025-01-04T00:00:00').getTime();
     const now = new Date().getTime();
     const difference = targetDate - now;
 
@@ -26,12 +28,13 @@ const CountdownTimer = () => {
     };
   };
 
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
-
   useEffect(() => {
-    const timer = setInterval(() => {
+    const updateTimer = () => {
       setTimeLeft(calculateTimeLeft());
-    }, 1000);
+    };
+
+    updateTimer(); // Initial call to set the time left immediately
+    const timer = setInterval(updateTimer, 1000);
 
     return () => clearInterval(timer);
   }, []);

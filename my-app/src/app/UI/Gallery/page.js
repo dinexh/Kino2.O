@@ -19,8 +19,8 @@ const Gallery = () => {
                   src={image} 
                   alt={`Gallery image ${index + 1}`} 
                   className="gallery-image" 
-                  width={600}
-                  height={400}
+                  width={800}
+                  height={600}
                   layout="responsive"
                 />
               </div>

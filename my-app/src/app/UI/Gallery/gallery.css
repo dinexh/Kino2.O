@@ -13,14 +13,26 @@
     margin: 0 auto;
 }
 
+.gallery-heading::before,.gallery-heading::after{
+  content: '✦';
+  /* position: absolute; */
+  color: white;
+  font-size: 2rem;
+}
+
 .gallery-heading {
     text-align: center;
     margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+
 }
 
 .gallery-heading h2 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: var(--color-text);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .gallery-scroll {
@@ -46,8 +58,8 @@
 
 .gallery-item {
     flex: 0 0 auto;
-    width: 400px;
-    height: 300px;
+    width: 700px;
+    height: 500px;
     border-radius: 1rem;
     overflow: hidden;
     border: 3px solid var(--color-border);

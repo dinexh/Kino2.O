@@ -4,11 +4,9 @@
     color: white;
     position: relative;
     overflow: hidden;
-    background: linear-gradient(
-        to right,
-        rgba(0, 0, 0, 0.95),
-        rgba(0, 0, 0, 0.85)
-    );
+    /* background: url(../../Assets/about-bg.png) no-repeat;
+    background-size: cover; */
+    /* background: transparent; */
 }
 
 .countdown-content {
@@ -44,9 +42,26 @@
     flex-wrap: nowrap;
 }
 
+
+.time-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(9, 147, 150, 0.1), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  .time-section:hover::before {
+    transform: translateX(100%);
+  }
+
 .time-section {
   background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(0, 31, 63, 0.1));
-  border: 1px solid rgba(9, 147, 150, 0.3);
+  border: 2px solid rgba(27, 197, 200, 0.599);
   box-shadow: 0 0 20px var(--color-shadow);
   transform: skew(-3deg);
   backdrop-filter: blur(10px);
@@ -54,10 +69,12 @@
   transition: transform 0.3s ease;
   text-align: center;
   font-size: 2rem;
+  overflow: hidden;
 }
 
 .time-section:hover{
-  border: #0A9396;
+  transform: skew(-6deg);
+    transform: scale(1.1);
 }
 
 .time {

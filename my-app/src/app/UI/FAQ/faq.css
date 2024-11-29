@@ -1,14 +1,15 @@
 .faq-section {
-    padding: 4rem 2rem;
+    padding: 2rem 0 10rem 0;
     position: relative;
     overflow: hidden;
-    min-height: 100vh;
+    /* min-height: 100vh; */
     display: flex;
     align-items: center;
 }
 
 .faq-container {
     width: 100%;
+
     max-width: 1200px;
     margin: 0 auto;
 }
