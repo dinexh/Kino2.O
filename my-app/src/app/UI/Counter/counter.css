@@ -9,7 +9,7 @@
     /* background: transparent; */
 }
 
-.countdown-content {
+.countdown-container-in {
     position: relative;
     font-size: 6rem;
     z-index: 1;
@@ -36,14 +36,14 @@
     margin: 0 0.5rem;
 }
 
-.timer-wrapper {
+.timer {
     display: flex;
     gap: 2rem;
     flex-wrap: nowrap;
 }
 
 
-.time-section::before {
+.time-in::before {
     content: '';
     position: absolute;
     top: 0;
@@ -55,11 +55,11 @@
     transition: transform 0.6s ease;
   }
 
-  .time-section:hover::before {
+  .time-in:hover::before {
     transform: translateX(100%);
   }
 
-.time-section {
+.time-in {
   background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(0, 31, 63, 0.1));
   border: 2px solid rgba(27, 197, 200, 0.599);
   box-shadow: 0 0 20px var(--color-shadow);
@@ -72,7 +72,7 @@
   overflow: hidden;
 }
 
-.time-section:hover{
+.time-in:hover{
   transform: skew(-6deg);
     transform: scale(1.1);
 }
@@ -96,7 +96,7 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .countdown-content {
+    .countdown-container-in {
         flex-direction: column;
         gap: 2rem;
         align-items: center;
@@ -107,11 +107,11 @@
         font-size: 1.5rem;
     }
 
-    .timer-wrapper {
+    .timer {
         gap: 1rem;
     }
 
-    .time-section {
+    .time-in {
         min-width: 80px;
         padding: 0.8rem 1rem;
     }
@@ -127,11 +127,11 @@
         padding: 2rem 1rem;
     }
 
-    .countdown-content {
+    .countdown-container-in {
         padding: 1rem;
     }
 
-    .time-section {
+    .time-in {
         min-width: 70px;
         padding: 0.6rem;
     }
@@ -158,7 +158,7 @@
     }
 }
 
-.time-section.changed .time {
+.time-in.changed .time {
     animation: pulse 0.3s ease-in-out;
     
 }

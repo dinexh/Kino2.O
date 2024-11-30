@@ -6,13 +6,13 @@ import './gallery.css';
 
 const Gallery = () => {
   return (
-    <section className="gallery-section" id="gallery">
-      <div className="gallery-container">
-        <div className="gallery-heading">
+    <section className="gallery-container" id="gallery">
+      <div className="gallery-container-in">
+        <div className="gallery-container-in-one">
           <h2>Gallery</h2>
         </div>
-        <div className="gallery-scroll">
-          <div className="gallery-content">
+        <div className="gallery-container-in-two">
+          <div className="gallery-container-in-two-in">
             {galleryImages.map((image, index) => (
               <div key={index} className="gallery-item">
                 <Image 

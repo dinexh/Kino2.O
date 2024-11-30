@@ -33,11 +33,11 @@ const Events = () => {
 
   return (
     <div className="events-container" ref={eventsRef} id="events">
-      <div className="events-header">
+      <div className="events-container-one">
         <h2>Events</h2>
       </div>
-      <div className="events-cards-wrapper">
-        <div className="events-cards-container" ref={activitiesRef}>
+      <div className="events-container-two">
+        <div className="events-container-two-in" ref={activitiesRef}>
           {activities.map((activity) => (
             <div key={activity.id} className="events-card">
               <div className="events-card-image">
@@ -62,7 +62,7 @@ const Events = () => {
         </div>
       </div>
       
-      <div className="events-navigation">
+      <div className="events-container-three">
         <button 
           className="events-nav-button" 
           onClick={() => scrollActivities('left')}

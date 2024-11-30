@@ -42,22 +42,22 @@ const CountdownTimer = () => {
   return (
     <div className="countdown-container">
       <FilmBackground />
-      <div className="countdown-content">
+      <div className="countdown-container-in">
         <h2>EVENT <span>STARTS</span> IN</h2>
-        <div className="timer-wrapper">
-          <div className="time-section">
+        <div className="timer">
+          <div className="time-in">
             <div className="time">{timeLeft.days}</div>
             <div className="label">DAYS</div>
           </div>
-          <div className="time-section">
+          <div className="time-in">
             <div className="time">{timeLeft.hours}</div>
             <div className="label">HOURS</div>
           </div>
-          <div className="time-section">
+          <div className="time-in">
             <div className="time">{timeLeft.minutes}</div>
             <div className="label">MINUTES</div>
           </div>
-          <div className="time-section">
+          <div className="time-in">
             <div className="time">{timeLeft.seconds}</div>
             <div className="label">SECONDS</div>
           </div>

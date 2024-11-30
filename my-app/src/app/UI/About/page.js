@@ -24,7 +24,7 @@ const About = () => {
   return (
     <div className="about-container">
       <FilmBackground />
-      <div className="about-content-wrapper">
+      <div className="about-container-in">
         {about1.map((about, index) => (
           <div className="about-card" key={about.id || index}>
             <h3>{about.title}</h3>
@@ -40,9 +40,10 @@ const About = () => {
           </h2>
         </div>
 
-        <div className="about-logo-wrapper">
+        <div className="about-logo-container">
           <Image 
             src={logo}
+            
             alt="Chitramela Logo"
             className="about-logo"
             width={350}

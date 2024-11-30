@@ -13,7 +13,7 @@
     background-size: cover; */
 }
 
-.about-content-wrapper {
+.about-container-in {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: auto auto;
@@ -53,7 +53,7 @@
 }
 
 /* Position logo in second row */
-.about-logo-wrapper {
+.about-logo-container {
   grid-column: 1;
   grid-row: 2;
   justify-self: center;
@@ -154,7 +154,7 @@
 }
 
 @media (max-width: 1024px) {
-  .about-content-wrapper {
+  .about-container-in {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto auto;
   }
@@ -168,13 +168,13 @@
 
   .about-card:nth-child(1) { grid-column: 1; grid-row: 2; }
   .about-card:nth-child(2) { grid-column: 2; grid-row: 2; }
-  .about-logo-wrapper { grid-column: 1 / -1; grid-row: 3; margin: 2rem 0; }
+  .about-logo-container { grid-column: 1 / -1; grid-row: 3; margin: 2rem 0; }
   .about-card:nth-child(3) { grid-column: 1; grid-row: 4; }
   .about-card:nth-child(4) { grid-column: 2; grid-row: 4; }
 }
 
 @media (max-width: 768px) {
-  .about-content-wrapper {
+  .about-container-in {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
@@ -184,7 +184,7 @@
     grid-row: auto;
   }
 
-  .about-logo-wrapper {
+  .about-logo-container {
     grid-column: 1;
     margin: 1rem 0;
   }
