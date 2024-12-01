@@ -12,7 +12,6 @@ function RegisterPage() {
         idNumber: '',
         phoneNumber: '',
         college: '',
-        collegeIdCard: null,
         gender: '',
         referralName: '',
         selectedEvents: []
@@ -40,10 +39,6 @@ function RegisterPage() {
         }
     };
 
-    const handleFileChange = (e) => {
-        setFormData({ ...formData, collegeIdCard: e.target.files[0] });
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         
@@ -66,12 +61,16 @@ function RegisterPage() {
                 body: JSON.stringify(formData)
             });
 
+            const result = await response.json();
+
             if (response.ok) {
-                // Store form data in session storage for confirmation page
-                sessionStorage.setItem('registrationData', JSON.stringify(formData));
+                sessionStorage.setItem('registrationData', JSON.stringify({
+                    ...formData,
+                    idCardUploadLink: result.data.idCardUploadLink
+                }));
                 router.push('/events/confirmation');
             } else {
-                alert('Registration failed. Please try again.');
+                alert(result.error || 'Registration failed. Please try again.');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -140,13 +139,12 @@ function RegisterPage() {
                         />
                     </div>
 
-                    <div className="form-group">
-                        <label>College ID Card:</label>
-                        <input 
-                            type="file"
-                            onChange={handleFileChange}
-                            className="file-input"
-                        />
+                    <div className="form-group notice-box">
+                        <p className="important-notice">
+                            Important: After registration, please upload your college ID card 
+                            <a href="/upload-id" className="id-upload-link"> here</a>. 
+                            Your registration will be pending until your ID is verified.
+                        </p>
                     </div>
 
                     <div className="form-group">

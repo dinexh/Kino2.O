@@ -251,3 +251,30 @@ select {
     margin-top: 2rem;
     width: 100%;
 }
+
+.notice-box {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.important-notice {
+    color: #721c24;
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.id-upload-link {
+    color: #0056b3;
+    text-decoration: underline;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.id-upload-link:hover {
+    color: #003d82;
+    text-decoration: none;
+}

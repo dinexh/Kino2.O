@@ -7,7 +7,7 @@ CREATE TABLE users (
     username VARCHAR(255) UNIQUE NOT NULL,    -- Username for login
     email VARCHAR(255) UNIQUE NOT NULL,       -- Email for login
     password VARCHAR(255) NOT NULL,           -- Encrypted password
-    role ENUM('SuperAdmin', 'Admin') NOT NULL,
+    role ENUM('SuperAdmin', 'Admin', 'User') NOT NULL,
     active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -29,6 +29,7 @@ CREATE TABLE college_ids (
     verified_by VARCHAR(255),                  -- Admin who verified the ID
     verification_date TIMESTAMP NULL,          -- When the ID was verified
     verification_notes TEXT,                   -- Any notes from verification
+    form_link VARCHAR(255) NOT NULL DEFAULT '',
     FOREIGN KEY (verified_by) REFERENCES users(username)
 );
 
@@ -100,6 +101,10 @@ CREATE TABLE help_requests (
     FOREIGN KEY (id_number) REFERENCES registrations(id_number) ON DELETE CASCADE,
     FOREIGN KEY (handled_by) REFERENCES users(username)
 );
+
+-- Update only the role ENUM to include 'User'
+ALTER TABLE users 
+    MODIFY COLUMN role ENUM('SuperAdmin', 'Admin', 'User') NOT NULL;
 
 
 
