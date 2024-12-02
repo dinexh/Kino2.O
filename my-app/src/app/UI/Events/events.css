@@ -326,6 +326,7 @@
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 1px solid rgba(9, 147, 150, 0.2);
+    animation: fadeIn 0.3s ease-in-out;
   }
   .event-modal-content h2{
     margin-bottom: 2rem;
@@ -428,6 +429,17 @@
   
     .modal-image {
       height: 40%;
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
   

@@ -371,3 +371,24 @@
     }
 }
 
+.rule-section {
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.highlight {
+  background-color: rgba(9, 147, 150, 0.2);
+  animation: highlightFade 2s ease;
+}
+
+@keyframes highlightFade {
+  0% {
+    background-color: rgba(9, 147, 150, 0.3);
+  }
+  100% {
+    background-color: rgba(9, 147, 150, 0);
+  }
+}
+

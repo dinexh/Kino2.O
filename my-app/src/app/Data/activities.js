@@ -1,25 +1,5 @@
 export const activities = [
   {
-    id: 1,
-    title: 'Cine Quiz :',
-    image: 'https://firebasestorage.googleapis.com/v0/b/flim-382d5.appspot.com/o/Activities%2FCine%20Quiz.png?alt=media&token=c076d187-3702-470c-af37-2b3ac37ca8a6',
-    date: 'January 10, 2025',
-    time: '10:00 AM - 4:00 PM',
-    venue: 'Main Auditorium',
-    fee: '$20',
-    rulesId: 'cine-quiz',
-  },
-  {
-    id: 2,
-    title: 'Movie Poster Design Contest ',
-    image: 'https://firebasestorage.googleapis.com/v0/b/flim-382d5.appspot.com/o/Activities%2FMovie%20Poster%20Making.png?alt=media&token=405679cd-8c74-4bf5-aaa6-a90e64d106a5',
-    date: 'January 11, 2025',
-    time: '11:00 AM - 5:00 PM',
-    venue: 'Exhibition Hall',
-    fee: '$15',
-    rulesId: 'movie-poster-design',
-  },
-  {
     id: 3,
     title: 'Photography Contest - Mobile Photograph:',
     image: 'https://firebasestorage.googleapis.com/v0/b/flim-382d5.appspot.com/o/Activities%2FPhotography%20Contest.png?alt=media&token=da8d10a5-2680-42cb-9a96-47f4f611d59d',
