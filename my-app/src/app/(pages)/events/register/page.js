@@ -7,11 +7,57 @@ import { useRouter } from 'next/navigation';
 
 function RegisterPage() {
     const router = useRouter();
+    const countryCodes = [
+        { code: '+91', country: 'India' },
+        { code: '+1', country: 'USA/Canada' },
+        { code: '+44', country: 'UK' },
+        { code: '+61', country: 'Australia' },
+        { code: '+86', country: 'China' },
+        { code: '+81', country: 'Japan' },
+        { code: '+971', country: 'UAE' },
+        { code: '+65', country: 'Singapore' },
+        { code: '+60', country: 'Malaysia' },
+        { code: '+49', country: 'Germany' },
+        { code: '+33', country: 'France' },
+        { code: '+39', country: 'Italy' },
+        { code: '+34', country: 'Spain' },
+        { code: '+7', country: 'Russia' },
+        { code: '+82', country: 'South Korea' },
+        { code: '+55', country: 'Brazil' },
+        { code: '+52', country: 'Mexico' },
+        { code: '+966', country: 'Saudi Arabia' },
+        { code: '+27', country: 'South Africa' },
+        { code: '+64', country: 'New Zealand' },
+        { code: '+31', country: 'Netherlands' },
+        { code: '+46', country: 'Sweden' },
+        { code: '+47', country: 'Norway' },
+        { code: '+45', country: 'Denmark' },
+        { code: '+41', country: 'Switzerland' },
+        { code: '+353', country: 'Ireland' },
+        { code: '+351', country: 'Portugal' },
+        { code: '+92', country: 'Pakistan' },
+        { code: '+880', country: 'Bangladesh' },
+        { code: '+94', country: 'Sri Lanka' },
+        { code: '+977', country: 'Nepal' },
+        { code: '+975', country: 'Bhutan' },
+        { code: '+95', country: 'Myanmar' },
+        { code: '+84', country: 'Vietnam' },
+        { code: '+62', country: 'Indonesia' },
+        { code: '+66', country: 'Thailand' },
+        { code: '+63', country: 'Philippines' },
+    ].sort((a, b) => {
+        // Sort by country name, but keep India first
+        if (a.country === 'India') return -1;
+        if (b.country === 'India') return 1;
+        return a.country.localeCompare(b.country);
+    });
+
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         idNumber: '',
         phoneNumber: '',
+        countryCode: '+91',
         college: '',
         gender: '',
         referralName: '',
@@ -123,15 +169,28 @@ function RegisterPage() {
                         />
                     </div>
 
-                    <div className="form-group">
+                    <div className="form-group phone-group">
                         <label>Phone Number: *</label>
-                        <input 
-                            type="tel"
-                            value={formData.phoneNumber}
-                            onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                            placeholder="+91 9876543210"
-                            required
-                        />
+                        <div className="phone-input-container">
+                            <select
+                                value={formData.countryCode}
+                                onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                                className="country-code-select"
+                            >
+                                {countryCodes.map((country) => (
+                                    <option key={country.code} value={country.code}>
+                                        {country.code} ({country.country})
+                                    </option>
+                                ))}
+                            </select>
+                            <input 
+                                type="tel"
+                                value={formData.phoneNumber}
+                                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                                placeholder="9876543210"
+                                required
+                            />
+                        </div>
                     </div>
 
                     <div className="form-group">
