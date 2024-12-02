@@ -3,12 +3,6 @@
 .payment-page {
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(135deg, #000000, #1a1a1a);
-    background-image: 
-        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.05) 2%, transparent 20%),
-        radial-gradient(circle at 75% 75%, rgba(255, 215, 0, 0.05) 2%, transparent 20%),
-        linear-gradient(135deg, #000000, #1a1a1a);
-    background-attachment: fixed;
     font-family: 'Poppins', sans-serif;
     display: flex;
     flex-direction: column;
@@ -16,6 +10,10 @@
     justify-content: center;
     position: relative;
     overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .payment-page::before {
@@ -23,14 +21,6 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 100px,
-        rgba(255, 215, 0, 0.03) 100px,
-        rgba(255, 215, 0, 0.03) 200px
-    );
-    animation: backgroundMove 30s linear infinite;
 }
 
 @keyframes backgroundMove {

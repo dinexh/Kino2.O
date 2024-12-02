@@ -1,10 +1,12 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+
 import { useRouter } from 'next/navigation';
 import QR from "../../../Assets/DemoQR.png"
 import Footer from '../../../components/Footer/Footer';
 import './payment.css';
+import backgroundImage from '../../../Assets/register3.webp';
 
 function PaymentPage() {
     const router = useRouter();
@@ -62,7 +64,7 @@ function PaymentPage() {
     if (!registrationData) return null;
 
     return (
-        <div className="payment-page">
+        <div className="payment-page" style={{ backgroundImage: `url(${backgroundImage.src})` }}>
             <div className="payment-page-in">
             <div className="payment-heading">
                 <h1>Complete Your Payment</h1>

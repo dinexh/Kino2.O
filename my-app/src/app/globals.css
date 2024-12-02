@@ -53,11 +53,6 @@
     --spacing-lg: 4rem;
 }
 
-/* .home-component-counter-about{
-  background: url(./Assets/about-bg.png);
-} */
-
-
 html {
   scroll-behavior: smooth;
 }

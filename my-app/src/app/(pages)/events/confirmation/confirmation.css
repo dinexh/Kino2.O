@@ -3,11 +3,9 @@
 .confirmation-page {
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(135deg, #000000, #1a1a1a);
-    background-image: 
-        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.05) 2%, transparent 20%),
-        radial-gradient(circle at 75% 75%, rgba(255, 215, 0, 0.05) 2%, transparent 20%),
-        linear-gradient(135deg, #000000, #1a1a1a);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     background-attachment: fixed;
     font-family: 'Poppins', sans-serif;
     display: flex;

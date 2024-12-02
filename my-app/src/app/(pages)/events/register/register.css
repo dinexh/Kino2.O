@@ -3,62 +3,30 @@
 .register-page {
     width: 100%;
     min-height: 100vh;
-    background: linear-gradient(135deg, #000000, #1a1a1a);
-    background-image: 
-        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.05) 2%, transparent 20%),
-        radial-gradient(circle at 75% 75%, rgba(255, 215, 0, 0.05) 2%, transparent 20%),
-        linear-gradient(135deg, #000000, #1a1a1a);
-    background-attachment: fixed;
     font-family: 'Poppins', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
-    overflow: hidden;
-}
-
-/* Add animated background elements */
-.register-page::before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 100px,
-        rgba(255, 215, 0, 0.03) 100px,
-        rgba(255, 215, 0, 0.03) 200px
-    );
-    animation: backgroundMove 30s linear infinite;
-}
-
-@keyframes backgroundMove {
-    0% {
-        background-position: 0 0;
-    }
-    100% {
-        background-position: 200px 200px;
-    }
 }
 
 .register-page-in {
     width: 100%;
-    max-width: 700px;
+    max-width: 750px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: rgba(30, 30, 30, 0.9);
+    background-color: black;
     backdrop-filter: blur(10px);
     border-radius: 2rem;
-    padding: 1rem;
     margin: 2rem 0;
-    border: 1px solid rgba(255, 215, 0, 0.1);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
     position: relative;
     z-index: 1;
+    padding: 1.5rem;
 }
 
 .register-heading {
@@ -95,7 +63,7 @@
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 .form-group {
@@ -250,31 +218,49 @@ select {
 .Footer {
     margin-top: 2rem;
     width: 100%;
+    background-color: black;
+    position: relative;
+    z-index: 2;
 }
-
-.notice-box {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 5px;
+.form-group-notice-box {
+    margin-bottom: 20px;
     padding: 15px;
-    margin: 20px 0;
+    border: 2px dashed #e0e0e0;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
-.important-notice {
-    color: #721c24;
-    margin: 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
+.form-group-notice-box label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-weight: 500;
 }
 
-.id-upload-link {
-    color: #0056b3;
-    text-decoration: underline;
-    font-weight: bold;
-    margin-left: 5px;
+.form-group-notice-box input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
 }
 
-.id-upload-link:hover {
-    color: #003d82;
-    text-decoration: none;
+.form-group-notice-box input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-group-notice-box p {
+    margin: 5px 0;
+    font-size: 0.9em;
+    color: #ccc;
+    line-height: 1.4;
+}
+
+
+.form-group:has(input[placeholder*="referral"]) label::after {
+    content: "";
 }

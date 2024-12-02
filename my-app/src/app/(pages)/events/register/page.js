@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import Footer from '../../../components/Footer/Footer';
+import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
 
@@ -79,7 +80,7 @@ function RegisterPage() {
     };
 
     return (
-        <div className="register-page">
+        <div className="register-page" style={{ backgroundImage: `url(${backgroundImage.src})` }}>
             <div className="register-page-in">
                 <div className="register-heading">
                     <h1>Register for Chitramela 2025</h1>
@@ -90,73 +91,84 @@ function RegisterPage() {
                 <div className="register-form-container">
                 <form onSubmit={handleSubmit}>
                     <div className="form-group">
-                        <label>Name:</label>
+                        <label>Name: *</label>
                         <input 
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder="Enter your name"
+                            required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Email:</label>
+                        <label>Email: *</label>
                         <input 
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             placeholder="210000..@kluniversity.in"
+                            required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>ID Number:</label>
+                        <label>ID Number: *</label>
                         <input 
                             type="text"
                             value={formData.idNumber}
                             onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                             placeholder="2100031234"
+                            required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>Phone Number:</label>
+                        <label>Phone Number: *</label>
                         <input 
                             type="tel"
                             value={formData.phoneNumber}
                             onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
                             placeholder="+91 9876543210"
+                            required
                         />
                     </div>
 
                     <div className="form-group">
-                        <label>College:</label>
+                        <label>College: *</label>
                         <input 
                             type="text"
                             value={formData.college}
                             onChange={(e) => setFormData({ ...formData, college: e.target.value })}
                             placeholder="KL University"
+                            required
                         />
                     </div>
 
-                    <div className="form-group notice-box">
-                        <p className="important-notice">
-                            Important: After registration, please upload your college ID card 
-                            <a href="/upload-id" className="id-upload-link"> here</a>. 
-                            Your registration will be pending until your ID is verified.
-                        </p>
+                    <div className="form-group-notice-box">
+                      <label htmlFor="idCardUploadLink">ID Card Link *</label>
+                      <input 
+                        type="text" 
+                        id="idCardUploadLink" 
+                        value={formData.idCardUploadLink} 
+                        onChange={(e) => setFormData({ ...formData, idCardUploadLink: e.target.value })} 
+                        placeholder="Enter ID Card Link"
+                        required 
+                      />
+                      <p>Upload ID Card as a link </p>
+                      <p>Please refer to this video for more details</p> <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Video Link</a>
                     </div>
 
                     <div className="form-group">
-                        <label>Gender:</label>
+                        <label>Gender: *</label>
                         <select 
                             value={formData.gender}
                             onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+                            required
                         >
                             <option value="">Select Gender</option>
                             <option value="male">Male</option>
                             <option value="female">Female</option>
-                            <option value="other">Other</option>
                         </select>
                     </div>
 
@@ -171,7 +183,7 @@ function RegisterPage() {
                     </div>
 
                     <div className="form-group events-section">
-                        <label>Selected Events:</label>
+                        <label>Selected Events: *</label>
                         <button 
                             type="button" 
                             className={`event-button ${formData.selectedEvents.length === events.length ? 'selected' : ''}`}

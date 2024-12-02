@@ -83,7 +83,7 @@ export default function Nav() {
               {label}
             </Link>
           ))}
-          <Link href="/register" className="navigation-link-register">
+          <Link href="/events/register" className="navigation-link-register">
             Register
           </Link>
         </div>

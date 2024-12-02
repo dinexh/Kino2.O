@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from 'react';
 import Footer from '../../../components/Footer/Footer';
+import backgroundImage from '../../../Assets/register3.webp';
 import './confirmation.css';
 import { useRouter } from 'next/navigation';
 
@@ -28,7 +29,7 @@ function ConfirmationPage() {
     if (!userData) return null;
 
     return (
-        <div className="confirmation-page">
+        <div className="confirmation-page" style={{ backgroundImage: `url(${backgroundImage.src})` }}>
             <div className="confirmation-page-in">
                 <div className="confirmation-heading">
                     <h1>Confirm Your Registration</h1>
