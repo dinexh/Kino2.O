@@ -13,13 +13,6 @@
     margin: 0 auto;
 }
 
-.gallery-container-in-one::before,
-.gallery-container-in-one::after {
-    content: '✦';
-    color: white;
-    font-size: 2rem;
-}
-
 .gallery-container-in-one {
     text-align: center;
     margin-bottom: 3rem;
@@ -30,7 +23,7 @@
 
 .gallery-container-in-one h2 {
     font-size: 3rem;
-    color: var(--color-text);
+    color: gold;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 

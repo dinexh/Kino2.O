@@ -40,7 +40,7 @@ const Footer = () => {
                 <div className="footer-component-in-main">
                     <div className="footer-component-main-in">
                         <div className="footer-component-main-in-zero">
-                            <h1>About Chitramela</h1>
+                            <h1>About <span>Chitramela</span></h1>
                             <p>Chitramela is KL University&apos;s annual film festival, celebrating the art of storytelling through cinema. From captivating activities to exciting competitions, it’s a platform for creativity, innovation, and fun. Join us to explore the magic of movies and showcase your talent on the grand stage.</p>
                         </div>
                         <div className="footer-component-main-in-one">

@@ -11,6 +11,11 @@
     /* letter-spacing: .2rem; */
     text-align: center;
   }
+  .events-container-one h2{
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: gold;
+  }
   
   .events-container-two-in {
     display: flex;
