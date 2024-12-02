@@ -25,7 +25,9 @@ const Events = () => {
       });
     }
   };
-
+  const GoToRules = () => {
+    window.location.href = "/Rules";
+  }
   const handleReadMore = (activity) => {
     setSelectedActivity(activity);
     setIsModalOpen(true);
@@ -114,6 +116,17 @@ const Events = () => {
                   }}
                 >
                   Register Now
+                </button>
+                <button 
+                  className="register-button"
+                  onClick={() => {
+                    console.log(`Registered for ${selectedActivity.title}`);
+                    setIsModalOpen(false);
+                    setSelectedActivity(null);
+                    GoToRules()
+                  }}
+                >
+                  More Info
                 </button>
               </div>
             </div>
