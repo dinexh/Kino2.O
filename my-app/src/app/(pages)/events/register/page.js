@@ -215,7 +215,10 @@ function RegisterPage() {
                         required 
                       />
                       <p>Upload ID Card as a link </p>
-                      <p>Please refer to this video for more details</p> <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Video Link</a>
+                      <p>Please refer to this video & Document for more details</p>
+                       <a href="https://firebasestorage.googleapis.com/v0/b/flim-382d5.appspot.com/o/Link%2FLink.mp4?alt=media&token=c15a8001-637b-489f-96ac-0fc4441778ab">Video Tutorial</a> <br />
+                      <a href="https://www.imghippo.com/">Document</a>
+                      <p>Link Generation website: <a href="https://www.imghippo.com/">ImgHippo</a></p>
                     </div>
 
                     <div className="form-group">
