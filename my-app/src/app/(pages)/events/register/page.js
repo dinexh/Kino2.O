@@ -217,7 +217,7 @@ function RegisterPage() {
                       <p>Upload ID Card as a link </p>
                       <p>Please refer to this video & Document for more details</p>
                        <a href="https://firebasestorage.googleapis.com/v0/b/flim-382d5.appspot.com/o/Link%2FLink.mp4?alt=media&token=c15a8001-637b-489f-96ac-0fc4441778ab">Video Tutorial</a> <br />
-                      <a href="https://www.imghippo.com/">Document</a>
+                      <a href="https://www.imghippo.com/">Document</a>ifconfig
                       <p>Link Generation website: <a href="https://www.imghippo.com/">ImgHippo</a></p>
                     </div>
 
