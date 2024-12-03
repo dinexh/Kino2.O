@@ -109,11 +109,44 @@
     margin-top: 2rem;
 }
 
+.events-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.select-all-button {
+    padding: 0.8rem 1.5rem;
+    border: 1px solid gold;
+    background: rgba(45, 45, 45, 0.8);
+    color: gold;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: fit-content;
+}
+
+.select-all-button:hover {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: gold;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.select-all-button.selected {
+    background: linear-gradient(135deg, #000000, #222222);
+    border-color: gold;
+    color: gold;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
 .events-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1rem;
-    margin-top: 1rem;
+    width: 100%;
 }
 
 .event-button {
@@ -162,6 +195,21 @@
     border-color: gold;
     color: gold;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .event-button {
+        width: 100%;
+    }
+    
+    .select-all-button {
+        width: 100%;
+        text-align: center;
+    }
 }
 
 .submit-button {

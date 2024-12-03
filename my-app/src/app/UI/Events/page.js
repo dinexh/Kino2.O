@@ -67,22 +67,6 @@ const Events = () => {
           ))}
         </div>
       </div>
-      
-      {/* <div className="events-container-three">
-        <button 
-          className="events-nav-button" 
-          onClick={() => scrollActivities('left')}
-        >
-          &lt;
-        </button>
-        <button 
-          className="events-nav-button" 
-          onClick={() => scrollActivities('right')}
-        >
-          &gt;
-        </button>
-      </div> */}
-
       <Modal 
         isOpen={isModalOpen} 
         onClose={() => {

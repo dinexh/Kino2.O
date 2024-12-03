@@ -8,8 +8,19 @@ export async function POST(request: Request) {
         const data = await request.json();
         console.log('Received registration data:', data);
         
+        // Validate required fields
+        const requiredFields = ['name', 'email', 'idNumber', 'phoneNumber', 'college', 'gender', 'selectedEvents', 'idCardUploadLink'];
+        const missingFields = requiredFields.filter(field => !data[field]);
+        
+        if (missingFields.length > 0) {
+            return NextResponse.json(
+                { error: `Missing required fields: ${missingFields.join(', ')}` },
+                { status: 400 }
+            );
+        }
+
         if (!pool) {
-            console.error('Database pool is not initialized');
+            console.error('Database connection failed');
             return NextResponse.json(
                 { error: 'Database connection failed' },
                 { status: 500 }
@@ -17,16 +28,11 @@ export async function POST(request: Request) {
         }
         
         connection = await pool.getConnection();
-        console.log('Database connection established');
         
         try {
             await connection.beginTransaction();
             
-            // Create college_id entry with form link
-            const formLink = `https://forms.office.com/r/xyz123?id=${data.idNumber}`; // Replace with your actual form link
-            console.log('Generated form link:', formLink);
-
-            // First create user entry (to avoid foreign key constraint issues)
+            // Create user entry
             const [userResult] = await connection.execute(
                 `INSERT INTO users (username, email, password, role) 
                 VALUES (?, ?, ?, ?)`,
@@ -37,94 +43,73 @@ export async function POST(request: Request) {
                     'User'
                 ]
             );
-            console.log('User created:', userResult);
 
-            // Then create college_id entry
+            // Create college_id entry with the provided link
             const [collegeIdResult] = await connection.execute(
-                `INSERT INTO college_ids 
-                (id_number, original_filename, stored_filename, file_path, file_size, mime_type, form_link) 
-                VALUES (?, '', '', '', 0, '', ?)`,
-                [data.idNumber, formLink]
+                `INSERT INTO college_ids (id_number, id_card_link) 
+                VALUES (?, ?)`,
+                [data.idNumber, data.idCardUploadLink]
             );
-            console.log('College ID entry created:', collegeIdResult);
-            
-            // Finally create registration entry
+
+            // Create registration entry with full phone number
+            const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
             const [regResult] = await connection.execute(
                 `INSERT INTO registrations 
-                (id_number, username, email, phone, college, gender, registration_status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)`,
+                (id_number, username, email, phone, college, gender, registration_status, selected_events, referral_name) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
                     data.idNumber,
                     data.name,
                     data.email,
-                    data.phoneNumber,
+                    fullPhoneNumber,
                     data.college,
                     data.gender.charAt(0).toUpperCase() + data.gender.slice(1),
-                    'Pending'
+                    'Pending',
+                    JSON.stringify(data.selectedEvents),
+                    data.referralName || null
                 ]
             );
-            console.log('Registration created:', regResult);
             
             await connection.commit();
-            console.log('Transaction committed successfully');
             
-            const responseData = {
+            return NextResponse.json({
                 success: true,
-                message: 'Registration successful. Please upload your ID card using the provided link to complete registration.',
+                message: 'Registration successful.',
                 data: {
-                    registration: regResult,
-                    idCardUploadLink: formLink
+                    registration: regResult
                 }
-            };
-            console.log('Sending response:', responseData);
-            
-            return NextResponse.json(responseData);
+            });
             
         } catch (error) {
-            console.error('Database operation error:', error);
             await connection.rollback();
+            console.error('Database operation error:', error);
             
             if (error.code === 'ER_DUP_ENTRY') {
-                let errorMessage = 'This record already exists';
-                if (error.message.includes('username')) {
-                    errorMessage = 'This username is already taken';
-                } else if (error.message.includes('id_number')) {
-                    errorMessage = 'This ID number is already registered';
-                } else if (error.message.includes('email')) {
-                    errorMessage = 'This email is already registered';
-                }
+                const errorMessage = error.message.includes('id_number') 
+                    ? 'This ID number is already registered'
+                    : error.message.includes('email')
+                    ? 'This email is already registered'
+                    : error.message.includes('username')
+                    ? 'This username is already taken'
+                    : 'This record already exists';
                 
-                return NextResponse.json(
-                    { error: errorMessage },
-                    { status: 400 }
-                );
+                return NextResponse.json({ error: errorMessage }, { status: 400 });
             }
             
             return NextResponse.json(
-                { 
-                    error: 'Registration failed',
-                    details: error.message
-                },
+                { error: 'Registration failed', details: error.message },
                 { status: 500 }
             );
         }
     } catch (error) {
         console.error('Registration error:', error);
         return NextResponse.json(
-            { 
-                error: 'Registration failed', 
-                details: error.message 
-            },
+            { error: 'Registration failed', details: error.message },
             { status: 500 }
         );
     } finally {
         if (connection) {
-            try {
-                await connection.release();
-                console.log('Connection released successfully');
-            } catch (releaseError) {
-                console.error('Error releasing connection:', releaseError);
-            }
+            await connection.release();
         }
     }
 } 

@@ -61,14 +61,14 @@ function RegisterPage() {
         college: '',
         gender: '',
         referralName: '',
-        selectedEvents: []
+        selectedEvents: [],
+        idCardUploadLink: ''
     });
 
     const events = [
         "Photography Contest - Mobile Photograph",
         "Short Film Screening",
         "Reel Making Contest",
-        "Movie Poster Design Contest"
     ];
 
     const handleEventSelection = (event) => {
@@ -243,24 +243,26 @@ function RegisterPage() {
 
                     <div className="form-group events-section">
                         <label>Selected Events: *</label>
-                        <button 
-                            type="button" 
-                            className={`event-button ${formData.selectedEvents.length === events.length ? 'selected' : ''}`}
-                            onClick={() => handleEventSelection('all')}
-                        >
-                            Select All Events
-                        </button>
-                        <div className="events-grid">
-                            {events.map((event, index) => (
-                                <button
-                                    key={index}
-                                    type="button"
-                                    className={`event-button ${formData.selectedEvents.includes(event) ? 'selected' : ''}`}
-                                    onClick={() => handleEventSelection(event)}
-                                >
-                                    {event}
-                                </button>
-                            ))}
+                        <div className="events-container">
+                            <button 
+                                type="button" 
+                                className={`select-all-button ${formData.selectedEvents.length === events.length ? 'selected' : ''}`}
+                                onClick={() => handleEventSelection('all')}
+                            >
+                                {formData.selectedEvents.length === events.length ? 'Unselect All' : 'Select All Events'}
+                            </button>
+                            <div className="events-grid">
+                                {events.map((event, index) => (
+                                    <button
+                                        key={index}
+                                        type="button"
+                                        className={`event-button ${formData.selectedEvents.includes(event) ? 'selected' : ''}`}
+                                        onClick={() => handleEventSelection(event)}
+                                    >
+                                        {event}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
