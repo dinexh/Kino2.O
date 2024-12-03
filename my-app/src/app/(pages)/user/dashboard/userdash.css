@@ -1,0 +1,137 @@
+.UserDashboard {
+    min-height: 100vh;
+    background-color: #f5f7fa;
+}
+
+.UserDashboard-in {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.dashboard-main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.dashboard-title {
+    font-size: 2.5rem;
+    color: #2d3748;
+    margin-bottom: 2rem;
+    font-weight: 700;
+}
+
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: #4a5568;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    color: #2d3748;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.event-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-5px);
+}
+
+.event-image {
+    height: 200px;
+    overflow: hidden;
+}
+
+.event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.event-details {
+    padding: 1.5rem;
+}
+
+.event-details h2 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 1rem;
+}
+
+.event-info {
+    margin-bottom: 1rem;
+}
+
+.event-info p {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
+}
+
+.event-info svg {
+    color: #4299e1;
+}
+
+.view-details-btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.view-details-btn:hover {
+    background-color: #3182ce;
+}
+
+@media (max-width: 768px) {
+    .dashboard-main {
+        padding: 1rem;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+}
