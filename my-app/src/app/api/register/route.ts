@@ -1,17 +1,15 @@
 import { NextResponse } from 'next/server';
 import { pool } from '../../../config/db';
-import { PoolConnection } from 'mysql2/promise';
 
 export async function POST(request: Request) {
-    let connection: PoolConnection;
     try {
         const data = await request.json();
         console.log('Received registration data:', data);
-        
+
         // Validate required fields
         const requiredFields = ['name', 'email', 'idNumber', 'phoneNumber', 'college', 'gender', 'selectedEvents', 'idCardUploadLink'];
         const missingFields = requiredFields.filter(field => !data[field]);
-        
+
         if (missingFields.length > 0) {
             return NextResponse.json(
                 { error: `Missing required fields: ${missingFields.join(', ')}` },
@@ -26,52 +24,45 @@ export async function POST(request: Request) {
                 { status: 500 }
             );
         }
-        
-        connection = await pool.getConnection();
-        
+
         try {
-            await connection.beginTransaction();
+            await pool.query('START TRANSACTION');
             
             // Create user entry
-            const [userResult] = await connection.execute(
+            const [userResult] = await pool.execute(
                 `INSERT INTO users (username, email, password, role) 
                 VALUES (?, ?, ?, ?)`,
                 [
                     data.name,
                     data.email,
                     'defaultpassword123',
-                    'User'
+                    'RegisteredUser'
                 ]
-            );
-
-            // Create college_id entry with the provided link
-            const [collegeIdResult] = await connection.execute(
-                `INSERT INTO college_ids (id_number, id_card_link) 
-                VALUES (?, ?)`,
-                [data.idNumber, data.idCardUploadLink]
             );
 
             // Create registration entry with full phone number
             const fullPhoneNumber = `${data.countryCode}${data.phoneNumber}`;
-            const [regResult] = await connection.execute(
-                `INSERT INTO registrations 
-                (id_number, username, email, phone, college, gender, registration_status, selected_events, referral_name) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            const [regResult] = await pool.execute(
+                `INSERT INTO event_registrations 
+                (name, email, id_number, phone_number, country_code, college, gender, referral_name, id_card_upload_link, registration_status, payment_status) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
                 [
-                    data.idNumber,
                     data.name,
                     data.email,
-                    fullPhoneNumber,
+                    data.idNumber,
+                    data.phoneNumber,
+                    data.countryCode,
                     data.college,
-                    data.gender.charAt(0).toUpperCase() + data.gender.slice(1),
-                    'Pending',
-                    JSON.stringify(data.selectedEvents),
-                    data.referralName || null
+                    data.gender,
+                    data.referralName || null,
+                    data.idCardUploadLink,
+                    'pending',
+                    'pending'
                 ]
             );
-            
-            await connection.commit();
-            
+
+            await pool.query('COMMIT');
+
             return NextResponse.json({
                 success: true,
                 message: 'Registration successful.',
@@ -79,27 +70,23 @@ export async function POST(request: Request) {
                     registration: regResult
                 }
             });
-            
+
         } catch (error) {
-            await connection.rollback();
+            await pool.query('ROLLBACK');
             console.error('Database operation error:', error);
-            
+
+            let errorMessage = 'Registration failed';
             if (error.code === 'ER_DUP_ENTRY') {
-                const errorMessage = error.message.includes('id_number') 
+                errorMessage = error.message.includes('id_number')
                     ? 'This ID number is already registered'
                     : error.message.includes('email')
                     ? 'This email is already registered'
                     : error.message.includes('username')
                     ? 'This username is already taken'
-                    : 'This record already exists';
-                
-                return NextResponse.json({ error: errorMessage }, { status: 400 });
+                    : errorMessage;
             }
-            
-            return NextResponse.json(
-                { error: 'Registration failed', details: error.message },
-                { status: 500 }
-            );
+
+            return NextResponse.json({ error: errorMessage }, { status: 400 });
         }
     } catch (error) {
         console.error('Registration error:', error);
@@ -107,9 +94,5 @@ export async function POST(request: Request) {
             { error: 'Registration failed', details: error.message },
             { status: 500 }
         );
-    } finally {
-        if (connection) {
-            await connection.release();
-        }
     }
-} 
+}
