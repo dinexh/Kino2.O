@@ -9,6 +9,8 @@ import About from './UI/About/page'
 import Events from './UI/Events/page'
 import Gallery from './UI/Gallery/page'
 import FAQ from './UI/FAQ/page' 
+import Team from './UI/Team/page'
+import Sponcers from './UI/Sponcers/page'
 
 export default function Home() {
   return (
@@ -25,6 +27,8 @@ export default function Home() {
             </div>
             <Events />
             <Gallery />
+            <Team/>
+            <Sponcers/>
             <FAQ />
             <div className="home-component-footer">
               <Footer />

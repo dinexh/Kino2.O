@@ -1,6 +1,5 @@
 "use client"
 import Image from 'next/image';
-import FilmBackground from '../../components/Background/FilmBackground';
 import './about.css';
 import logo from '../../Assets/about-img.webp';
 import { about1, about2 } from '../../Data/about';
@@ -23,7 +22,6 @@ const About = () => {
 
   return (
     <div className="about-container">
-      <FilmBackground />
       <div className="about-container-in">
         {about1.map((about, index) => (
           <div className="about-card" key={about.id || index}>

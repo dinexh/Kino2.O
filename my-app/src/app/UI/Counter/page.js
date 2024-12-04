@@ -1,6 +1,5 @@
 'use client'
 import { useState, useEffect } from 'react'
-import FilmBackground from '../../components/Background/FilmBackground'
 import './counter.css'
 
 const CountdownTimer = () => {
@@ -41,7 +40,6 @@ const CountdownTimer = () => {
 
   return (
     <div className="countdown-container">
-      <FilmBackground />
       <div className="countdown-container-in">
         <h2>EVENT <span>STARTS</span> IN</h2>
         <div className="timer">

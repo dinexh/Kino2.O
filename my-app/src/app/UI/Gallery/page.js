@@ -6,7 +6,7 @@ import './gallery.css';
 
 const Gallery = () => {
   return (
-    <section className="gallery-container" id="gallery">
+    <div className="gallery-container" id="gallery">
       <div className="gallery-container-in">
         <div className="gallery-container-in-one">
           <h2>Gallery</h2>
@@ -28,7 +28,7 @@ const Gallery = () => {
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
