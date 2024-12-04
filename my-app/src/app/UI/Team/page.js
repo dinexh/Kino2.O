@@ -14,4 +14,4 @@ const Team = () => {
     );
 }
  
-export default ;
+export default Team;
