@@ -36,8 +36,8 @@ const Rules = () => {
         { id: "short-film-contest", label: "Short Film" },
         { id: "photography-contest", label: "Photography" },
         { id: "reel-making-contest", label: "Reel Making" },
-        { id: "movie-poster-design", label: "Poster Design" },
-        { id: "cine-quiz", label: "Cine Quiz" }
+        // { id: "movie-poster-design", label: "Poster Design" },
+        // { id: "cine-quiz", label: "Cine Quiz" }
     ];
 
     const renderContent = () => {
@@ -169,94 +169,94 @@ const Rules = () => {
             </div>
         );
 
-        const posterDesignCard = (
-            <div className="rule-card">
-                <div className="rule-card-heading">
-                    <h2>Movie Poster Design Contest Rules and Regulations</h2>
-                </div>
-                <div className="rule-card-content">
-                    <div className="rule-section">
-                        <h3>Eligibility</h3>
-                        <ul>
-                            <li>Open to all graphic designers and artists.</li>
-                        </ul>
-                    </div>
+        // const posterDesignCard = (
+        //     <div className="rule-card">
+        //         <div className="rule-card-heading">
+        //             <h2>Movie Poster Design Contest Rules and Regulations</h2>
+        //         </div>
+        //         <div className="rule-card-content">
+        //             <div className="rule-section">
+        //                 <h3>Eligibility</h3>
+        //                 <ul>
+        //                     <li>Open to all graphic designers and artists.</li>
+        //                 </ul>
+        //             </div>
 
-                    <div className="rule-section">
-                        <h3>Theme & Time Limit</h3>
-                        <ul>
-                            <li>The theme will be provided at the start of the event.</li>
-                            <li>Participants will have 2 hours to create their poster.</li>
-                        </ul>
-                    </div>
+        //             <div className="rule-section">
+        //                 <h3>Theme & Time Limit</h3>
+        //                 <ul>
+        //                     <li>The theme will be provided at the start of the event.</li>
+        //                     <li>Participants will have 2 hours to create their poster.</li>
+        //                 </ul>
+        //             </div>
 
-                    <div className="rule-section">
-                        <h3>Submission Guidelines</h3>
-                        <ul>
-                            <li>Posters must be submitted through the link provided by the Chitramela team before the time limit expires.</li>
-                        </ul>
-                    </div>
+        //             <div className="rule-section">
+        //                 <h3>Submission Guidelines</h3>
+        //                 <ul>
+        //                     <li>Posters must be submitted through the link provided by the Chitramela team before the time limit expires.</li>
+        //                 </ul>
+        //             </div>
 
-                    <div className="rule-section">
-                        <h3>Judging Criteria</h3>
-                        <ul>
-                            <li>Creativity and aesthetic appeal</li>
-                            <li>Originality and relevance to the theme</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        );
+        //             <div className="rule-section">
+        //                 <h3>Judging Criteria</h3>
+        //                 <ul>
+        //                     <li>Creativity and aesthetic appeal</li>
+        //                     <li>Originality and relevance to the theme</li>
+        //                 </ul>
+        //             </div>
+        //         </div>
+        //     </div>
+        // );
 
-        const cineQuizCard = (
-            <div className="rule-card">
-                <div className="rule-card-heading">
-                    <h2>Cine Quiz: Rules and Regulations</h2>
-                </div>
-                <div className="rule-card-content">
-                    <div className="rule-section">
-                        <h3>Eligibility</h3>
-                        <ul>
-                            <li>The quiz is open to all registered participants of the Chitramela event.</li>
-                            <li>Each participant must have a valid registration to compete in the quiz.</li>
-                        </ul>
-                    </div>
+        // const cineQuizCard = (
+        //     <div className="rule-card">
+        //         <div className="rule-card-heading">
+        //             <h2>Cine Quiz: Rules and Regulations</h2>
+        //         </div>
+        //         <div className="rule-card-content">
+        //             <div className="rule-section">
+        //                 <h3>Eligibility</h3>
+        //                 <ul>
+        //                     <li>The quiz is open to all registered participants of the Chitramela event.</li>
+        //                     <li>Each participant must have a valid registration to compete in the quiz.</li>
+        //                 </ul>
+        //             </div>
 
-                    <div className="rule-section">
-                        <h3>Format</h3>
-                        <ul>
-                            <li>The quiz will be conducted online through a designated website.</li>
-                            <li>All participants must have access to a computer or device with internet connectivity.</li>
-                        </ul>
-                    </div>
+        //             <div className="rule-section">
+        //                 <h3>Format</h3>
+        //                 <ul>
+        //                     <li>The quiz will be conducted online through a designated website.</li>
+        //                     <li>All participants must have access to a computer or device with internet connectivity.</li>
+        //                 </ul>
+        //             </div>
 
-                    <div className="rule-section">
-                        <h3>Rounds</h3>
-                        <ul>
-                            <li>Round 1: 50 questions with a 30-second time limit per question.</li>
-                            <li>Round 2: 10 questions with a 30-second time limit per question.</li>
-                            <li>Only the top 10 participants from Round 1 will qualify for Round 2.</li>
-                        </ul>
-                    </div>
+        //             <div className="rule-section">
+        //                 <h3>Rounds</h3>
+        //                 <ul>
+        //                     <li>Round 1: 50 questions with a 30-second time limit per question.</li>
+        //                     <li>Round 2: 10 questions with a 30-second time limit per question.</li>
+        //                     <li>Only the top 10 participants from Round 1 will qualify for Round 2.</li>
+        //                 </ul>
+        //             </div>
 
-                    <div className="rule-section">
-                        <h3>Technical Guidelines</h3>
-                        <ul>
-                            <li>Participants are responsible for ensuring a stable internet connection.</li>
-                            <li>Any technical issues faced during the quiz will not be the responsibility of the organizing team.</li>
-                        </ul>
-                    </div>
+        //             <div className="rule-section">
+        //                 <h3>Technical Guidelines</h3>
+        //                 <ul>
+        //                     <li>Participants are responsible for ensuring a stable internet connection.</li>
+        //                     <li>Any technical issues faced during the quiz will not be the responsibility of the organizing team.</li>
+        //                 </ul>
+        //             </div>
 
-                    <div className="rule-section">
-                        <h3>Code of Conduct</h3>
-                        <ul>
-                            <li>Cheating or use of unfair means will lead to immediate disqualification.</li>
-                            <li>Participants must not collaborate with others during the quiz.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        );
+        //             <div className="rule-section">
+        //                 <h3>Code of Conduct</h3>
+        //                 <ul>
+        //                     <li>Cheating or use of unfair means will lead to immediate disqualification.</li>
+        //                     <li>Participants must not collaborate with others during the quiz.</li>
+        //                 </ul>
+        //             </div>
+        //         </div>
+        //     </div>
+        // );
 
         switch(selectedCategory) {
             case 'short-film-contest':
@@ -265,18 +265,18 @@ const Rules = () => {
                 return photographyCard;
             case 'reel-making-contest':
                 return reelMakingCard;
-            case 'movie-poster-design':
-                return posterDesignCard;
-            case 'cine-quiz':
-                return cineQuizCard;
+            // case 'movie-poster-design':
+            //     return posterDesignCard;
+            // case 'cine-quiz':
+            //     return cineQuizCard;
             default:
                 return (
                     <>
                         {shortFilmCard}
                         {photographyCard}
                         {reelMakingCard}
-                        {posterDesignCard}
-                        {cineQuizCard}
+                        {/* {posterDesignCard}
+                        {cineQuizCard} */}
                     </>
                 );
         }

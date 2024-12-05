@@ -45,7 +45,7 @@ const Events = () => {
       <div className="events-container-two">
         <div className="events-container-two-in" ref={activitiesRef}>
           {activities.map((activity) => (
-            <div key={activity.id} className="events-card">
+            <div key={activity.id} className="events-card" onClick={() => handleReadMore(activity)}>
               <div className="events-card-image">
                 <Image 
                   src={activity.image} 
@@ -58,7 +58,6 @@ const Events = () => {
               <div className="events-card-overlay">
                 <button 
                   className="events-card-button" 
-                  onClick={() => handleReadMore(activity)}
                 >
                   Read More
                 </button>
@@ -109,7 +108,11 @@ const Events = () => {
                 <button 
                   className="register-button"
                   onClick={() => {
-                    GoToRules(selectedActivity.rulesId);
+                    if (selectedActivity.rulesId) {
+                      GoToRules(selectedActivity.rulesId);
+                    } else {
+                      console.error("No rulesId found for this activity.");
+                    }
                     setIsModalOpen(false);
                     setSelectedActivity(null);
                   }}
@@ -119,70 +122,6 @@ const Events = () => {
                 </button>
               </div>
             </div>
-
-            {showRules && (
-              <div className="event-modal-rules">
-                <h1>Rules and Guidelines</h1>
-                {rules.find(r => r.id === selectedActivity.rulesId) ? (
-                  <div className="rules-container">
-                    {/* Title */}
-                    <h3 className="rules-title" style={{color: "#ffffff"}}>
-                      {rules.find(r => r.id === selectedActivity.rulesId)?.title}
-                    </h3>
-
-                    {/* Eligibility */}
-                    {rules.find(r => r.id === selectedActivity.rulesId)?.eligibility && (
-                      <div className="rules-section">
-                        <h4>Eligibility:</h4>
-                        <ul>
-                          {rules.find(r => r.id === selectedActivity.rulesId)?.eligibility?.map((rule, index) => (
-                            <li key={index}>{rule}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    
-                    {/* Submission Guidelines */}
-                    {rules.find(r => r.id === selectedActivity.rulesId)?.submissionGuidelines && (
-                      <div className="rules-section">
-                        <h4>Submission Guidelines:</h4>
-                        <ul>
-                          {rules.find(r => r.id === selectedActivity.rulesId)?.submissionGuidelines?.map((guideline, index) => (
-                            <li key={index}>{guideline}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Judging Criteria */}
-                    {rules.find(r => r.id === selectedActivity.rulesId)?.judgingCriteria && (
-                      <div className="rules-section">
-                        <h4>Judging Criteria:</h4>
-                        <ul>
-                          {rules.find(r => r.id === selectedActivity.rulesId)?.judgingCriteria?.map((criteria, index) => (
-                            <li key={index}>{criteria}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Content Guidelines */}
-                    {rules.find(r => r.id === selectedActivity.rulesId)?.contentGuidelines && (
-                      <div className="rules-section">
-                        <h4>Content Guidelines:</h4>
-                        <ul>
-                          {rules.find(r => r.id === selectedActivity.rulesId)?.contentGuidelines?.map((guideline, index) => (
-                            <li key={index}>{guideline}</li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <p>No rules available for this activity.</p>
-                )}
-              </div>
-            )}
           </div>
         )}
       </Modal>
