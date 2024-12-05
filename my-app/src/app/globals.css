@@ -32,25 +32,22 @@
 }
 
 :root {
-    --color-primary: #099396;
-    --color-secondary: #06666a;
-    --color-teal: #099396;
-    --color-text: #ffffff;
-    --color-text-light: #ffffff;
-    --color-background: #000000;
-    --color-border: rgba(9, 147, 150, 0.2);
-    --color-shadow: rgba(0, 0, 0, 0.3);
-    
-    /* Add transition variables */
-    --transition-fast: 0.2s ease;
-    --transition-normal: 0.3s ease;
-    --transition-slow: 0.5s ease;
-    
-    /* Add spacing variables */
-    --spacing-xs: 0.5rem;
-    --spacing-sm: 1rem;
-    --spacing-md: 2rem;
-    --spacing-lg: 4rem;
+  /* Core colors */
+  --primary-color: #099396;
+  --secondary-color: #06666a;
+  
+  /* Background colors */
+  --bg-dark: #0a0c0e;
+  --bg-card: #12151a;
+  --bg-input: #0d0f12;
+  
+  /* Text colors */
+  --text-primary: #ffffff;
+  --text-secondary: #a0a8b1;
+  
+  /* Borders and shadows */
+  --border-color: rgba(255, 255, 255, 0.08);
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 html {

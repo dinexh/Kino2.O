@@ -28,11 +28,29 @@
     justify-content: space-between;
     align-items: center;
 }
+.footer-component-in-top-one a{
+    text-decoration: none;
+    color: white;
+}
+.footer-component-in-top-one a:hover{
+    color: gold;
+    transition: 0.5s;
+}
+
 .footer-component-in-top-two{
     width: 15%;
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+}
+.footer-component-in-top-two a{
+    text-decoration: none;
+    color: white;
+}
+.footer-component-in-top-two a:hover{
+    color: gold;
+    transition: 0.5s;
 }
 .footer-component-in-main{
     padding: 1rem;

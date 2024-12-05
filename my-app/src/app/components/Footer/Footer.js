@@ -26,11 +26,11 @@ const Footer = () => {
             <div className="footer-component-in">
                 <div className="footer-component-in-top">
                     <div className="footer-component-in-top-one">
-                        <p>Terms and Conditions</p>
-                        <p>Privacy Policy</p>
+                        <Link href="/terms">Terms and Conditions</Link>
+                        <Link href="/privacy">Privacy Policy</Link>
                     </div>
                     <div className="footer-component-in-top-two">
-                        <p>Report Bugs</p>
+                        <Link href="/report">Report Bugs</Link>
                         <p className='login-button' onClick={GoToLogin}>
                             <FaUser />
                             Login
