@@ -1,3 +1,4 @@
+"use client";
 import { teamMembers } from "../../Data/team";
 import "./team.css";
 import { FaInstagram, FaTelegram, FaLinkedin } from 'react-icons/fa';

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Footer from '../../../components/Footer/Footer';
 import './payment.css';
+import Image from 'next/image';
 import DemoQR from '../../../Assets/DemoQR.png';
 import { db } from '../../../../config/firebase';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -81,7 +82,7 @@ function PaymentPage() {
                 </div>
 
                 <div className="qr-code">
-                    <img src={DemoQR.src} alt="Payment QR Code" />
+                    <Image src={DemoQR.src} alt="Payment QR Code" />
                 </div>
 
                 <form onSubmit={handleSubmit} className="payment-form">

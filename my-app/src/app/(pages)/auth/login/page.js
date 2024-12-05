@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -21,11 +20,20 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loginAttempts, setLoginAttempts] = useState(0);
+  const [lockoutTime, setLockoutTime] = useState(null);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
+    if (lockoutTime && new Date() < lockoutTime) {
+      const remainingTime = Math.ceil((lockoutTime - new Date()) / 1000 / 60);
+      toast.error(`Too many login attempts. Please try again in ${remainingTime} minutes`);
+      setIsLoading(false);
+      return;
+    }
+
     if (!userData.username || !userData.password) {
       toast.error("Please fill in all fields");
       setIsLoading(false);
@@ -60,6 +68,17 @@ const Login = () => {
       const userDoc = usernameSnapshot.docs[0] || emailSnapshot.docs[0];
 
       if (!userDoc) {
+        setLoginAttempts(prev => prev + 1);
+        if (loginAttempts >= 4) { // 5 attempts total
+          const lockout = new Date();
+          lockout.setMinutes(lockout.getMinutes() + 15); // 15 minute lockout
+          setLockoutTime(lockout);
+          setLoginAttempts(0);
+          toast.dismiss(loadingToast);
+          toast.error("Too many failed attempts. Account locked for 15 minutes");
+          setIsLoading(false);
+          return;
+        }
         toast.dismiss(loadingToast);
         toast.error("User not found");
         setIsLoading(false);
@@ -118,6 +137,10 @@ const Login = () => {
       setTimeout(() => {
         router.replace(targetRoute);
       }, 1000);
+
+      // Reset login attempts on successful login
+      setLoginAttempts(0);
+      setLockoutTime(null);
 
     } catch (error) {
       console.error("Login error:", error);
