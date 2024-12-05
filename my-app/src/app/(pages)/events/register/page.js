@@ -4,6 +4,8 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
+import { db } from '../../../../config/firebase';
+import { collection, addDoc } from 'firebase/firestore';
 
 function RegisterPage() {
     const router = useRouter();
@@ -100,25 +102,21 @@ function RegisterPage() {
         }
 
         try {
-            const response = await fetch('/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData)
+            // Add the registration data to Firestore
+            const registrationsRef = collection(db, 'registrations');
+            const docRef = await addDoc(registrationsRef, {
+                ...formData,
+                timestamp: new Date(),
+                status: 'pending' // for payment status
             });
 
-            const result = await response.json();
+            // Store registration data in session storage
+            sessionStorage.setItem('registrationData', JSON.stringify({
+                ...formData,
+                registrationId: docRef.id
+            }));
 
-            if (response.ok) {
-                sessionStorage.setItem('registrationData', JSON.stringify({
-                    ...formData,
-                    idCardUploadLink: result.data.idCardUploadLink
-                }));
-                router.push('/events/confirmation');
-            } else {
-                alert(result.error || 'Registration failed. Please try again.');
-            }
+            router.push('/events/payment');
         } catch (error) {
             console.error('Error:', error);
             alert('Something went wrong. Please try again.');

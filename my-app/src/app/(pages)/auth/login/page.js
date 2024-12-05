@@ -8,6 +8,9 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Toaster } from 'react-hot-toast';
 
 import "./page.css";
+import { db } from "../../../../config/firebase";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import bcrypt from "bcryptjs";
 
 const Login = () => {
   const router = useRouter();
@@ -22,59 +25,107 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    if (!userData.username || !userData.password) {
+      toast.error("Please fill in all fields");
+      setIsLoading(false);
+      return;
+    }
+
+    const loadingToast = toast.loading("Authenticating...");
 
     try {
-      const response = await axios.post("/api/auth/login", userData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-        withCredentials: true,
-      });
+      if (!db) {
+        throw new Error("Firebase not initialized");
+      }
 
-      console.log("Full response:", response);
+      // Query Firestore for the user - check both username and email
+      const usersRef = collection(db, "users");
+      const q = query(
+        usersRef, 
+        where("username", "==", userData.username.toLowerCase())
+      );
+      
+      // Also check email field for registered users
+      const emailQ = query(
+        usersRef, 
+        where("email", "==", userData.username.toLowerCase())
+      );
 
-      if (!response.data) {
+      const [usernameSnapshot, emailSnapshot] = await Promise.all([
+        getDocs(q),
+        getDocs(emailQ)
+      ]);
+
+      const userDoc = usernameSnapshot.docs[0] || emailSnapshot.docs[0];
+
+      if (!userDoc) {
+        toast.dismiss(loadingToast);
+        toast.error("User not found");
         setIsLoading(false);
-        toast.error("Empty response from server");
         return;
       }
 
-      if (!response.data.token) {
+      const user = userDoc.data();
+
+      // Verify password
+      const isValidPassword = await bcrypt.compare(userData.password, user.password);
+
+      if (!isValidPassword) {
+        toast.dismiss(loadingToast);
+        toast.error("Invalid password");
         setIsLoading(false);
-        toast.error("No authentication token received");
         return;
       }
 
-      const userRole = response.data.user?.role;
-      console.log("Detected user role:", userRole);
+      // Create response data structure similar to your API
+      const responseData = {
+        token: "firebase-" + userDoc.id, // You might want to use a proper JWT token
+        user: {
+          id: userDoc.id,
+          username: user.username,
+          role: user.role
+        }
+      };
 
+      // Store token
+      localStorage.setItem('token', responseData.token);
+
+      const userRole = user.role;
       const roleRoutes = {
+        superadmin: "/admin/dashboard",
         admin: "/admin/dashboard",
-        Admin: "/admin/dashboard",
-        administrative: "/adminstrative/dashboard",
-        Administrative: "/adminstrative/dashboard"
+        registeredUser: "/user/dashboard"
       };
 
       const targetRoute = roleRoutes[userRole];
-      console.log("Target route:", targetRoute);
 
       if (!targetRoute) {
-        setIsLoading(false);
+        toast.dismiss(loadingToast);
         toast.error(`Unauthorized access: Invalid role (${userRole})`);
+        setIsLoading(false);
         return;
       }
 
-      localStorage.setItem('token', response.data.token);
+      // Dismiss loading toast and show success
+      toast.dismiss(loadingToast);
+      toast.success("Login successful! Redirecting...", {
+        duration: 2000,
+        icon: '🚀'
+      });
 
-      toast.success("Login successful");
-      console.log("Starting navigation to:", targetRoute);
-
-      router.replace(targetRoute);
+      // Add slight delay before redirect
+      setTimeout(() => {
+        router.replace(targetRoute);
+      }, 1000);
 
     } catch (error) {
       console.error("Login error:", error);
-      const errorMessage = error.response?.data?.message || "Login failed. Please try again.";
-      toast.error(errorMessage);
+      toast.dismiss(loadingToast);
+      toast.error("Login failed. Please try again.", {
+        duration: 4000,
+        icon: '❌'
+      });
     } finally {
       setIsLoading(false);
     }
@@ -103,6 +154,10 @@ const Login = () => {
               background: '#4CAF50',
               color: 'white',
             },
+            iconTheme: {
+              primary: 'white',
+              secondary: '#4CAF50',
+            }
           },
           error: {
             duration: 4000,
@@ -110,9 +165,17 @@ const Login = () => {
               background: '#EF5350',
               color: 'white',
             },
+            iconTheme: {
+              primary: 'white',
+              secondary: '#EF5350',
+            }
           },
           loading: {
             duration: Infinity,
+            style: {
+              background: '#2196F3',
+              color: 'white',
+            }
           },
         }}
       />
@@ -125,11 +188,11 @@ const Login = () => {
           <h1>Chitramela Admin Dashboard</h1>
             <div className="Login-in-one">
               <input
-                type="text"
+                type={userData.role === 'registeredUser' ? "email" : "text"}
                 value={userData.username}
                 onChange={handleInput}
                 name="username"
-                placeholder="Username"
+                placeholder="Username or Email"
                 autoComplete="username"
               />
             </div>
