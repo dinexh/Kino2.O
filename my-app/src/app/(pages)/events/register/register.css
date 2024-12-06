@@ -385,3 +385,102 @@ select {
         width: 65%;
     }
 }
+
+.phone-input-wrapper {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.phone-input-wrapper select,
+.phone-input-wrapper input {
+    height: 40px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.phone-input-wrapper .country-code-select {
+    width: 40%;
+}
+
+.phone-input-wrapper input {
+    width: 60%;
+}
+
+.password-group {
+    position: relative;
+    width: 100%;
+}
+
+.password-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.password-input-container input {
+    width: 100%;
+    padding-right: 4.5rem;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: gold;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+    transition: all 0.3s ease;
+    z-index: 1;
+}
+
+.password-toggle:hover {
+    color: #FFA500;
+}
+
+.password-toggle:focus {
+    outline: none;
+}
+
+/* Add some spacing between password fields */
+.password-group + .password-group {
+    margin-top: 1rem;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 480px) {
+    .password-input-container input {
+        font-size: 14px;
+        padding: 0.8rem;
+        padding-right: 4rem;
+    }
+
+    .password-toggle {
+        right: 0.5rem;
+        font-size: 0.75rem;
+        padding: 0.4rem;
+    }
+
+    .password-group + .password-group {
+        margin-top: 0.8rem;
+    }
+}
+
+/* Very small screens */
+@media (max-width: 320px) {
+    .password-input-container input {
+        font-size: 13px;
+        padding-right: 3.5rem;
+    }
+
+    .password-toggle {
+        font-size: 0.7rem;
+        padding: 0.3rem;
+    }
+}

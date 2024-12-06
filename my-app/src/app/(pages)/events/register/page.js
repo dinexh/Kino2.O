@@ -49,7 +49,6 @@ function RegisterPage() {
         { code: '+66', country: 'Thailand' },
         { code: '+63', country: 'Philippines' },
     ].sort((a, b) => {
-        // Sort by country name, but keep India first
         if (a.country === 'India') return -1;
         if (b.country === 'India') return 1;
         return a.country.localeCompare(b.country);
@@ -58,15 +57,21 @@ function RegisterPage() {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
-        idNumber: '',
         phoneNumber: '',
         countryCode: '+91',
+        profession: '',
+        idType: '',
+        idNumber: '',
         college: '',
         gender: '',
         referralName: '',
         selectedEvents: [],
         password: '',
+        confirmPassword: '',
     });
+
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const events = [
         "Photography Contest",
@@ -91,21 +96,41 @@ function RegisterPage() {
     };
 
     const validateForm = () => {
-
         // Phone number validation
         const phoneRegex = /^\d{10}$/;
         if (!phoneRegex.test(formData.phoneNumber)) {
             toast.error("Phone number must be exactly 10 digits");
             return false;
         }
-        // Password validation (at least 8 characters)
+
+        // Password validation
         if (formData.password.length < 8) {
             toast.error("Password must be at least 8 characters long");
             return false;
         }
+
+        // Password confirmation validation
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match");
+            return false;
+        }
+
+        // Profession-specific validation
+        if (formData.profession === 'student') {
+            if (!formData.college || !formData.idNumber) {
+                toast.error("Please fill in all student details");
+                return false;
+            }
+        } else if (formData.profession === 'working') {
+            if (!formData.idType || !formData.idNumber) {
+                toast.error("Please fill in all professional details");
+                return false;
+            }
+        }
+
         // Required fields validation
-        if (!formData.name || !formData.email || !formData.idNumber || 
-            !formData.phoneNumber || !formData.college || !formData.gender || 
+        if (!formData.name || !formData.email || !formData.phoneNumber || 
+            !formData.profession || !formData.gender || 
             formData.selectedEvents.length === 0 || !formData.password) {
             toast.error("Please fill in all required fields");
             return false;
@@ -127,9 +152,11 @@ function RegisterPage() {
             const registrationRef = await addDoc(collection(db, 'registrations'), {
                 name: formData.name,
                 email: formData.email,
-                idNumber: formData.idNumber,
                 phoneNumber: formData.countryCode + formData.phoneNumber,
-                college: formData.college,
+                profession: formData.profession,
+                idType: formData.profession === 'working' ? formData.idType : null,
+                idNumber: formData.idNumber,
+                college: formData.profession === 'student' ? formData.college : null,
                 gender: formData.gender,
                 referralName: formData.referralName,
                 selectedEvents: formData.selectedEvents,
@@ -211,22 +238,12 @@ function RegisterPage() {
                         />
                     </div>
                     <div className="form-group">
-                        <label>ID Number: *</label>
-                        <input 
-                            type="text"
-                            value={formData.idNumber}
-                            onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
-                            placeholder="2100031234"
-                            required
-                        />
-                    </div>
-                    <div className="form-group">
                         <label>Email: *</label>
                         <input 
                             type="email"
                             value={formData.email}
                             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            placeholder="210000..@kluniversity.in"
+                            placeholder="Enter your email"
                             required
                         />
                     </div>
@@ -234,37 +251,97 @@ function RegisterPage() {
                     <div className="form-group phone-group">
                         <label>Phone Number: *</label>
                         <div className="phone-input-container">
-                            <select
-                                value={formData.countryCode}
-                                onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
-                                className="country-code-select"
-                            >
-                                {countryCodes.map((country) => (
-                                    <option key={country.code} value={country.code}>
-                                        {country.code} ({country.country})
-                                    </option>
-                                ))}
-                            </select>
-                            <input 
-                                type="tel"
-                                value={formData.phoneNumber}
-                                onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
-                                placeholder="9876543210"
-                                required
-                            />
+                            <div className="phone-input-wrapper">
+                                <select
+                                    value={formData.countryCode}
+                                    onChange={(e) => setFormData({ ...formData, countryCode: e.target.value })}
+                                    className="country-code-select"
+                                    style={{ flex: '0 0 40%' }}
+                                >
+                                    {countryCodes.map((country) => (
+                                        <option key={country.code} value={country.code}>
+                                            {country.code} ({country.country})
+                                        </option>
+                                    ))}
+                                </select>
+                                <input 
+                                    type="tel"
+                                    value={formData.phoneNumber}
+                                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value })}
+                                    placeholder="9876543210"
+                                    required
+                                    style={{ flex: '0 0 60%' }}
+                                />
+                            </div>
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label>College: *</label>
-                        <input 
-                            type="text"
-                            value={formData.college}
-                            onChange={(e) => setFormData({ ...formData, college: e.target.value })}
-                            placeholder="KL University"
+                        <label>Profession: *</label>
+                        <select 
+                            value={formData.profession}
+                            onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
                             required
-                        />
+                        >
+                            <option value="">Select Profession</option>
+                            <option value="student">Student</option>
+                            <option value="working">Working Professional</option>
+                        </select>
                     </div>
+
+                    {formData.profession === 'student' && (
+                        <>
+                            <div className="form-group">
+                                <label>College: *</label>
+                                <input 
+                                    type="text"
+                                    value={formData.college}
+                                    onChange={(e) => setFormData({ ...formData, college: e.target.value })}
+                                    placeholder="Enter your college name"
+                                    required
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label>Student ID Number: *</label>
+                                <input 
+                                    type="text"
+                                    value={formData.idNumber}
+                                    onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
+                                    placeholder="Enter your student ID"
+                                    required
+                                />
+                            </div>
+                        </>
+                    )}
+
+                    {formData.profession === 'working' && (
+                        <>
+                            <div className="form-group">
+                                <label>ID Type: *</label>
+                                <select 
+                                    value={formData.idType}
+                                    onChange={(e) => setFormData({ ...formData, idType: e.target.value })}
+                                    required
+                                >
+                                    <option value="">Select ID Type</option>
+                                    <option value="aadhar">Aadhar Card</option>
+                                    <option value="voter">Voter ID</option>
+                                    <option value="pan">PAN Card</option>
+                                    <option value="passport">Passport</option>
+                                </select>
+                            </div>
+                            <div className="form-group">
+                                <label>ID Number: *</label>
+                                <input 
+                                    type="text"
+                                    value={formData.idNumber}
+                                    onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
+                                    placeholder="Enter your ID number"
+                                    required
+                                />
+                            </div>
+                        </>
+                    )}
 
                     <div className="form-group">
                         <label>Gender: *</label>
@@ -339,15 +416,44 @@ function RegisterPage() {
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <label>Password: *</label>
-                        <input 
-                            type="password"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                            placeholder="Enter your password"
-                            required
-                        />
+                    <div className="form-group password-group">
+                        <label>Create Password: *</label>
+                        <div className="password-input-container">
+                            <input 
+                                type={showPassword ? "text" : "password"}
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                placeholder="Enter your password"
+                                required
+                            />
+                            <button 
+                                type="button" 
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
+                        </div>
+                    </div>
+
+                    <div className="form-group password-group">
+                        <label>Confirm Password: *</label>
+                        <div className="password-input-container">
+                            <input 
+                                type={showConfirmPassword ? "text" : "password"}
+                                value={formData.confirmPassword}
+                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                placeholder="Confirm your password"
+                                required
+                            />
+                            <button 
+                                type="button" 
+                                className="password-toggle"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? "Hide" : "Show"}
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" className="submit-button">Next</button>
