@@ -5,7 +5,7 @@ import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
 import { db } from '../../../../config/firebase';
-import { collection, addDoc, getDocs, query, where, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, serverTimestamp, limit } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
 
 function RegisterPage() {
@@ -149,6 +149,18 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
+            // Check Firebase connection
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Firebase connection timeout')), 10000)
+            );
+
+            const connectionTest = async () => {
+                const testRef = collection(db, 'users');
+                await getDocs(query(testRef, limit(1)));
+            };
+
+            await Promise.race([connectionTest(), timeoutPromise]);
+
             // First check if email already exists
             const usersRef = collection(db, 'users');
             const emailQuery = query(usersRef, where('email', '==', formData.email));
@@ -215,6 +227,11 @@ function RegisterPage() {
             console.error('Error during registration:', error);
             toast.dismiss(loadingToast);
             
+            if (error.message === 'Firebase connection timeout') {
+                toast.error("Unable to connect to the server. Please check your internet connection.");
+                return;
+            }
+
             // More specific error messages
             if (error.code === 'permission-denied') {
                 toast.error("Permission denied. Please check your connection and try again.");
