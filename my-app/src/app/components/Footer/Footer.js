@@ -25,7 +25,7 @@ const Footer = () => {
             <div className="footer-content">
                 <div className="footer-section about">
                     <h3>About <span>Chitramela</span></h3>
-                    <p>Chitramela is KL University's annual film festival, celebrating the art of storytelling through cinema. From captivating activities to exciting competitions, it's a platform for creativity, innovation, and fun.</p>
+                    <p>Chitramela is KL University&apos;s annual film festival, celebrating the art of storytelling through cinema. From captivating activities to exciting competitions, it&apos;s a platform for creativity, innovation, and fun.</p>
                     <div className="social-links">
                         {socialLinks.map((link, index) => (
                             <Link href={link.href} key={index} className="social-icon" aria-label={link.label}>
