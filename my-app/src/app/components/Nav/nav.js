@@ -51,7 +51,6 @@ export default function Nav() {
     <nav className={`navigation ${isVisible ? 'visible' : ''}`}>
       <div className="nav-in">
         <div className="nav-in-one">
-          
           <Link href="/" className="nav-in-one-link" >
             <Image 
               src={logo} 
@@ -92,4 +91,4 @@ export default function Nav() {
       </div>
     </nav>
   )
-} 
+}

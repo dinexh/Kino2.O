@@ -80,7 +80,6 @@
 
 .navigation-link-register {
   background: linear-gradient(135deg, #FFD700, #FFA500);
-
   padding: 0.5rem 1.5rem;
   border-radius: 1rem;
   font-weight: 600;
@@ -94,7 +93,6 @@
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(255, 217, 0, 0.4);
   background: linear-gradient(135deg, #FFA500, #FFD700);
-
 }
 
 .home-component-nav {
@@ -110,7 +108,6 @@
 .home-component-nav.visible {
   transform: translateY(0);
 }
-
 
 /* ------------------------------------Mobile Nav------------------------------------ */
 .hamburger {
@@ -163,6 +160,12 @@
       padding: 1rem 0;
       font-size: 1.5rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  /* Move the "Register" button to the top in the mobile view */
+  .navigation-link-register {
+      order: -1; /* This moves the "Register" link to the top */
+      margin-bottom: 1rem; /* Optional: adds some space below the "Register" button */
   }
 
   /* Hamburger animation */
