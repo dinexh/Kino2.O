@@ -5,7 +5,7 @@ import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
 import { db } from '../../../../config/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where, serverTimestamp } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
 
 function RegisterPage() {
@@ -149,6 +149,28 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
+            // First check if email already exists
+            const usersRef = collection(db, 'users');
+            const emailQuery = query(usersRef, where('email', '==', formData.email));
+            const emailSnapshot = await getDocs(emailQuery);
+            
+            if (!emailSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("This email is already registered");
+                return;
+            }
+
+            // Check if ID number already exists
+            const idQuery = query(usersRef, where('username', '==', formData.idNumber));
+            const idSnapshot = await getDocs(idQuery);
+            
+            if (!idSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("This ID number is already registered");
+                return;
+            }
+
+            // Create registration document
             const registrationRef = await addDoc(collection(db, 'registrations'), {
                 name: formData.name,
                 email: formData.email,
@@ -158,20 +180,21 @@ function RegisterPage() {
                 idNumber: formData.idNumber,
                 college: formData.profession === 'student' ? formData.college : null,
                 gender: formData.gender,
-                referralName: formData.referralName,
+                referralName: formData.referralName || null,
                 selectedEvents: formData.selectedEvents,
-                registrationDate: new Date(),
+                registrationDate: serverTimestamp(),
                 paymentStatus: 'pending'
             });
 
-            // Add to users collection
+            // Create user document
             await addDoc(collection(db, 'users'), {
                 username: formData.idNumber,
-                password: formData.password,
+                password: formData.password, // Note: In production, implement proper password hashing
                 email: formData.email,
                 role: 'registeredUser',
                 name: formData.name,
-                registrationId: registrationRef.id
+                registrationId: registrationRef.id,
+                createdAt: serverTimestamp()
             });
 
             // Store registration data in session storage
@@ -183,11 +206,23 @@ function RegisterPage() {
             toast.dismiss(loadingToast);
             toast.success("Registration successful! Proceeding to payment...");
             
-            router.push('/events/payment');
+            // Add a small delay before navigation
+            setTimeout(() => {
+                router.push('/events/payment');
+            }, 1000);
+
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error during registration:', error);
             toast.dismiss(loadingToast);
-            toast.error("Registration failed. Please try again.");
+            
+            // More specific error messages
+            if (error.code === 'permission-denied') {
+                toast.error("Permission denied. Please check your connection and try again.");
+            } else if (error.code === 'unavailable') {
+                toast.error("Service temporarily unavailable. Please try again later.");
+            } else {
+                toast.error("Registration failed: " + (error.message || "Please try again"));
+            }
         }
     };
 
