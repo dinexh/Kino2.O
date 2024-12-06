@@ -5,6 +5,9 @@ import Footer from '../../../components/Footer/Footer';
 import './payment.css';
 import Image from 'next/image';
 import DemoQR from '../../../Assets/DemoQR.png';
+import { db } from '../../../../config/firebase';
+import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { toast, Toaster } from 'react-hot-toast';
 
 function PaymentPage() {
     const router = useRouter();
@@ -25,20 +28,52 @@ function PaymentPage() {
         e.preventDefault();
 
         if (!transactionId.trim()) {
-            alert('Please enter the transaction ID');
+            toast.error("Please enter the transaction ID");
             return;
         }
 
-        try {
-            // Clear session storage
-            sessionStorage.removeItem('registrationData');
+        // Verify phone number and name match
+        const phoneMatch = registrationData.phoneNumber === document.querySelector('input[name="verifyPhone"]').value;
+        const nameMatch = registrationData.name.toLowerCase() === document.querySelector('input[name="verifyName"]').value.toLowerCase();
 
-            // Redirect to success page or home
-            router.push('/');
-            alert('Registration completed successfully! We will verify your payment and send you a confirmation email.');
+        if (!phoneMatch || !nameMatch) {
+            toast.error("Name and phone number must match your registration details");
+            return;
+        }
+
+        const loadingToast = toast.loading("Processing payment...");
+
+        try {
+            // Get the registration document
+            const registrationsRef = collection(db, 'registrations');
+            const q = query(registrationsRef, where("email", "==", registrationData.email));
+            const querySnapshot = await getDocs(q);
+            
+            if (!querySnapshot.empty) {
+                const registrationDoc = querySnapshot.docs[0];
+                
+                // Update payment status
+                await updateDoc(doc(db, 'registrations', registrationDoc.id), {
+                    paymentStatus: 'pending_verification',
+                    transactionId: transactionId,
+                    paymentDate: new Date()
+                });
+
+                // Clear session storage
+                sessionStorage.removeItem('registrationData');
+
+                toast.dismiss(loadingToast);
+                toast.success("Payment recorded successfully! We will verify your payment and send you a confirmation email.");
+
+                // Redirect to home page after a short delay
+                setTimeout(() => {
+                    router.push('/');
+                }, 2000);
+            }
         } catch (error) {
             console.error('Error:', error);
-            alert('Something went wrong. Please try again.');
+            toast.dismiss(loadingToast);
+            toast.error("Failed to process payment. Please try again.");
         }
     };
 
@@ -48,6 +83,31 @@ function PaymentPage() {
 
     return (
         <div className="payment-page">
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    success: {
+                        duration: 3000,
+                        style: {
+                            background: '#4CAF50',
+                            color: 'white',
+                        },
+                    },
+                    error: {
+                        duration: 4000,
+                        style: {
+                            background: '#EF5350',
+                            color: 'white',
+                        },
+                    },
+                    loading: {
+                        style: {
+                            background: '#2196F3',
+                            color: 'white',
+                        },
+                    },
+                }}
+            />
             <div className="payment-container">
                 <h1>Complete Your Payment</h1>
                 <div className="payment-details">
@@ -72,10 +132,33 @@ function PaymentPage() {
                 </div>
 
                 <div className="qr-code">
-                    <Image src={DemoQR.src} alt="Payment QR Code" />
+                    <Image 
+                        src={DemoQR.src} 
+                        alt="Payment QR Code" 
+                        width={300} 
+                        height={300}
+                    />
                 </div>
 
                 <form onSubmit={handleSubmit} className="payment-form">
+                    <div className="form-group">
+                        <label>Verify Your Name: *</label>
+                        <input
+                            type="text"
+                            name="verifyName"
+                            placeholder="Enter your registered name"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Verify Your Phone Number: *</label>
+                        <input
+                            type="tel"
+                            name="verifyPhone"
+                            placeholder="Enter your registered phone number"
+                            required
+                        />
+                    </div>
                     <div className="form-group">
                         <label>Transaction ID / UPI Reference Number:</label>
                         <input

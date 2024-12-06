@@ -4,6 +4,9 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
+import { db } from '../../../../config/firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import { toast, Toaster } from 'react-hot-toast';
 
 function RegisterPage() {
     const router = useRouter();
@@ -62,7 +65,7 @@ function RegisterPage() {
         gender: '',
         referralName: '',
         selectedEvents: [],
-
+        password: '',
     });
 
     const events = [
@@ -87,33 +90,123 @@ function RegisterPage() {
         }
     };
 
+    const validateForm = () => {
+        // Email validation
+        const emailRegex = /^[a-zA-Z0-9._-]+@kluniversity\.in$/;
+        if (!emailRegex.test(formData.email)) {
+            toast.error("Please enter a valid KL University email address");
+            return false;
+        }
+
+        // Phone number validation
+        const phoneRegex = /^\d{10}$/;
+        if (!phoneRegex.test(formData.phoneNumber)) {
+            toast.error("Phone number must be exactly 10 digits");
+            return false;
+        }
+
+        // ID number validation (assuming it should be 10 digits)
+        const idRegex = /^\d{10}$/;
+        if (!idRegex.test(formData.idNumber)) {
+            toast.error("Please enter a valid 10-digit ID number");
+            return false;
+        }
+
+        // Password validation (at least 8 characters)
+        if (formData.password.length < 8) {
+            toast.error("Password must be at least 8 characters long");
+            return false;
+        }
+
+        // Required fields validation
+        if (!formData.name || !formData.email || !formData.idNumber || 
+            !formData.phoneNumber || !formData.college || !formData.gender || 
+            formData.selectedEvents.length === 0 || !formData.password) {
+            toast.error("Please fill in all required fields");
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // Basic validation
-        if (!formData.name || !formData.email || !formData.idNumber || 
-            !formData.phoneNumber || !formData.college || !formData.gender || 
-            formData.selectedEvents.length === 0) {
-            alert('Please fill in all required fields');
+        if (!validateForm()) {
             return;
         }
 
+        const loadingToast = toast.loading("Processing registration...");
+
         try {
+            // Add to registrations collection
+            const registrationRef = await addDoc(collection(db, 'registrations'), {
+                name: formData.name,
+                email: formData.email,
+                idNumber: formData.idNumber,
+                phoneNumber: formData.countryCode + formData.phoneNumber,
+                college: formData.college,
+                gender: formData.gender,
+                referralName: formData.referralName,
+                selectedEvents: formData.selectedEvents,
+                registrationDate: new Date(),
+                paymentStatus: 'pending'
+            });
+
+            // Add to users collection
+            await addDoc(collection(db, 'users'), {
+                username: formData.idNumber,
+                password: formData.password,
+                email: formData.email,
+                role: 'registeredUser',
+                name: formData.name,
+                registrationId: registrationRef.id
+            });
+
             // Store registration data in session storage
             sessionStorage.setItem('registrationData', JSON.stringify({
                 ...formData,
-                registrationId: Date.now().toString() // Temporary ID for demo
+                registrationId: registrationRef.id
             }));
 
+            toast.dismiss(loadingToast);
+            toast.success("Registration successful! Proceeding to payment...");
+            
             router.push('/events/payment');
         } catch (error) {
             console.error('Error:', error);
-            alert('Something went wrong. Please try again.');
+            toast.dismiss(loadingToast);
+            toast.error("Registration failed. Please try again.");
         }
     };
 
     return (
         <div className="register-page" style={{ backgroundImage: `url(${backgroundImage.src})` }}>
+            <Toaster
+                position="top-right"
+                toastOptions={{
+                    success: {
+                        duration: 3000,
+                        style: {
+                            background: '#4CAF50',
+                            color: 'white',
+                        },
+                    },
+                    error: {
+                        duration: 4000,
+                        style: {
+                            background: '#EF5350',
+                            color: 'white',
+                        },
+                    },
+                    loading: {
+                        style: {
+                            background: '#2196F3',
+                            color: 'white',
+                        },
+                    },
+                }}
+            />
             <div className="register-page-in">
                 <div className="register-heading">
                     <h1>Register for Chitramela 2025</h1>
@@ -260,6 +353,17 @@ function RegisterPage() {
                             </button>
                             </div>
                         </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Password: *</label>
+                        <input 
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            placeholder="Enter your password"
+                            required
+                        />
                     </div>
 
                     <button type="submit" className="submit-button">Next</button>
