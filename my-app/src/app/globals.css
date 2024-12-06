@@ -1,4 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;700&display=swap');
+
+--root{
+  --button-color-1:linear-gradient(45deg, #ffd900, #ffed4a);
+  /* --button-color-2:linear-gradient(45deg, #ff3c00, #ff4a4a); */
+  --color-text-light: #fff;
+  
+}
+
+
+
 *{
   font-family: 'Poppins', sans-serif; 
   margin: 0;
@@ -41,6 +51,7 @@
   /* Borders and shadows */
   --border-color: rgba(255, 255, 255, 0.08);
   --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  --button-color-1: linear-gradient(45deg, #ffd900, #ffed4a); 
 }
 
 html {

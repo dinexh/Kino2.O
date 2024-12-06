@@ -104,7 +104,7 @@
   }
   
   .events-card-button {
-    background: linear-gradient(45deg, red, blue);
+    background: var(--button-color-1);
     border: none;
     color: var(--color-text-light);
     padding: 1rem 2rem;
@@ -114,12 +114,15 @@
     letter-spacing: 1px;
     box-shadow: 0 5px 15px rgba(9, 147, 150, 0.3);
     transition: all 0.3s ease;
+    filter: brightness(1);
+    transition: filter 0.3s;
   }
   
   .events-card-button:hover {
-    background: linear-gradient(45deg, blue, red);
+    background: linear-gradient(45deg, #ff3c00, #ff4a4a);
     transform: translateY(-3px);
-    box-shadow: 0 8px 20px rgba(9, 147, 150, 0.4);
+    
+    /* box-shadow: 0 8px 20px rgba(9, 147, 150, 0.4); */
   }
   
   .events-container-three {
