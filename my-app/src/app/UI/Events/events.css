@@ -106,9 +106,10 @@
   }
   
   .events-card-button {
-    background: gold;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+
     border: none;
-    color: black;
+    color: rgb(255, 255, 255);
     padding: 1rem 2rem;
     border-radius: 50px;
     font-weight: 900;
@@ -119,7 +120,8 @@
   }
   
   .events-card-button:hover {
-    background: linear-gradient(45deg, #ff3c00, #ff4a4a);;
+    background: linear-gradient(135deg, #FFA500, #FFD700);
+
     transform: translateY(-3px);
     box-shadow: 0 8px 20px rgba(9, 147, 150, 0.4);
   }
@@ -184,7 +186,7 @@
   
  
   .register-button {
-    background-color: gold;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -195,7 +197,8 @@
   }
   
   .register-button:hover {
-    background-color: linear-gradient(45deg, #ff3c00, #ff4a4a);;
+    background: linear-gradient(135deg, #FFA500, #FFD700);
+
   }
   
   .registration-form {
@@ -216,7 +219,7 @@
   }
   
   .register-submit-button {
-    background-color: #ff4d4d;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -368,7 +371,7 @@
   .register-button {
     width: 100%;
     padding: 1rem;
-    background: var(--button-color-1);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
     border: none;
     border-radius: 8px;
     color: rgb(0, 0, 0);
@@ -381,7 +384,8 @@
   .register-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(9, 147, 150, 0.3);
-    background: linear-gradient(45deg, #ff3c00, #ff4a4a);;
+    background: linear-gradient(135deg, #FFA500, #FFD700);
+
   }
   
   .rules-container {

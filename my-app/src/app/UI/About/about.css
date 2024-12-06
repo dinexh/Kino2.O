@@ -129,16 +129,16 @@
 }
 
 .read-more {
-  background-image: linear-gradient(45deg, blue, red);
+  background: linear-gradient(135deg, #FFD700, #FFA500);
   background-size: 200% auto;
   background-position: 0% 0%;
   border: none;
-  color: white;
+  color: rgb(0, 0, 0);
   padding: 1rem 2rem;
   border-radius: 50px;
-  font-weight: 600;
+  font-weight: 1000;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  /* letter-spacing: 1px; */
   box-shadow: 0 5px 15px rgba(9, 147, 150, 0.3);
   transition: all 0.3s ease;
   position: relative;
@@ -152,6 +152,7 @@
   background-position: 100% 0%;
   transform: translateY(-3px);
   box-shadow: 0 8px 20px rgba(9, 147, 150, 0.4);
+  background: linear-gradient(135deg, #FFA500,#FFD700);
 }
 
 @media (max-width: 1024px) {
