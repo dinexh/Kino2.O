@@ -110,7 +110,7 @@
 
 .events-container {
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 1.5rem;
     width: 100%;
 }
@@ -482,5 +482,78 @@ select {
     .password-toggle {
         font-size: 0.7rem;
         padding: 0.3rem;
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .register-page-in {
+        padding: 1rem; /* Adjust padding for smaller screens */
+    }
+
+    .register-heading h1 {
+        font-size: 2rem; /* Adjust heading size for smaller screens */
+    }
+
+    .register-description p {
+        font-size: 1rem; /* Adjust description font size */
+    }
+
+    .form-group label {
+        font-size: 0.8rem; /* Decrease label font size */
+    }
+
+    .form-group input,
+    .form-group select {
+        font-size: 0.8rem; /* Decrease input/select font size */
+    }
+
+    .submit-button {
+        padding: 0.8rem; /* Adjust button padding */
+        font-size: 0.9rem; /* Decrease button font size */
+    }
+
+    .event-button {
+        font-size: 0.8rem; /* Decrease event button font size */
+    }
+
+    .select-all-button {
+        font-size: 0.8rem; /* Decrease select all button font size */
+    }
+}
+
+@media (max-width: 480px) {
+    .register-page-in {
+        padding: 0.5rem; /* Further adjust padding for very small screens */
+    }
+
+    .register-heading h1 {
+        font-size: 1.5rem; /* Further reduce heading size */
+    }
+
+    .register-description p {
+        font-size: 0.9rem; /* Further adjust description font size */
+    }
+
+    .form-group label {
+        font-size: 0.7rem; /* Further decrease label font size */
+    }
+
+    .form-group input,
+    .form-group select {
+        font-size: 0.7rem; /* Further decrease input/select font size */
+    }
+
+    .submit-button {
+        padding: 0.6rem; /* Further adjust button padding */
+        font-size: 0.8rem; /* Further decrease button font size */
+    }
+
+    .event-button {
+        font-size: 0.7rem; /* Further decrease event button font size */
+    }
+
+    .select-all-button {
+        font-size: 0.7rem; /* Further decrease select all button font size */
     }
 }

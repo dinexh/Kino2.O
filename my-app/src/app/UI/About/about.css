@@ -16,7 +16,7 @@
 .about-container-in {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto auto;
+  grid-template-rows: auto;
   gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
@@ -87,6 +87,8 @@
   overflow: hidden;
   transition: all 0.4s ease;
   position: relative;
+  min-height: 150px;
+  overflow: visible;
 }
 
 .about-card::before {
@@ -117,6 +119,7 @@
   margin-bottom: 0.5rem;
   position: relative;
   z-index: 1;
+  flex-grow: 1;
 }
 
 .about-card p {
@@ -126,6 +129,7 @@
   margin-bottom: 1rem;
   position: relative;
   z-index: 1;
+  flex-grow: 1;
 }
 
 .read-more {
@@ -193,5 +197,54 @@
 
   .about-card {
     max-width: 100%;
+    padding: 1rem;
+    min-height: auto;
+  }
+}
+
+/* Desktop version styles */
+@media (min-width: 1025px) {
+  .about-container-in {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    gap: 2rem;
+  }
+
+  .about-header {
+    grid-column: 3;
+    grid-row: 1;
+    justify-content: center;
+  }
+
+  .about-card {
+    max-width: 400px;
+    padding: 1rem;
+    min-height: auto;
+  }
+}
+
+/* Mobile version styles */
+@media (max-width: 768px) {
+  .about-container-in {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .about-header {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .about-logo-container {
+    grid-column: 1;
+    margin: 1rem 0;
+  }
+
+  .about-card {
+    max-width: 100%;
+    padding: 1rem;
+    min-height: auto;
   }
 }

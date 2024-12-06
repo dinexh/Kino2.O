@@ -82,7 +82,7 @@
     font-weight: 900;
 }
 
-.filter-btn:hover {
+.filter-btn:hover { 
     background: linear-gradient(135deg, #ff0000, #ff0000);
 
     color: #000000;
