@@ -91,12 +91,6 @@ function RegisterPage() {
     };
 
     const validateForm = () => {
-        // Email validation
-        const emailRegex = /^[a-zA-Z0-9._-]+@kluniversity\.in$/;
-        if (!emailRegex.test(formData.email)) {
-            toast.error("Please enter a valid KL University email address");
-            return false;
-        }
 
         // Phone number validation
         const phoneRegex = /^\d{10}$/;
@@ -104,20 +98,11 @@ function RegisterPage() {
             toast.error("Phone number must be exactly 10 digits");
             return false;
         }
-
-        // ID number validation (assuming it should be 10 digits)
-        const idRegex = /^\d{10}$/;
-        if (!idRegex.test(formData.idNumber)) {
-            toast.error("Please enter a valid 10-digit ID number");
-            return false;
-        }
-
         // Password validation (at least 8 characters)
         if (formData.password.length < 8) {
             toast.error("Password must be at least 8 characters long");
             return false;
         }
-
         // Required fields validation
         if (!formData.name || !formData.email || !formData.idNumber || 
             !formData.phoneNumber || !formData.college || !formData.gender || 
@@ -139,7 +124,6 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
-            // Add to registrations collection
             const registrationRef = await addDoc(collection(db, 'registrations'), {
                 name: formData.name,
                 email: formData.email,
