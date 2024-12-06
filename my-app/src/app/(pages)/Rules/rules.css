@@ -69,7 +69,8 @@
 }
 .filter-btn {
     padding: 0.8rem 1.5rem;
-    background: var(--button-color-1);
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+
     border: 1px solid #cccccc;
     color: #000000;
     border-radius: 8px;
@@ -82,14 +83,15 @@
 }
 
 .filter-btn:hover {
-    background: linear-gradient(45deg, #FFD500, #FDC500);
+    background: linear-gradient(135deg, #ff0000, #ff0000);
+
     color: #000000;
     transform: translateY(-2px);
     border-color: var(--color-accent);
 }
 
 .filter-btn.active {
-    background: linear-gradient(45deg, #ff3c00, #ff4a4a);;
+    background: linear-gradient(135deg, #ff0000, #ff0000);
     color: rgb(0, 0, 0);
     font-weight: 600;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
