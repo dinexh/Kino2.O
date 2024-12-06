@@ -1,8 +1,8 @@
 .rule-component {
     width: 100%;
     min-height: 100vh;
-    background: var(--color-background);
-    color: var(--color-text-light);
+    background: black;
+    color: white;
     background-image: 
         linear-gradient(45deg, rgba(0, 31, 63, 0.1) 0%, transparent 70%),
         linear-gradient(-45deg, rgba(0, 31, 63, 0.1) 0%, transparent 70%);
@@ -39,7 +39,7 @@
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    background: linear-gradient(45deg,rgb(0, 189, 189),rgb(0, 189, 189), rgba(0, 0, 255, 0.718));
+    background: linear-gradient(45deg,rgb(0, 189, 189),rgb(0, 189, 189),rgb(0, 189, 189));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -48,7 +48,7 @@
 }
 .rule-component-heading p {
     text-align: center;
-    color: var(--color-teal);
+    color: #009688;
     font-size: 1.2rem;
     font-style: italic;
     margin: 0 auto;
@@ -69,9 +69,9 @@
 }
 .filter-btn {
     padding: 0.8rem 1.5rem;
-    background: rgba(10, 10, 10, 0.9);
-    border: 1px solid var(--color-border);
-    color: var(--color-accent);
+    background: linear-gradient(45deg, blue, red);;
+    border: 1px solid #cccccc;
+    color: #ffffff;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -82,16 +82,17 @@
 }
 
 .filter-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgb(255, 255, 255);
+    color: #000000;
     transform: translateY(-2px);
     border-color: var(--color-accent);
 }
 
 .filter-btn.active {
-    background: var(--color-secondary);
-    color: var(--color-text-light);
+    background: linear-gradient(45deg, red, blue);
+    color: white;
     font-weight: 600;
-    box-shadow: 0 5px 15px var(--color-shadow);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     border-color: transparent;
 }
 .rule-component-main {
@@ -113,11 +114,11 @@
     gap: 3rem;
 }
 .rule-card {
-    background: var(--color-card-bg);
-    border: 1px solid var(--color-border);
+    background: #000000;
+    border: 1px solid #cccccc;
     padding: 2rem;
     border-radius: 15px;
-    box-shadow: 0 10px 30px var(--color-shadow);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
@@ -129,13 +130,13 @@
     left: 0;
     width: 100%;
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--color-accent), transparent);
+    background: linear-gradient(90deg, transparent, #ff4081, transparent);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
 .rule-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 15px 40px var(--color-shadow);
+    box-shadow: 0 15px 40px teal;
 }
 .rule-card:hover::before {
     opacity: 1;
@@ -148,11 +149,12 @@
     justify-content: center;
 }
 .rule-card-heading h2 {
-    color: var(--color-accent);
+    color: rgb(170, 255, 0);
     font-size: 2rem;
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
+    /* text-decoration: underline; */
 }
 .rule-card-content {
     color: #ffffff;
@@ -161,11 +163,11 @@
     margin-bottom: 2.5rem;
 }
 .rule-section h3 {
-    color: var(--color-secondary);
+    color: #ffffff;
     font-size: 1.6rem;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid #cccccc;
 }
 .rule-section ul {
     list-style: none;
@@ -181,14 +183,14 @@
     content: '✦';
     position: absolute;
     left: 0;
-    color: var(--color-accent);
+    color: #c8ff00;
     font-size: 1rem;
 }
 .evaluation-phase {
     margin: 2rem 0;
 }
 .evaluation-phase h4 {
-    color: var(--color-teal);
+    color: #ffffff;
     font-size: 1.2rem;
     margin-bottom: 1rem;
     font-weight: 500;
@@ -325,8 +327,8 @@
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: var(--color-primary);
-    color: var(--color-text-light);
+    background: #3dddf6;
+    color: white;
     width: 45px;
     height: 45px;
     border-radius: 50%;
@@ -338,7 +340,7 @@
     opacity: 0;
     visibility: hidden;
     z-index: 1000;
-    border: 1px solid var(--color-border);
+    border: 1px solid #cccccc;
 }
 
 .back-to-top.visible {
@@ -347,10 +349,10 @@
 }
 
 .back-to-top:hover {
-    background: var(--color-accent);
-    color: var(--color-text-dark);
+    background: #3dddf6eb;
+    color: #000000;
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px var(--color-shadow);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
 }
 
 @media screen and (max-width: 768px) {
@@ -391,4 +393,3 @@
     background-color: rgba(9, 147, 150, 0);
   }
 }
-
