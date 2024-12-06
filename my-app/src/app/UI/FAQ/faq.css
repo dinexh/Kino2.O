@@ -8,8 +8,7 @@
 }
 
 .faq-container-in {
-    width: 100%;
-    max-width: 1200px;
+    width: 95%;
     margin: 0 auto;
 }
 
@@ -46,7 +45,7 @@
     padding: 1.5rem;
     border-radius: 15px;
     width: 100%; /* Full width on smaller screens */
-    max-width: 600px;
+    max-width: 95%;
     transition: all 0.3s ease;
 }
 
@@ -131,11 +130,11 @@
     }
 
     .faq-question {
-        font-size: 0.8rem;
+        font-size: 0.6rem;
     }
 
     .faq-answer {
-        font-size: 0.7rem;
+        font-size: 0.4rem;
     }
 }
 

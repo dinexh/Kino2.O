@@ -7,3 +7,38 @@
     width: 100%;
     height: 100%;
 }
+
+
+/* General styles for medium-sized devices (tablets, smaller laptops) */
+@media (max-width: 1024px) {
+    .hero {
+      height: 90vh; /* Slightly reduce height for smaller screens */
+    }
+    .hero-in {
+      padding: 0; /* Remove padding to maximize space */
+    }
+  }
+  
+  /* For small devices (landscape phones, smaller tablets) */
+  @media (max-width: 768px) {
+    .hero {
+      height: 80vh; /* Further reduce height for phones */
+    }
+    .hero-in video {
+      object-fit: cover; /* Ensure the video scales properly */
+      height: 100%; 
+      width: auto; /* Adjust width to maintain aspect ratio */
+    }
+  }
+  
+  /* For very small devices (portrait phones, small screens) */
+  @media (max-width: 480px) {
+    .hero {
+      height: 25vh; /* Optimize height for smaller screens */
+    }
+    .hero-in video {
+      height: auto;
+      width: 100%; /* Make video fully responsive */
+    }
+  }
+  

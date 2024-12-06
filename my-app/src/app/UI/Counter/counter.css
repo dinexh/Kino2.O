@@ -164,3 +164,52 @@
     animation: pulse 0.3s ease-in-out;
     
 }
+
+
+@media (max-width: 450px) {
+    .countdown-container {
+        padding: 1.5rem 0.5rem;
+    }
+
+    .countdown-container-in {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem 0.5rem;
+    }
+
+    .countdown-container h2 {
+        font-size: 1.4rem;
+        text-align: center;
+    }
+
+    .countdown-container h2 span {
+        font-size: 1.2rem;
+        margin: 0.2rem;
+    }
+
+    .timer {
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .time-in {
+        min-width: 60px;
+        padding: 0.5rem;
+        border-width: 1px;
+        transform: none;
+        font-size: 1.2rem;
+    }
+
+    .time {
+        font-size: 1.5rem;
+        min-width: 40px;
+    }
+
+    .label {
+        font-size: 0.6rem;
+        margin-top: 0.3rem;
+        letter-spacing: 1px;
+    }
+}
+
