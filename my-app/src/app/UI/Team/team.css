@@ -23,6 +23,8 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    font-size: 3rem;
+    color: gold;
 }
 
 .team-subtitle {

@@ -1,5 +1,6 @@
 "use client"
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRef, useState } from 'react';
 import './events.css';
 import { activities } from '../../Data/activities';
@@ -35,6 +36,10 @@ const Events = () => {
 
   const GoToRules = (eventId) => {
     router.push(`/Rules?eventId=${eventId}`);
+  }
+
+  const Register = () =>{
+    router.push(`/events/register`);
   }
 
   return (
@@ -101,9 +106,10 @@ const Events = () => {
                     console.log(`Registered for ${selectedActivity.title}`);
                     setIsModalOpen(false);
                     setSelectedActivity(null);
+                    Register();
                   }}
                 >
-                  Register Now
+                    Register Now
                 </button>
                 <button 
                   className="register-button"

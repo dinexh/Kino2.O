@@ -8,7 +8,7 @@
   max-width: 800px;
   margin: 2rem auto;
   background: var(--bg-card);
-  padding: 2rem;
+  padding: 3rem;
   border-radius: 12px;
   border: 1px solid var(--border-color);
   box-shadow: var(--shadow);
@@ -43,6 +43,8 @@
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s ease;
+  position: absolute;
+  right: 45%;
 }
 
 .submit-button:hover {
@@ -60,3 +62,19 @@
     padding: 1.5rem;
   }
 } 
+
+label{
+  color: white;
+  font-size: 1rem;
+}
+
+h1{
+  color: white;
+  font-size: 4rem;
+  text-align: center
+}
+
+.form-group{
+  margin: 1rem;
+}
+

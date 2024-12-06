@@ -50,7 +50,7 @@
     text-align: center;
     color: #009688;
     font-size: 1.2rem;
-    font-style: italic;
+    /* font-style: italic; */
     margin: 0 auto;
 }
 .rule-component-filter{
@@ -69,28 +69,28 @@
 }
 .filter-btn {
     padding: 0.8rem 1.5rem;
-    background: linear-gradient(45deg, blue, red);;
+    background: var(--button-color-1);
     border: 1px solid #cccccc;
-    color: #ffffff;
+    color: #000000;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
+    letter-spacing: 0.2px;
+    font-weight: 900;
 }
 
 .filter-btn:hover {
-    background: rgb(255, 255, 255);
+    background: linear-gradient(45deg, #FFD500, #FDC500);
     color: #000000;
     transform: translateY(-2px);
     border-color: var(--color-accent);
 }
 
 .filter-btn.active {
-    background: linear-gradient(45deg, red, blue);
-    color: white;
+    background: linear-gradient(45deg, #ff3c00, #ff4a4a);;
+    color: rgb(0, 0, 0);
     font-weight: 600;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     border-color: transparent;
