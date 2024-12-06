@@ -1,6 +1,8 @@
 'use client';
+
+export const dynamic = 'force-dynamic';
 import { useState, useEffect } from 'react';
-import { db } from '@/config/firebase';
+import { db } from '../../../../config/firebase';
 import { doc, getDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import './page.css';
@@ -11,14 +13,21 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
+    let userId;
+    try {
+      userId = localStorage.getItem('userId');
+    } catch (error) {
+      console.error('localStorage is not available:', error);
+      return;
+    }
+
+    if (!userId) {
+      router.push('/auth/login');
+      return;
+    }
+
     const fetchUserData = async () => {
       try {
-        const userId = localStorage.getItem('userId');
-        if (!userId) {
-          router.push('/auth/login');
-          return;
-        }
-
         const userDoc = await getDoc(doc(db, 'users', userId));
         
         if (userDoc.exists()) {
