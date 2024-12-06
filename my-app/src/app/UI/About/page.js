@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from 'next/image';
 import './about.css';
 import logo from '../../Assets/about-img.webp';
@@ -41,7 +41,6 @@ const About = () => {
         <div className="about-logo-container">
           <Image 
             src={logo}
-            
             alt="Chitramela Logo"
             className="about-logo"
             width={350}
