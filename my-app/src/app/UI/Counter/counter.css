@@ -34,6 +34,8 @@
 .countdown-container h2 span {
     color: #FFD700;
     margin: 0 0.5rem;
+    font-size: 3rem;
+    color: yellow;
 }
 
 .timer {

@@ -25,14 +25,14 @@ const Team = () => {
                                         className="member-image" 
                                     />
                                 </div>
-                                {/* <div className="social-icons">
-                                    <a href={member.instagram} className='media'><FaInstagram /></a>
-                                    <a href={member.telegram || "#"} className='media'><FaTelegram /></a>
-                                </div> */}
-                                <div className="view-more">
-                                    <Link href="/team" legacyBehavior>
-                                        <a target="_blank" rel="noopener noreferrer"> view more </a>
-                                    </Link>
+                                <div className="description">
+                                    <h3>{member.name}</h3>
+                                    <p className="designation">{member.designation}</p>
+                                    {/* <div className="social-icons">
+                                        <a href={member.instagram} target="_blank" className='media'><FaInstagram /></a>
+                                        <a href={member.telegram || "#"} target="_blank" className='media'><FaTelegram /></a>
+                                        <a href={member.linkedin || "#"} target="_blank" className='media'><FaLinkedin /></a>
+                                    </div> */}
                                 </div>
                             </div>
                         ))}
@@ -46,4 +46,4 @@ const Team = () => {
     );
 }
 
-export default Team;
+export default Team;    

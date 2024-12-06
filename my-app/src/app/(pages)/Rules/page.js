@@ -287,7 +287,7 @@ const Rules = () => {
             <div className="rule-component-in">
                 <div className="rule-component-heading">
                     <h1>Competition Rules</h1>
-                    <p>Please review all guidelines carefully before participating in the event</p>
+                    <p>Note : (Please review all guidelines carefully before participating in the event)</p>
                 </div>
             </div>
             <div className="rule-component-filter">

@@ -4,8 +4,8 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: var(--color-background);
-  color: var(--color-text-light);
+  background-color: black;
+  color: #ffffff;
 }
 .TeamPage-footer{
   width: 100%;
@@ -31,7 +31,7 @@
 }
 .TeamPage-container-in-heading p {
   font-size: 1rem;
-  color: var(--color-teal);
+  color: #008080;
 }
 .TeamPage-container-in-content {
   display: flex;
@@ -65,18 +65,18 @@
 }
 .TeamPage-content-in-one .TeamPage-Profile {
   max-width: 300px;
-  background: var(--color-card-bg);
+  background: #141313;
   border-radius: 1rem;
   padding: 1rem;
   flex-direction: column;
   align-items: center;
   gap: 0.75rem;
   transition: all 0.3s ease;
-  border: 2px solid teal;
+  border: 2px solid #008080;
 }
 
 .TeamPage-content-in-two-in-one,.TeamPage-content-in-three-in-one{
-  border: 2px solid teal;
+  border: 2px solid #008080;
   
 }
 
@@ -95,14 +95,12 @@
   height: 100%;
   border-radius: 5%;
   object-fit: cover;
-  /* border: 2px solid var(--color-border-dark); */
   transition: border-color 0.3s ease;
-  /* mix-blend-mode: multiply; */
 }
 .TeamPage-content-in-one img:hover,
 .TeamPage-content-in-two-in-one img:hover,
 .TeamPage-content-in-three-in-one img:hover {
-  border-color: var(--color-teal);
+  border-color: #008080;
 }
 .description {
   text-align: center;
@@ -116,7 +114,7 @@
   font-weight: 600;
 }
 .description p:nth-child(2) {
-  color: var(--color-teal);
+  color: #008080;
   font-size: 1rem;
 }
 .description .media {
@@ -131,7 +129,7 @@
 }
 .TeamPage-content-in-two-in-one,
 .TeamPage-content-in-three-in-one {
-  background: var(--color-card-bg);
+  background: #141313;
   border-radius: 1rem;
   padding: 1rem;
   display: flex;
@@ -152,13 +150,13 @@
   gap: 1rem;
   margin-top: 0.75rem;
   padding: 0.5rem;
-  background: var(--color-overlay);
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 2rem;
   width: fit-content;
-  border: 1px solid teal;
+  border: 1px solid #008080;
 }
 .social-icons .media {
-  color: var(--color-text-light);
+  color: #ffffff;
   transition: all 0.3s ease;
   border-radius: 50%;
   background: rgba(59, 73, 73, 0.218);
@@ -179,10 +177,10 @@
   height: 20px;
 }
 .social-icons .media:hover {
-  color: var(--color-teal);
-  background: var(--color-overlay-hover);
+  color: #008080;
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-3px) scale(1.1);
-  box-shadow: 0 4px 15px var(--color-overlay-hover);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
 }
 .social-icons .media::after {
   content: '';
@@ -191,7 +189,7 @@
   left: 50%;
   width: 0;
   height: 0;
-  background: var(--color-overlay-hover);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   transition: all 0.5s ease;
 }

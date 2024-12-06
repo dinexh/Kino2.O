@@ -32,9 +32,10 @@
 }
 
 .about-header h2 {
-  font-size: 3rem;
   font-weight: bold;
   text-align: center;
+  font-size: 3rem;
+    color: gold;
 }
 
 .about-header .about {

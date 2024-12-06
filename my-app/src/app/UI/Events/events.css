@@ -12,8 +12,8 @@
     text-align: center;
   }
   .events-container-one h2{
-    font-size: 2.5rem;
     font-weight: 600;
+    font-size: 3rem;
     color: gold;
   }
   
@@ -23,7 +23,7 @@
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
     -ms-overflow-style: none;
-    padding-bottom: 2rem;
+    padding-bottom: 2rem; 
   }
   
   .events-container-two-in::-webkit-scrollbar {
@@ -85,13 +85,15 @@
     bottom: 4.5rem;
     left: 0;
     right: 0;
-    padding: 2rem;
+    /* padding: 2rem; */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     transition: transform 0.3s ease, opacity 0.3s ease;
     opacity: 0;
+    width: 10rem;
+    margin: auto;
   }
   
   .events-card:hover .events-card-overlay {
@@ -99,30 +101,27 @@
     opacity: 1;
   }
 
-  .events-card:hover{
+  .events-card-image:hover{
     filter: brightness(0.7);
   }
   
   .events-card-button {
-    background: var(--button-color-1);
+    background: gold;
     border: none;
-    color: var(--color-text-light);
+    color: black;
     padding: 1rem 2rem;
     border-radius: 50px;
-    font-weight: 600;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    /* letter-spacing: 1px; */
     box-shadow: 0 5px 15px rgba(9, 147, 150, 0.3);
     transition: all 0.3s ease;
-    filter: brightness(1);
-    transition: filter 0.3s;
   }
   
   .events-card-button:hover {
-    background: linear-gradient(45deg, #ff3c00, #ff4a4a);
+    background: linear-gradient(45deg, #ff3c00, #ff4a4a);;
     transform: translateY(-3px);
-    
-    /* box-shadow: 0 8px 20px rgba(9, 147, 150, 0.4); */
+    box-shadow: 0 8px 20px rgba(9, 147, 150, 0.4);
   }
   
   .events-container-three {
@@ -133,7 +132,7 @@
   }
   
   .events-nav-button {
-    background: linear-gradient(45deg, var(--color-secondary), var(--color-primary));
+    background: gold;
     color: var(--color-text-light);
     border: none;
     border-radius: 50%;
@@ -173,22 +172,19 @@
     margin: 0.25rem 0;
     opacity: 0.9;
   }
-  
-  /* Responsive adjustments */
-  @media (max-width: 768px) {
-    .events-card {
-      width: calc(50% - 1rem); /* Adjust width for smaller screens */
-    }
+
+  .Register-Link{
+    color: black;
+    text-decoration: none;
+  }
+
+  .Register-Link:hover{
+    color: white;
   }
   
-  @media (max-width: 480px) {
-    .events-card {
-      width: 100%; /* Full width for very small screens */
-    }
-  }
-  
+ 
   .register-button {
-    background-color: #ff4d4d;
+    background-color: gold;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -199,7 +195,7 @@
   }
   
   .register-button:hover {
-    background-color: #ff3333;
+    background-color: linear-gradient(45deg, #ff3c00, #ff4a4a);;
   }
   
   .registration-form {
@@ -354,14 +350,28 @@
       padding: 1rem;
     }
   }
+
+   /* Responsive adjustments */
+   @media (max-width: 768px) {
+    .events-card {
+      width: calc(50% - 1rem); /* Adjust width for smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .events-card {
+      width: 100%; /* Full width for very small screens */
+    }
+  }
+  
   
   .register-button {
     width: 100%;
     padding: 1rem;
-    background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+    background: var(--button-color-1);
     border: none;
     border-radius: 8px;
-    color: white;
+    color: rgb(0, 0, 0);
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
@@ -371,6 +381,7 @@
   .register-button:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(9, 147, 150, 0.3);
+    background: linear-gradient(45deg, #ff3c00, #ff4a4a);;
   }
   
   .rules-container {
