@@ -8,15 +8,16 @@
 .about-container {
   padding: 2rem;
   color: white;
+  width: 100%;
 }
 
 .about-container-in {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  width: 95%;
 }
 
 .about-header {
@@ -157,3 +158,45 @@
     font-size: 0.4rem;
   }
 }
+
+@media (max-width: 450px) {
+  .about-container-in {
+    gap: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .about-header h2 {
+    font-size: 1.8rem; /* Adjust the font size to fit small screens */
+  }
+
+  .about-logo-container {
+    margin: 0.5rem auto;
+  }
+
+  .about-card {
+    max-width: 100%;
+    padding: 0.75rem;
+    border-radius: 10px; /* Reduce border radius for a compact look */
+  }
+
+  .about-card h3 {
+    font-size: 1rem; /* Slightly smaller headings */
+  }
+
+  .about-card p {
+    font-size: 0.875rem; /* Reduce paragraph font size */
+    line-height: 1.4;
+  }
+
+  .read-more {
+    padding: 0.5rem 1rem; /* Compact padding for buttons */
+    font-size: 0.75rem; /* Smaller text for the button */
+    width: fit-content;
+  }
+
+  .about-logo {
+    width: 280px; /* Reduce logo size */
+    height: auto;
+  }
+}
+
