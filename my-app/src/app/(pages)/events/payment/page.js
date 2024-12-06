@@ -5,8 +5,6 @@ import Footer from '../../../components/Footer/Footer';
 import './payment.css';
 import Image from 'next/image';
 import DemoQR from '../../../Assets/DemoQR.png';
-import { db } from '../../../../config/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
 
 function PaymentPage() {
     const router = useRouter();
@@ -32,14 +30,6 @@ function PaymentPage() {
         }
 
         try {
-            // Update the registration document with payment details
-            const registrationRef = doc(db, 'registrations', registrationData.registrationId);
-            await updateDoc(registrationRef, {
-                transactionId: transactionId,
-                paymentStatus: 'submitted',
-                paymentTimestamp: new Date()
-            });
-
             // Clear session storage
             sessionStorage.removeItem('registrationData');
 

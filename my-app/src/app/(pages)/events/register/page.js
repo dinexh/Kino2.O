@@ -4,8 +4,6 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
-import { db } from '../../../../config/firebase';
-import { collection, addDoc } from 'firebase/firestore';
 
 function RegisterPage() {
     const router = useRouter();
@@ -91,8 +89,6 @@ function RegisterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        console.log('Submitting form data:', formData);
-
         // Basic validation
         if (!formData.name || !formData.email || !formData.idNumber || 
             !formData.phoneNumber || !formData.college || !formData.gender || 
@@ -102,18 +98,10 @@ function RegisterPage() {
         }
 
         try {
-            // Add the registration data to Firestore
-            const registrationsRef = collection(db, 'registrations');
-            const docRef = await addDoc(registrationsRef, {
-                ...formData,
-                timestamp: new Date(),
-                status: 'pending' // for payment status
-            });
-
             // Store registration data in session storage
             sessionStorage.setItem('registrationData', JSON.stringify({
                 ...formData,
-                registrationId: docRef.id
+                registrationId: Date.now().toString() // Temporary ID for demo
             }));
 
             router.push('/events/payment');

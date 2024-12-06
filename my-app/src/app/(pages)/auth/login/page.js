@@ -7,9 +7,6 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Toaster } from 'react-hot-toast';
 
 import "./page.css";
-import { db } from "../../../../config/firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import bcrypt from "bcryptjs";
 
 const Login = () => {
   const router = useRouter();
@@ -43,74 +40,28 @@ const Login = () => {
     const loadingToast = toast.loading("Authenticating...");
 
     try {
-      if (!db) {
-        throw new Error("Firebase not initialized");
+      // Replace Firebase authentication with your API call
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: userData.username.toLowerCase(),
+          password: userData.password
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
       }
-
-      // Query Firestore for the user - check both username and email
-      const usersRef = collection(db, "users");
-      const q = query(
-        usersRef, 
-        where("username", "==", userData.username.toLowerCase())
-      );
-      
-      // Also check email field for registered users
-      const emailQ = query(
-        usersRef, 
-        where("email", "==", userData.username.toLowerCase())
-      );
-
-      const [usernameSnapshot, emailSnapshot] = await Promise.all([
-        getDocs(q),
-        getDocs(emailQ)
-      ]);
-
-      const userDoc = usernameSnapshot.docs[0] || emailSnapshot.docs[0];
-
-      if (!userDoc) {
-        setLoginAttempts(prev => prev + 1);
-        if (loginAttempts >= 4) { // 5 attempts total
-          const lockout = new Date();
-          lockout.setMinutes(lockout.getMinutes() + 15); // 15 minute lockout
-          setLockoutTime(lockout);
-          setLoginAttempts(0);
-          toast.dismiss(loadingToast);
-          toast.error("Too many failed attempts. Account locked for 15 minutes");
-          setIsLoading(false);
-          return;
-        }
-        toast.dismiss(loadingToast);
-        toast.error("User not found");
-        setIsLoading(false);
-        return;
-      }
-
-      const user = userDoc.data();
-
-      // Verify password
-      const isValidPassword = await bcrypt.compare(userData.password, user.password);
-
-      if (!isValidPassword) {
-        toast.dismiss(loadingToast);
-        toast.error("Invalid password");
-        setIsLoading(false);
-        return;
-      }
-
-      // Create response data structure similar to your API
-      const responseData = {
-        token: "firebase-" + userDoc.id, // You might want to use a proper JWT token
-        user: {
-          id: userDoc.id,
-          username: user.username,
-          role: user.role
-        }
-      };
 
       // Store token
-      localStorage.setItem('token', responseData.token);
+      localStorage.setItem('token', data.token);
 
-      const userRole = user.role;
+      const userRole = data.user.role;
       const roleRoutes = {
         superadmin: "/admin/dashboard",
         admin: "/admin/dashboard",
@@ -144,11 +95,22 @@ const Login = () => {
 
     } catch (error) {
       console.error("Login error:", error);
-      toast.dismiss(loadingToast);
-      toast.error("Login failed. Please try again.", {
-        duration: 4000,
-        icon: '❌'
-      });
+      setLoginAttempts(prev => prev + 1);
+      
+      if (loginAttempts >= 4) { // 5 attempts total
+        const lockout = new Date();
+        lockout.setMinutes(lockout.getMinutes() + 15); // 15 minute lockout
+        setLockoutTime(lockout);
+        setLoginAttempts(0);
+        toast.dismiss(loadingToast);
+        toast.error("Too many failed attempts. Account locked for 15 minutes");
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(error.message || "Login failed. Please try again.", {
+          duration: 4000,
+          icon: '❌'
+        });
+      }
     } finally {
       setIsLoading(false);
     }

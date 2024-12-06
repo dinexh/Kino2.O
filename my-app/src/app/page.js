@@ -29,7 +29,7 @@ export default function Home() {
     <main>
       <div className="home-component">
           <div className="home-component-in">
-            {loading ? ( // Conditional rendering based on loading state
+            {loading ? ( 
               <Loader />
             ) : (
               <>
