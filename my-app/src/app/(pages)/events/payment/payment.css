@@ -6,49 +6,61 @@
     font-family: 'Poppins', sans-serif;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
     background: #1a1a1a;
-    padding: 2rem 1rem;
+    position: relative;
+    padding: 4rem 1rem;
 }
 
 .payment-container {
     width: 100%;
     max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-    background: rgba(30, 30, 30, 0.9);
+    margin: 0 auto 4rem auto;
+    padding: 2.5rem;
+    background: rgba(30, 30, 30, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 2rem;
-    border: 1px solid rgba(255, 215, 0, 0.1);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    border-radius: 1.5rem;
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    flex: 1;
 }
 
 .payment-container h1 {
     text-align: center;
     color: gold;
     font-size: 2.5rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.payment-details {
-    margin-bottom: 2rem;
-    padding: 1.5rem;
-    background: rgba(45, 45, 45, 0.8);
-    border-radius: 1rem;
-    border: 1px solid rgba(255, 215, 0, 0.2);
-}
-
-.payment-details h2 {
+.payment-container h2 {
     color: gold;
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    font-weight: 500;
 }
 
-.payment-details p {
+.payment-details, 
+.payment-instructions {
+    margin-bottom: 2.5rem;
+    padding: 1.8rem;
+    background: rgba(45, 45, 45, 0.9);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.payment-details:hover,
+.payment-instructions:hover {
+    border-color: rgba(255, 215, 0, 0.4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.payment-details p,
+.payment-instructions p {
     margin: 0.8rem 0;
-    color: #fff;
+    color: #e0e0e0;
+    line-height: 1.6;
 }
 
 .payment-details ul {
@@ -58,29 +70,15 @@
 
 .payment-details li {
     margin: 0.5rem 0;
-    color: #fff;
-}
-
-.payment-instructions {
-    margin-bottom: 2rem;
-}
-
-.payment-instructions h2 {
-    color: gold;
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-}
-
-.payment-instructions p {
-    margin: 0.8rem 0;
-    color: #808080;
+    color: #e0e0e0;
+    padding: 0.3rem 0;
 }
 
 .qr-code {
     text-align: center;
-    margin: 2rem 0;
-    padding: 1.5rem;
-    background: rgba(45, 45, 45, 0.8);
+    margin: 2.5rem 0;
+    padding: 2rem;
+    background: rgba(45, 45, 45, 0.9);
     border-radius: 1rem;
     border: 1px solid rgba(255, 215, 0, 0.2);
     transition: all 0.3s ease;
@@ -88,13 +86,14 @@
 
 .qr-code:hover {
     border-color: gold;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.1);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.15);
 }
 
 .qr-code img {
     max-width: 250px;
     height: auto;
+    border-radius: 1rem;
 }
 
 .payment-form {
@@ -103,35 +102,38 @@
 }
 
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.8rem;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.8rem;
     color: #fff;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 500;
 }
 
 .form-group input {
     width: 100%;
-    padding: 1rem;
+    padding: 1.2rem;
     background: #2D2D2D;
     border: 1px solid #3D3D3D;
     border-radius: 12px;
     color: #fff;
     font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
+    font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 .form-group input:focus {
     outline: none;
     border-color: gold;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 
 .submit-button {
     width: 100%;
+    padding: 1.2rem;
     padding: 1rem;
     background: linear-gradient(135deg, #FFD700, #FFA500);
     color: #000;
@@ -183,5 +185,214 @@
 
     .qr-code img {
         max-width: 200px;
+    }
+}
+
+/* Enhanced Mobile Styles */
+@media (max-width: 768px) {
+    .payment-page {
+        padding: 2rem 0.8rem;
+        min-height: calc(100vh - 60px); /* Account for footer */
+    }
+
+    .payment-container {
+        padding: 1.5rem;
+        margin: 0 auto 2rem auto;
+        border-radius: 1.2rem;
+    }
+
+    .payment-container h1 {
+        font-size: 1.8rem;
+        margin-bottom: 1.8rem;
+        padding: 0 0.5rem;
+    }
+
+    .payment-container h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .payment-details, 
+    .payment-instructions {
+        padding: 1.2rem;
+        margin-bottom: 1.5rem;
+        border-radius: 0.8rem;
+    }
+
+    .payment-details p,
+    .payment-instructions p {
+        font-size: 0.9rem;
+        margin: 0.6rem 0;
+    }
+
+    .payment-details ul {
+        padding-left: 0.5rem;
+    }
+
+    .payment-details li {
+        font-size: 0.9rem;
+        padding: 0.2rem 0;
+    }
+
+    .qr-code {
+        margin: 1.5rem 0;
+        padding: 1.2rem;
+    }
+
+    .qr-code img {
+        max-width: 180px;
+        margin: 0 auto;
+    }
+
+    .payment-form {
+        max-width: 100%;
+        padding: 0 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+        padding: 0.9rem;
+        font-size: 0.9rem;
+        border-radius: 8px;
+    }
+
+    .submit-button {
+        padding: 0.9rem;
+        font-size: 0.95rem;
+        border-radius: 8px;
+        margin-top: 0.5rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .payment-page {
+        padding: 1.5rem 0.5rem;
+    }
+
+    .payment-container {
+        padding: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .payment-container h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .payment-container h2 {
+        font-size: 1.2rem;
+    }
+
+    .payment-details, 
+    .payment-instructions {
+        padding: 1rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .payment-details p,
+    .payment-instructions p,
+    .payment-details li {
+        font-size: 0.85rem;
+    }
+
+    .qr-code {
+        margin: 1.2rem 0;
+        padding: 1rem;
+    }
+
+    .qr-code img {
+        max-width: 150px;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+    }
+
+    .form-group input {
+        padding: 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    .submit-button {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Handle very small devices */
+@media (max-width: 320px) {
+    .payment-container h1 {
+        font-size: 1.3rem;
+    }
+
+    .payment-container {
+        padding: 1rem;
+    }
+
+    .qr-code img {
+        max-width: 130px;
+    }
+
+    .form-group input {
+        padding: 0.7rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* Handle landscape orientation */
+@media (max-height: 600px) and (orientation: landscape) {
+    .payment-page {
+        padding: 1rem 0.5rem;
+    }
+
+    .payment-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        max-width: 1000px;
+    }
+
+    .payment-container h1 {
+        grid-column: 1 / -1;
+        margin-bottom: 1rem;
+    }
+
+    .qr-code {
+        margin: 1rem 0;
+    }
+
+    .qr-code img {
+        max-width: 140px;
+    }
+
+    .payment-form {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Toast notifications positioning for mobile */
+@media (max-width: 768px) {
+    :root {
+        --toastify-toast-width: 90vw;
+        --toastify-toast-min-height: auto;
+    }
+
+    .Toastify__toast-container {
+        padding: 0 1rem;
+        width: 100%;
+    }
+
+    .Toastify__toast {
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
     }
 }
