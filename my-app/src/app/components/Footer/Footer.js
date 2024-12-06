@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import './Footer.css';
 import Image from "next/image";
 import Link from "next/link";
-import { FaFacebookF, FaInstagram, FaYoutube, FaUser } from 'react-icons/fa';
+import { FaFacebookF, FaInstagram, FaYoutube, FaUser, FaPhone, FaEnvelope } from 'react-icons/fa';
 import logo from '../../Assets/newlogo.png';
 import SACLogo from "../../Assets/sac_logo.png";
 
@@ -12,8 +12,7 @@ const Footer = () => {
     const socialLinks = [
         { href: '#', icon: <FaFacebookF />, label: 'Facebook' },
         { href: '#', icon: <FaInstagram />, label: 'Instagram' },
-        { href: '#', icon: <FaYoutube />, label: 'YouTube' },
-        { href: '#', icon: <FaUser />, label: 'user' }
+        { href: '#', icon: <FaYoutube />, label: 'YouTube' }
     ];
 
     const router = useRouter();
@@ -22,61 +21,56 @@ const Footer = () => {
     };
 
     return (
-        <div className="footer-component">
-            <div className="footer-component-in">
-                <div className="footer-component-in-top">
-                    <div className="footer-component-in-top-one">
-                        <Link href="/terms">Terms and Conditions</Link>
-                        <Link href="/privacy">Privacy Policy</Link>
-                    </div>
-                    <div className="footer-component-in-top-two">
-                        <Link href="/report">Report Bugs</Link>
-                        <p className='login-button' onClick={GoToLogin}>
-                            <FaUser />
-                            Login
-                        </p>
+        <footer className="footer">
+            <div className="footer-content">
+                <div className="footer-section about">
+                    <h3>About <span>Chitramela</span></h3>
+                    <p>Chitramela is KL University's annual film festival, celebrating the art of storytelling through cinema. From captivating activities to exciting competitions, it's a platform for creativity, innovation, and fun.</p>
+                    <div className="social-links">
+                        {socialLinks.map((link, index) => (
+                            <Link href={link.href} key={index} className="social-icon" aria-label={link.label}>
+                                {link.icon}
+                            </Link>
+                        ))}
                     </div>
                 </div>
-                <div className="footer-component-in-main">
-                    <div className="footer-component-main-in">
-                        <div className="footer-component-main-in-zero">
-                            <h1>About <span>Chitramela</span></h1>
-                            <p>Chitramela is KL University&apos;s annual film festival, celebrating the art of storytelling through cinema. From captivating activities to exciting competitions, it’s a platform for creativity, innovation, and fun. Join us to explore the magic of movies and showcase your talent on the grand stage.</p>
-                        </div>
-                        <div className="footer-component-main-in-one">
-                            <Image src={logo} alt="Chitramela logo" className="Logo" />
-                            <Image src={SACLogo} alt="Student Activity Center Logo" className="Logo" />
-                        </div>
-                        <div className="footer-component-main-in-two">
-                            <p>Contact Us!</p>
-                            <div className="footer-component-main-in-two-icons">
-                                {socialLinks.map((link, index) => (
-                                    <Link href={link.href} key={index} className="footer-social-link" aria-label={link.label} rel="noopener noreferrer">
-                                        {link.icon}
-                                    </Link>
-                                ))}
-                            </div>
-                            <div className="footer-component-main-in-two-number">
-                                <Link href="tel:+911234567890">
-                                    +91 9492485741 (Amish Kumar)
-                                </Link>
-                                <Link href="mailto:klsacphotography@gmail.com">
-                                    klsacphotography@gmail.com
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
+
+                <div className="footer-section logos">
+                    <Image src={logo} alt="Chitramela logo" className="footer-logo" />
+                    <Image src={SACLogo} alt="Student Activity Center Logo" className="footer-logo" />
                 </div>
-                <div className="footer-in-component-copyright">
-                    <div className="footer-component-copyright-one">
-                        <p>Designed and Developed by <Link href="https://in.linkedin.com/in/dinesh-korukonda-513855271">Dinesh Korukonda</Link> & <Link href="https://in.linkedin.com/in/pavankarthikgaraga">Pavan Karthik Garaga</Link></p>
-                    </div>
-                    <div className="footer-component-copyright-two">
-                        <p>&copy; 2024 <span>Chitramela</span>. All rights reserved.</p>
+
+                <div className="footer-section contact">
+                    <h3>Contact Us</h3>
+                    <div className="contact-info">
+                        <div className="contact-item">
+                            <FaPhone className="contact-icon" />
+                            <Link href="tel:+919492485741">+91 9492485741 (Amish Kumar)</Link>
+                        </div>
+                        <div className="contact-item">
+                            <FaEnvelope className="contact-icon" />
+                            <Link href="mailto:klsacphotography@gmail.com">klsacphotography@gmail.com</Link>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+
+            <div className="footer-bottom">
+                <div className="footer-links">
+                    <Link href="/terms">Terms & Conditions</Link>
+                    <Link href="/privacy">Privacy Policy</Link>
+                    <Link href="/report">Report Bugs</Link>
+                    <button className="login-button" onClick={GoToLogin}>
+                        <FaUser />
+                        <span>Login</span>
+                    </button>
+                </div>
+                <div className="footer-credits">
+                    <p>Designed by <Link href="https://in.linkedin.com/in/dinesh-korukonda-513855271">Dinesh Korukonda</Link> & <Link href="https://in.linkedin.com/in/pavankarthikgaraga">Pavan Karthik Garaga</Link></p>
+                    <p>&copy; 2024 <span>Chitramela</span>. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     );
 }
 
