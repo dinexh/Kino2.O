@@ -368,3 +368,98 @@
       flex-direction: row;
   }
 }
+
+@media (max-width: 450px) {
+  .events-container {
+    padding: 2rem 1rem;
+  }
+
+  .events-container-one {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+  }
+
+  .events-container-one h2 {
+    font-size: 2rem;
+  }
+
+  .events-container-two-in {
+    flex-direction: column;
+    padding-bottom: 1rem;
+    gap: 1rem;
+  }
+
+  .events-card {
+    width: 100%;
+    margin-right: 0;
+    aspect-ratio: auto; /* Allow cards to adjust height dynamically */
+  }
+
+  .events-card-title {
+    font-size: 1rem;
+  }
+
+  .events-card-details {
+    font-size: 0.9rem;
+  }
+
+  .events-card-date,
+  .events-card-venue,
+  .events-card-fee {
+    font-size: 0.8rem;
+  }
+
+  .events-card-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+
+  .events-container-three {
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .events-nav-button {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  .event-modal-content {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  .event-modal-top {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .event-modal-image {
+    width: 100%;
+    height: 180px;
+  }
+
+  .event-modal-details p {
+    font-size: 0.9rem;
+  }
+
+  .event-modal-rules h3 {
+    font-size: 1rem;
+  }
+
+  .event-modal-rules li {
+    font-size: 0.8rem;
+  }
+
+  .register-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+  }
+
+  .register-submit-button {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+}
