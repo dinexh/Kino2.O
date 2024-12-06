@@ -98,7 +98,6 @@
     outline: none;
     border-color: gold;
 }
-
 .file-input {
     background: #2D2D2D !important;
     padding: 1rem !important;
@@ -143,10 +142,24 @@
 }
 
 .events-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.events-grid-one,
+.events-grid-two {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+}
+
+@media (max-width: 600px) {
+    .events-grid-one,
+    .events-grid-two {
+        flex-direction: column;
+    }
 }
 
 .event-button {
@@ -158,7 +171,7 @@
     color: #fff;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-align: left;
+    text-align: center;
     font-size: 0.9rem;
     position: relative;
     overflow: hidden;
@@ -190,10 +203,18 @@
     transform: translateY(-2px);
 }
 
+.select-all-button-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .event-button.selected {
     background: linear-gradient(135deg, #000000, #222222);
     border-color: gold;
     color: gold;
+    padding: 1rem;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
 
@@ -320,7 +341,7 @@ select {
 }
 
 .country-code-select {
-    width: 140px;
+    width: 25%;
     padding: 1rem;
     background: #2D2D2D;
     border: 1px solid #3D3D3D;
@@ -332,6 +353,7 @@ select {
 
 .phone-input-container input {
     flex: 1;
+    width: 75%;
 }
 
 .phone-group input {
@@ -351,4 +373,15 @@ select {
 .form-group select:focus {
     outline: none;
     border-color: gold;
+}
+
+@media (max-width: 480px) {
+    .country-code-select {
+        width: 35%;
+        min-width: 100px;
+    }
+    
+    .phone-input-container input {
+        width: 65%;
+    }
 }

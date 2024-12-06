@@ -62,13 +62,14 @@ function RegisterPage() {
         gender: '',
         referralName: '',
         selectedEvents: [],
-        idCardUploadLink: ''
+
     });
 
     const events = [
-        "Photography Contest - Mobile Photograph",
+        "Photography Contest",
         "Short Film Screening",
         "Reel Making Contest",
+        "Attend Festival"
     ];
 
     const handleEventSelection = (event) => {
@@ -132,18 +133,6 @@ function RegisterPage() {
                             required
                         />
                     </div>
-
-                    <div className="form-group">
-                        <label>Email: *</label>
-                        <input 
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            placeholder="210000..@kluniversity.in"
-                            required
-                        />
-                    </div>
-
                     <div className="form-group">
                         <label>ID Number: *</label>
                         <input 
@@ -151,6 +140,16 @@ function RegisterPage() {
                             value={formData.idNumber}
                             onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                             placeholder="2100031234"
+                            required
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Email: *</label>
+                        <input 
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            placeholder="210000..@kluniversity.in"
                             required
                         />
                     </div>
@@ -190,20 +189,6 @@ function RegisterPage() {
                         />
                     </div>
 
-                    <div className="form-group-notice-box">
-                      <label htmlFor="idCardUploadLink">ID Card Link *</label>
-                      <input 
-                        type="text" 
-                        id="idCardUploadLink" 
-                        value={formData.idCardUploadLink} 
-                        onChange={(e) => setFormData({ ...formData, idCardUploadLink: e.target.value })} 
-                        placeholder="Enter ID Card Link"
-                        required 
-                      />
-                      <p>Upload ID Card as a link </p>
-                      <p>Please refer to this video for more details</p> <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">Video Link</a>
-                    </div>
-
                     <div className="form-group">
                         <label>Gender: *</label>
                         <select 
@@ -230,24 +215,49 @@ function RegisterPage() {
                     <div className="form-group events-section">
                         <label>Selected Events: *</label>
                         <div className="events-container">
+                            <div className="events-grid">
+                                <div className="events-grid-one">
+                                    <button
+                                        type="button"
+                                        className={`event-button ${formData.selectedEvents.includes('Short Film Screening') ? 'selected' : ''}`}
+                                        onClick={() => handleEventSelection('Short Film Screening')}
+                                    >
+                                        Short Film Screening
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`event-button ${formData.selectedEvents.includes('Reel Making Contest') ? 'selected' : ''}`}
+                                        onClick={() => handleEventSelection('Reel Making Contest')}
+                                    >
+                                        Reel Making Contest
+                                    </button>
+                                </div>
+                                <div className="events-grid-two">
+                                    <button
+                                        type="button"
+                                        className={`event-button ${formData.selectedEvents.includes('Photography Contest') ? 'selected' : ''}`}
+                                        onClick={() => handleEventSelection('Photography Contest')}
+                                    >
+                                        Photography Contest
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className={`event-button ${formData.selectedEvents.includes('Attend Festival') ? 'selected' : ''}`}
+                                        onClick={() => handleEventSelection('Attend Festival')}
+                                    >
+                                        Attend Festival
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="select-all-button-container">
                             <button 
                                 type="button" 
+    
                                 className={`select-all-button ${formData.selectedEvents.length === events.length ? 'selected' : ''}`}
                                 onClick={() => handleEventSelection('all')}
                             >
                                 {formData.selectedEvents.length === events.length ? 'Unselect All' : 'Select All Events'}
                             </button>
-                            <div className="events-grid">
-                                {events.map((event, index) => (
-                                    <button
-                                        key={index}
-                                        type="button"
-                                        className={`event-button ${formData.selectedEvents.includes(event) ? 'selected' : ''}`}
-                                        onClick={() => handleEventSelection(event)}
-                                    >
-                                        {event}
-                                    </button>
-                                ))}
                             </div>
                         </div>
                     </div>
