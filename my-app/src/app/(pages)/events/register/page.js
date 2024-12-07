@@ -75,7 +75,7 @@ function RegisterPage() {
 
     const events = [
         "Photography Contest",
-        "Short Film Screening",
+        "Short Film Contest",
         "Reel Making Contest",
         "Attend Festival"
     ];
@@ -244,6 +244,7 @@ function RegisterPage() {
     };
 
     return (
+        <div className="register-page-container">
         <div className="register-page" style={{ backgroundImage: `url(${backgroundImage.src})` }}>
             <Toaster
                 position="top-right"
@@ -425,10 +426,10 @@ function RegisterPage() {
                                 <div className="events-grid-one">
                                     <button
                                         type="button"
-                                        className={`event-button ${formData.selectedEvents.includes('Short Film Screening') ? 'selected' : ''}`}
-                                        onClick={() => handleEventSelection('Short Film Screening')}
+                                        className={`event-button ${formData.selectedEvents.includes('Short Film Contest') ? 'selected' : ''}`}
+                                        onClick={() => handleEventSelection('Short Film Contest')}
                                     >
-                                        Short Film Screening
+                                        Short Film Contest
                                     </button>
                                     <button
                                         type="button"
@@ -512,7 +513,9 @@ function RegisterPage() {
                 </form>
                 </div>
             </div>
-            <Footer />
+            {/* <Footer /> */}
+        </div>
+        <Footer />
         </div>
     );
 }

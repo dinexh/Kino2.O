@@ -120,7 +120,7 @@ function PaymentPage() {
                             <li key={index}>{event}</li>
                         ))}
                     </ul>
-                    <p><strong>Total Amount:</strong> ₹{registrationData.selectedEvents.length * 100}</p>
+                    <p><strong>Total Amount:</strong> ₹360</p>
                 </div>
 
                 <div className="payment-instructions">
