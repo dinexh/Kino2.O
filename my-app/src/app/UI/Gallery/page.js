@@ -9,7 +9,7 @@ const Gallery = () => {
     <div className="gallery-container" id="gallery">
       <div className="gallery-container-in">
         <div className="gallery-container-in-one">
-          <h2>Gallery</h2>
+          <h2>Collection of Previous Moments</h2>
         </div>
         <div className="gallery-container-in-two">
           <div className="gallery-container-in-two-in">

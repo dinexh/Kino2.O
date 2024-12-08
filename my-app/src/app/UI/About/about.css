@@ -82,7 +82,7 @@
 }
 
 .read-more {
-  background: linear-gradient(135deg, #FFD700, #FFA500);
+  background-color: gold;
   border: none;
   color: rgb(0, 0, 0);
   padding: 1rem 2rem;

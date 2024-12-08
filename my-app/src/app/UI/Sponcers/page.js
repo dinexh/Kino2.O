@@ -7,10 +7,10 @@ import Link from 'next/link';
 
 const Sponcers = () => {
   return (
-    <div className="sponcer-container" id="sponcers">
+    <div className="sponcer-container" id="sponsors">
       <div className="sponcer-container-in">
         <div className="sponcer-container-in-one">
-          <h2>In Collabration with</h2>
+          <h2>In Association With</h2>
         </div>
         <div className="sponcer-container-in-two">
           <div className="sponcer-container-in-two-in">

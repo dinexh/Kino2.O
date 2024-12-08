@@ -7,10 +7,10 @@ import Image from "next/image";
 
 const Team = () => {
     return (
-        <div className="team-container">
+        <div className="team-container" id="team">
             <div className="team-container-in">
                 <div className="team-container-in-one">
-                    <h1>Our Creative Team</h1>
+                    <h2>Our Creative Team</h2>
                 </div>
                 <div className="team-container-in-two">
                     <div className="team-container-in-two-in">
