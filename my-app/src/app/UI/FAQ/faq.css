@@ -14,15 +14,14 @@
 
 .faq-container-in-one {
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 4rem;
 }
 
 .faq-container-in-one h2 {
-    font-size: 2.5rem;
+    font-size: 3rem;
     color: gold;
     margin-bottom: 1rem;
     font-size: 3rem;
-    color: gold;
 }
 
 .faq-container-in-two {
@@ -37,6 +36,8 @@
     flex-direction: column;
     align-items: center;
     gap: 1rem;
+    /* background-color: red; */
+    width: 80%;
 }
 
 .faq-item {

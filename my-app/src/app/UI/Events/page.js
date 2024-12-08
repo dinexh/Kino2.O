@@ -35,7 +35,7 @@ const Events = () => {
   };
 
   const GoToRules = (eventId) => {
-    router.push(`/Rules?eventId=${eventId}`);
+    router.push(`/Rules?eventId=${selectedActivity.id}`);
   }
 
   const Register = () =>{
@@ -82,8 +82,9 @@ const Events = () => {
       >
         {selectedActivity && (
           <div className="event-modal-content">
-            <h2>{selectedActivity.title}</h2>
-            
+            <div className="event-modal-content-heading">
+              <h2>{selectedActivity.title}</h2>
+            </div>
             <div className="event-modal-top">
               <div className="event-modal-image">
                 <Image 
@@ -94,13 +95,16 @@ const Events = () => {
                   objectFit="cover"
                 />
               </div>
-              
               <div className="event-modal-details">
-                <p><strong>Date:</strong> {selectedActivity.date}</p>
-                <p><strong>Time:</strong> {selectedActivity.time}</p>
-                <p><strong>Venue:</strong> {selectedActivity.venue}</p>
-                <p><strong>Fee:</strong> {selectedActivity.fee}</p>
-                <button 
+                <div className="event-modal-details-in">
+                  <div className="events-modal-details-heading-one">
+                  <p className='date'><strong>Date:</strong> {selectedActivity.date}</p>
+                  </div>
+                  <div className="events-modal-details-heading-two">
+                  <p className='description'>{selectedActivity.description}</p>
+                  </div>
+                  <div className="events-modal-details-buttons">
+                  <button 
                   className="register-button"
                   onClick={() => {
                     console.log(`Registered for ${selectedActivity.title}`);
@@ -113,19 +117,13 @@ const Events = () => {
                 </button>
                 <button 
                   className="register-button"
-                  onClick={() => {
-                    if (selectedActivity.rulesId) {
-                      GoToRules(selectedActivity.rulesId);
-                    } else {
-                      console.error("No rulesId found for this activity.");
-                    }
-                    setIsModalOpen(false);
-                    setSelectedActivity(null);
-                  }}
+                  onClick={() => GoToRules(selectedActivity.id)}
                   style={{ marginTop: '1rem' }}
                 >
-                  More Info
+                  Rules and Regulations
                 </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

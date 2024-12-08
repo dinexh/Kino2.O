@@ -1,6 +1,6 @@
 export const logo = [
     {
-        logo: "/logo/zeroone.png",
+        logo: "https://i.imghippo.com/files/gFS4183wk.jpeg",
         url:"https://klzeroone.vercel.app/"
     },
     {

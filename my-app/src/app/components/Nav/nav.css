@@ -28,12 +28,15 @@
 }
 
 .nav-in-one {
-  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 20px; /* Match image height */
 }
 
 .nav-in-one img {
-  height: 40px;
-  width: auto;
+  height: 20px; /* Fixed height for consistency */
+  width: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensures the image fits without distortion */
 }
 
 .nav-in-two {

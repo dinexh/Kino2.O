@@ -22,7 +22,7 @@
 }
 
 .countdown-container h2 {
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -32,10 +32,9 @@
 }
 
 .countdown-container h2 span {
-    color: #FFD700;
     margin: 0 0.5rem;
     font-size: 3rem;
-    color: yellow;
+    color: gold;
 }
 
 .timer {

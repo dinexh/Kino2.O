@@ -1,6 +1,6 @@
-export const rules=[
+export const rules = [
     {
-        id: "short-film-contest",
+        id: 1,
         title: "Short Film Contest Rules and Regulations",
         eligibility: [
             "Open to all aspiring filmmakers.",
@@ -43,10 +43,35 @@ export const rules=[
         contentGuidelines: [
             "Films should not contain obscene content or offensive material.",
             "All content must adhere to appropriate standards of decency."
-        ]
+        ],
+        rulesId: 'short-film-contest'
     },
     {
-        id: "photography-contest",
+        id: 2,
+        title: "Reel Making Contest Rules and Regulations",
+        eligibility: [
+            "Open to all participants."
+        ],
+        submissionGuidelines: [
+            "Participants must upload their reels to the designated Instagram page provided by the Chitramela team.",
+            "Reels must not exceed 60 seconds."
+        ],
+        promotion: [
+            "Participants can promote their reels to gather likes and shares, which will contribute to 50% of the final score."
+        ],
+        judgingCriteria: [
+            "The remaining 50% of the score will be determined by the jury based on:",
+            "Creativity and storytelling.",
+            "Technical skills.",
+            "Audience engagement and relevance."
+        ],
+        contentGuidelines: [
+            "All content must be original, and participants must avoid offensive or inappropriate material."
+        ],
+        rulesId: 'reel-making-contest'
+    },
+    {
+        id: 3,
         title: "Photography Contest Rules and Regulations",
         eligibility: [
             "Open to photographers of all skill levels."
@@ -68,32 +93,7 @@ export const rules=[
         contentGuidelines: [
             "Any form of plagiarism or excessive editing will result in disqualification.",
             "Photos must not violate any privacy, copyright, or decency regulations."
-        ]
-    },
-    {
-        id: "reel-making-contest",
-        title: "Reel Making Contest Rules and Regulations",
-        eligibility: [
-            "Open to all participants."
         ],
-        submissionGuidelines: [
-            "Participants must upload their reels to the designated Instagram page provided by the Chitramela team.",
-            "Reels must not exceed 60 seconds."
-        ],
-        promotion: [
-            "Participants can promote their reels to gather likes and shares, which will contribute to 50% of the final score."
-        ],
-        judgingCriteria: [
-            "The remaining 50% of the score will be determined by the jury based on:",
-            "Creativity and storytelling.",
-            "Technical skills.",
-            "Audience engagement and relevance."
-        ],
-        contentGuidelines: [
-            "All content must be original, and participants must avoid offensive or inappropriate material."
-        ]
-    },
-].map((rule, index) => ({
-    ...rule,
-    numericId: index + 1  
-}));
+        rulesId: 'photography-contest'
+    }
+];

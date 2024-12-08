@@ -29,7 +29,7 @@ export default function Nav() {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
-  
+
       // After smooth scrolling, adjust the scroll position with a delay
       setTimeout(() => {
         const yOffset = -80
@@ -43,23 +43,24 @@ export default function Nav() {
   const navLinks = [
     { href: 'about-info', label: 'About' },
     { href: 'events', label: 'Events' },
+    { href: 'team', label: 'Team' },           // Scroll to Team
+    { href: 'sponsors', label: 'Partners' },   // Renamed from Sponsors
     { href: 'gallery', label: 'Gallery' },
-    { href: 'faq', label: 'FAQ' }
   ]
 
   return (
     <nav className={`navigation ${isVisible ? 'visible' : ''}`}>
       <div className="nav-in">
         <div className="nav-in-one">
-          <Link href="/" className="nav-in-one-link" >
-            <Image 
-              src={logo} 
-              alt="Chitramela Logo" 
-              width={40} 
-              height={40} 
-              priority
-              responsive
-            />
+          <Link href="/" className="nav-in-one-link">
+          <Image
+            src="https://i.imghippo.com/files/FHCK9908LI.png"
+            alt="Chitramela Logo"
+            width={100} /* Larger dimensions to preserve quality */
+            height={20}
+            layout="intrinsic" /* Keeps the image's natural dimensions */
+            priority
+          />
           </Link>
         </div>
 
