@@ -26,25 +26,30 @@ export default function Nav() {
   }, [])
 
   const handleNavClick = (sectionId) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-
-      // After smooth scrolling, adjust the scroll position with a delay
-      setTimeout(() => {
-        const yOffset = -80
-        const yPosition = element.getBoundingClientRect().top + window.scrollY + yOffset
-        window.scrollTo({ top: yPosition, behavior: 'smooth' })
-      }, 100)
-    }
-    setIsMobileMenuOpen(false) // Close mobile menu after clicking
+    // Prevent default behavior
+    event.preventDefault();
+    
+    // Add a small delay to ensure the element exists
+    setTimeout(() => {
+      const element = document.getElementById(sectionId)
+      if (element) {
+        const yOffset = -80 // Adjust this value based on your nav height
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset
+        
+        window.scrollTo({
+          top: y,
+          behavior: 'smooth'
+        })
+      }
+      setIsMobileMenuOpen(false)
+    }, 100)
   }
 
   const navLinks = [
     { href: 'about-info', label: 'About' },
     { href: 'events', label: 'Events' },
-    { href: 'team', label: 'Team' },           // Scroll to Team
-    { href: 'sponsors', label: 'Partners' },   // Renamed from Sponsors
+    { href: 'team', label: 'Team' },
+    { href: 'sponsors', label: 'Partners' },
     { href: 'gallery', label: 'Gallery' },
   ]
 

@@ -18,14 +18,47 @@
   border: 2px solid rgba(9, 147, 150, 0.2);
   padding: 2rem;
   border-radius: 8px;
-  width: 70%;
+  width: 90%;
+  max-width: 800px;
   position: relative;
   color: white;
-  max-height: 80vh;
+  max-height: 85vh;
   overflow-y: auto;
   scroll-behavior: smooth;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-teal) transparent;
+  scrollbar-color: rgba(9, 147, 150, 0.5) transparent;
+  margin: 1rem;
+
+  /* Modern scrollbar styling */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(9, 147, 150, 0.5) transparent;
+  
+  /* Webkit scrollbar styling */
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(9, 147, 150, 0.5);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(9, 147, 150, 0.8);
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+  }
+}
+
+/* For Firefox - ensure consistent styling */
+@supports (scrollbar-color: auto) {
+  .modal-content {
+    scrollbar-color: rgba(9, 147, 150, 0.5) rgba(0, 0, 0, 0.2);
+  }
 }
 
 .modal-close {
@@ -50,4 +83,30 @@
 
 body.modal-open {
     overflow: hidden; /* Prevent scrolling of the background */
+} 
+
+@media screen and (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    padding: 1.5rem;
+    margin: 0.5rem;
+  }
+
+  .modal-close {
+    top: 5px;
+    right: 5px;
+    padding: 8px;
+    font-size: 28px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .modal-content {
+    padding: 1rem;
+    width: 98%;
+  }
+
+  .modal-content > *:first-child {
+    margin-top: 25px;
+  }
 } 

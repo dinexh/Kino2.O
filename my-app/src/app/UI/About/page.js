@@ -21,7 +21,7 @@ const About = () => {
   };
 
   return (
-    <div className="about-container">
+    <div className="about-container" id="about-info">
       <div className="about-container-in">
         {about1.map((about, index) => (
           <div className="about-card" key={about.id || index}>

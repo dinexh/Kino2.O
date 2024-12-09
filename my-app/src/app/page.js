@@ -13,6 +13,7 @@ import FAQ from './UI/FAQ/page'
 import Team from './UI/Team/page'
 import Sponcers from './UI/Sponcers/page'
 import { useState, useEffect } from 'react'; // Import useState and useEffect
+import Lenis from '@studio-freight/lenis' // Import Lenis
 
 export default function Home() {
   const [loading, setLoading] = useState(true); // State to manage loading
@@ -24,6 +25,32 @@ export default function Home() {
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);
+
+  // Initialize Lenis smooth scrolling
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
+      direction: 'vertical', // vertical, horizontal
+      gestureDirection: 'vertical', // vertical, horizontal, both
+      smooth: true,
+      mouseMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    })
+
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+    }
+  }, [])
 
   return (
     <main>

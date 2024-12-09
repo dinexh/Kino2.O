@@ -1,8 +1,6 @@
 "use client";
-import { teamMembers } from "../../Data/team";
 import "./team.css";
-import { FaInstagram, FaTelegram, FaLinkedin } from 'react-icons/fa';
-import Link from "next/link";
+// import Link from "next/link";
 import Image from "next/image";
 
 const Team = () => {
@@ -12,34 +10,15 @@ const Team = () => {
                 <div className="team-container-in-one">
                     <h2>Our Creative Team</h2>
                 </div>
-                <div className="team-container-in-two">
-                    <div className="team-container-in-two-in">
-                        {teamMembers.concat(teamMembers).map((member, index) => (
-                            <div key={`${member.id}-${index}`} className="team-member">
-                                <div className="member-image-container">
-                                    <Image 
-                                        src={member.picture} 
-                                        alt={member.name} 
-                                        width={250} 
-                                        height={250}
-                                        className="member-image" 
-                                    />
-                                </div>
-                                <div className="description">
-                                    <h3>{member.name}</h3>
-                                    <p className="designation">{member.designation}</p>
-                                    {/* <div className="social-icons">
-                                        <a href={member.instagram} target="_blank" className='media'><FaInstagram /></a>
-                                        <a href={member.telegram || "#"} target="_blank" className='media'><FaTelegram /></a>
-                                        <a href={member.linkedin || "#"} target="_blank" className='media'><FaLinkedin /></a>
-                                    </div> */}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                <div className="team-link">
-                    <Link href="/team">View All</Link>
+                <div className="team-container-in-image">
+                    <Image 
+                        src="https://i.imghippo.com/files/VIZ9107fTw.png" 
+                        width={500} 
+                        height={500} 
+                        alt="Team"
+                        className="team-image"
+                        style={{ width: '100%', height: 'auto' }}
+                    />
                 </div>
             </div>
         </div>
