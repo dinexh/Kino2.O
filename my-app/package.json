@@ -10,6 +10,7 @@
     "add-users": "node src/scripts/addInitialUsers.js"
   },
   "dependencies": {
+    "@studio-freight/lenis": "^1.0.42",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.7",
     "firebase": "^11.0.2",
