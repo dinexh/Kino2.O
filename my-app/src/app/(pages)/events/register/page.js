@@ -103,18 +103,6 @@ function RegisterPage() {
             return false;
         }
 
-        // Password validation
-        if (formData.password.length < 8) {
-            toast.error("Password must be at least 8 characters long");
-            return false;
-        }
-
-        // Password confirmation validation
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Passwords do not match");
-            return false;
-        }
-
         // Profession-specific validation
         if (formData.profession === 'student') {
             if (!formData.college || !formData.idNumber) {
@@ -131,7 +119,7 @@ function RegisterPage() {
         // Required fields validation
         if (!formData.name || !formData.email || !formData.phoneNumber || 
             !formData.profession || !formData.gender || 
-            formData.selectedEvents.length === 0 || !formData.password) {
+            formData.selectedEvents.length === 0) {
             toast.error("Please fill in all required fields");
             return false;
         }
@@ -149,96 +137,75 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
-            // Check Firebase connection
-            const timeoutPromise = new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Firebase connection timeout')), 10000)
-            );
-
-            const connectionTest = async () => {
-                const testRef = collection(db, 'users');
-                await getDocs(query(testRef, limit(1)));
-            };
-
-            await Promise.race([connectionTest(), timeoutPromise]);
-
-            // First check if email already exists
-            const usersRef = collection(db, 'users');
-            const emailQuery = query(usersRef, where('email', '==', formData.email));
-            const emailSnapshot = await getDocs(emailQuery);
+            // Simplified connection test
+            const registrationsRef = collection(db, 'registrations');
             
-            if (!emailSnapshot.empty) {
-                toast.dismiss(loadingToast);
-                toast.error("This email is already registered");
-                return;
-            }
+            // Check if email already exists
+            try {
+                const emailQuery = query(registrationsRef, where('email', '==', formData.email));
+                const emailSnapshot = await getDocs(emailQuery);
+                
+                if (!emailSnapshot.empty) {
+                    toast.dismiss(loadingToast);
+                    toast.error("This email is already registered");
+                    return;
+                }
 
-            // Check if ID number already exists
-            const idQuery = query(usersRef, where('username', '==', formData.idNumber));
-            const idSnapshot = await getDocs(idQuery);
-            
-            if (!idSnapshot.empty) {
+                // Check if ID number already exists
+                const idQuery = query(registrationsRef, where('idNumber', '==', formData.idNumber));
+                const idSnapshot = await getDocs(idQuery);
+                
+                if (!idSnapshot.empty) {
+                    toast.dismiss(loadingToast);
+                    toast.error("This ID number is already registered");
+                    return;
+                }
+            } catch (queryError) {
+                console.error('Error checking existing registrations:', queryError);
                 toast.dismiss(loadingToast);
-                toast.error("This ID number is already registered");
+                toast.error("Unable to verify registration details. Please try again.");
                 return;
             }
 
             // Create registration document
-            const registrationRef = await addDoc(collection(db, 'registrations'), {
-                name: formData.name,
-                email: formData.email,
-                phoneNumber: formData.countryCode + formData.phoneNumber,
-                profession: formData.profession,
-                idType: formData.profession === 'working' ? formData.idType : null,
-                idNumber: formData.idNumber,
-                college: formData.profession === 'student' ? formData.college : null,
-                gender: formData.gender,
-                referralName: formData.referralName || null,
-                selectedEvents: formData.selectedEvents,
-                registrationDate: serverTimestamp(),
-                paymentStatus: 'pending'
-            });
+            try {
+                await addDoc(registrationsRef, {
+                    name: formData.name,
+                    email: formData.email,
+                    phoneNumber: formData.countryCode + formData.phoneNumber,
+                    profession: formData.profession,
+                    idType: formData.profession === 'working' ? formData.idType : null,
+                    idNumber: formData.idNumber,
+                    college: formData.profession === 'student' ? formData.college : null,
+                    gender: formData.gender,
+                    referralName: formData.referralName || null,
+                    selectedEvents: formData.selectedEvents,
+                    registrationDate: serverTimestamp(),
+                    paymentStatus: 'pending'
+                });
 
-            // Create user document
-            await addDoc(collection(db, 'users'), {
-                username: formData.idNumber,
-                password: formData.password, // Note: In production, implement proper password hashing
-                email: formData.email,
-                role: 'registeredUser',
-                name: formData.name,
-                registrationId: registrationRef.id,
-                createdAt: serverTimestamp()
-            });
-
-            // Store registration data in session storage
-            sessionStorage.setItem('registrationData', JSON.stringify({
-                ...formData,
-                registrationId: registrationRef.id
-            }));
-
-            toast.dismiss(loadingToast);
-            toast.success("Registration successful! Proceeding to payment...");
-            
-            // Add a small delay before navigation
-            setTimeout(() => {
-                router.push('/events/payment');
-            }, 1000);
+                toast.dismiss(loadingToast);
+                toast.success("Registration successful!");
+                
+                setTimeout(() => {
+                    router.push('/events/coming');
+                }, 1000);
+            } catch (saveError) {
+                console.error('Error saving registration:', saveError);
+                toast.dismiss(loadingToast);
+                toast.error("Failed to save registration. Please try again.");
+            }
 
         } catch (error) {
             console.error('Error during registration:', error);
             toast.dismiss(loadingToast);
             
-            if (error.message === 'Firebase connection timeout') {
-                toast.error("Unable to connect to the server. Please check your internet connection.");
-                return;
-            }
-
-            // More specific error messages
             if (error.code === 'permission-denied') {
                 toast.error("Permission denied. Please check your connection and try again.");
-            } else if (error.code === 'unavailable') {
+            } else if (error.code === 'unavailable' || error.code === 'not-found') {
                 toast.error("Service temporarily unavailable. Please try again later.");
             } else {
-                toast.error("Registration failed: " + (error.message || "Please try again"));
+                toast.error("Registration failed. Please try again later.");
             }
         }
     };
@@ -384,7 +351,7 @@ function RegisterPage() {
                                 </select>
                             </div>
                             <div className="form-group">
-                                <label>ID Number: *</label>
+                                <label>Proof Number: *</label>
                                 <input 
                                     type="text"
                                     value={formData.idNumber}
@@ -469,7 +436,7 @@ function RegisterPage() {
                         </div>
                     </div>
 
-                    <div className="form-group password-group">
+                    {/* <div className="form-group password-group">
                         <label>Create Password: *</label>
                         <div className="password-input-container">
                             <input 
@@ -507,13 +474,12 @@ function RegisterPage() {
                                 {showConfirmPassword ? "Hide" : "Show"}
                             </button>
                         </div>
-                    </div>
+                    </div> */}
 
                     <button type="submit" className="submit-button">Next</button>
                 </form>
                 </div>
             </div>
-            {/* <Footer /> */}
         </div>
         <Footer />
         </div>
