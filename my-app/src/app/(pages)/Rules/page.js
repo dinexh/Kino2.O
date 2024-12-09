@@ -60,7 +60,7 @@ const RulesContent = () => {
               src={selectedEvent.image}
               alt={selectedEvent.title}
               width={400}
-              height={300}
+              height={400}
               priority
             />
           </div>

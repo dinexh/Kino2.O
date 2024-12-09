@@ -116,10 +116,33 @@ function RegisterPage() {
             }
         }
 
+        // Password confirmation validation
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Passwords do not match");
+            return false;
+        }
+
+        // Profession-specific validation
+        if (formData.profession === 'student') {
+            if (!formData.college || !formData.idNumber) {
+                toast.error("Please fill in all student details");
+                return false;
+            }
+        } else if (formData.profession === 'working') {
+            if (!formData.idType || !formData.idNumber) {
+                toast.error("Please fill in all professional details");
+                return false;
+            }
+        }
+
         // Required fields validation
         if (!formData.name || !formData.email || !formData.phoneNumber || 
             !formData.profession || !formData.gender || 
+<<<<<<< HEAD
             formData.selectedEvents.length === 0) {
+=======
+            formData.selectedEvents.length === 0 || !formData.password) {
+>>>>>>> karthik
             toast.error("Please fill in all required fields");
             return false;
         }
@@ -137,6 +160,7 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
+<<<<<<< HEAD
             // Simplified connection test
             const registrationsRef = collection(db, 'registrations');
             
@@ -195,17 +219,107 @@ function RegisterPage() {
                 toast.dismiss(loadingToast);
                 toast.error("Failed to save registration. Please try again.");
             }
+=======
+            // Check Firebase connection
+            const timeoutPromise = new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Firebase connection timeout')), 10000)
+            );
+
+            const connectionTest = async () => {
+                const testRef = collection(db, 'users');
+                await getDocs(query(testRef, limit(1)));
+            };
+
+            await Promise.race([connectionTest(), timeoutPromise]);
+
+            // First check if email already exists
+            const usersRef = collection(db, 'users');
+            const emailQuery = query(usersRef, where('email', '==', formData.email));
+            const emailSnapshot = await getDocs(emailQuery);
+            
+            if (!emailSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("This email is already registered");
+                return;
+            }
+
+            // Check if ID number already exists
+            const idQuery = query(usersRef, where('username', '==', formData.idNumber));
+            const idSnapshot = await getDocs(idQuery);
+            
+            if (!idSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("This ID number is already registered");
+                return;
+            }
+
+            // Create registration document
+            const registrationRef = await addDoc(collection(db, 'registrations'), {
+                name: formData.name,
+                email: formData.email,
+                phoneNumber: formData.countryCode + formData.phoneNumber,
+                profession: formData.profession,
+                idType: formData.profession === 'working' ? formData.idType : null,
+                idNumber: formData.idNumber,
+                college: formData.profession === 'student' ? formData.college : null,
+                gender: formData.gender,
+                referralName: formData.referralName || null,
+                selectedEvents: formData.selectedEvents,
+                registrationDate: serverTimestamp(),
+                paymentStatus: 'pending'
+            });
+
+            // Create user document
+            await addDoc(collection(db, 'users'), {
+                username: formData.idNumber,
+                password: formData.password, // Note: In production, implement proper password hashing
+                email: formData.email,
+                role: 'registeredUser',
+                name: formData.name,
+                registrationId: registrationRef.id,
+                createdAt: serverTimestamp()
+            });
+
+            // Store registration data in session storage
+            sessionStorage.setItem('registrationData', JSON.stringify({
+                ...formData,
+                registrationId: registrationRef.id
+            }));
+
+            toast.dismiss(loadingToast);
+            toast.success("Registration successful! Proceeding to payment...");
+            
+            // Add a small delay before navigation
+            setTimeout(() => {
+                router.push('/events/payment');
+            }, 1000);
+>>>>>>> karthik
 
         } catch (error) {
             console.error('Error during registration:', error);
             toast.dismiss(loadingToast);
             
+<<<<<<< HEAD
             if (error.code === 'permission-denied') {
                 toast.error("Permission denied. Please check your connection and try again.");
             } else if (error.code === 'unavailable' || error.code === 'not-found') {
                 toast.error("Service temporarily unavailable. Please try again later.");
             } else {
                 toast.error("Registration failed. Please try again later.");
+=======
+            if (error.message === 'Firebase connection timeout') {
+                toast.error("Unable to connect to the server. Please check your internet connection.");
+                return;
+            }
+
+            // More specific error messages
+            if (error.code === 'permission-denied') {
+                toast.error("Permission denied. Please check your connection and try again.");
+            } else if (error.code === 'unavailable') {
+                toast.error("Service temporarily unavailable. Please try again later.");
+            } else {
+                toast.error("Registration failed: " + (error.message || "Please try again"));
+>>>>>>> karthik
             }
         }
     };
@@ -351,7 +465,11 @@ function RegisterPage() {
                                 </select>
                             </div>
                             <div className="form-group">
+<<<<<<< HEAD
                                 <label>Proof Number: *</label>
+=======
+                                <label>ID Number: *</label>
+>>>>>>> karthik
                                 <input 
                                     type="text"
                                     value={formData.idNumber}
@@ -436,7 +554,11 @@ function RegisterPage() {
                         </div>
                     </div>
 
+<<<<<<< HEAD
                     {/* <div className="form-group password-group">
+=======
+                    <div className="form-group password-group">
+>>>>>>> karthik
                         <label>Create Password: *</label>
                         <div className="password-input-container">
                             <input 
@@ -454,6 +576,29 @@ function RegisterPage() {
                                 {showPassword ? "Hide" : "Show"}
                             </button>
                         </div>
+<<<<<<< HEAD
+=======
+                    </div>
+
+                    <div className="form-group password-group">
+                        <label>Confirm Password: *</label>
+                        <div className="password-input-container">
+                            <input 
+                                type={showConfirmPassword ? "text" : "password"}
+                                value={formData.confirmPassword}
+                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+                                placeholder="Confirm your password"
+                                required
+                            />
+                            <button 
+                                type="button" 
+                                className="password-toggle"
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            >
+                                {showConfirmPassword ? "Hide" : "Show"}
+                            </button>
+                        </div>
+>>>>>>> karthik
                     </div>
 
                     <div className="form-group password-group">
@@ -480,6 +625,10 @@ function RegisterPage() {
                 </form>
                 </div>
             </div>
+<<<<<<< HEAD
+=======
+            {/* <Footer /> */}
+>>>>>>> karthik
         </div>
         <Footer />
         </div>
