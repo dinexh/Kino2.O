@@ -15,11 +15,11 @@ const ComingEvents = () => {
 
         <div className="message">
           <p className="primary-text">
-            Registrations haven't started yet!
+            Registrations haven&apos;t started yet!
           </p>
           
           <p className="secondary-text">
-            We'll notify you through email or our Telegram group when registrations open.
+            We&apos;ll notify you through email or our Telegram group when registrations open.
           </p>
 
           <div className="button-container">
