@@ -12,12 +12,19 @@ const Team = () => {
                 </div>
                 <div className="team-container-in-image">
                     <Image 
-                        src="https://i.imghippo.com/files/VIZ9107fTw.png" 
-                        width={500} 
+                        src="https://i.imghippo.com/files/VTB4360BXY.png" 
+                        width={1200} 
                         height={500} 
                         alt="Team"
                         className="team-image"
-                        style={{ width: '100%', height: '100%' }}
+                        priority
+                        quality={100}
+                        style={{ 
+                            width: '100%',
+                            height: 'auto',
+                            objectFit: 'cover',
+                            maxWidth: '100%'
+                        }}
                     />
                 </div>
             </div>

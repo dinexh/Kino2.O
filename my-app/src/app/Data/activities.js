@@ -2,7 +2,7 @@ export const activities = [
   {
     id: 1,
     title: 'Short Film Contest',
-    image: 'https://i.imghippo.com/files/bB5398nSA.png',
+    image: 'https://i.imghippo.com/files/FG5998mfk.png',
     description: "Unleash your inner filmmaker and let your vision take the spotlight. Craft compelling short films that inspire, entertain, or provoke thought. From screenplay to direction, show the art of storytelling at its finest. A platform for budding filmmakers to shine like never before!",
     date: 'January 10-12, 2025',
     rulesId: 'short-film-contest',

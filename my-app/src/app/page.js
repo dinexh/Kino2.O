@@ -12,11 +12,11 @@ import Gallery from './UI/Gallery/page'
 import FAQ from './UI/FAQ/page' 
 import Team from './UI/Team/page'
 import Sponcers from './UI/Sponcers/page'
-import { useState, useEffect } from 'react'; // Import useState and useEffect
-import Lenis from '@studio-freight/lenis' // Import Lenis
+import { useState, useEffect } from 'react'; 
+import Link from 'next/link';
 
 export default function Home() {
-  const [loading, setLoading] = useState(true); // State to manage loading
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -25,33 +25,6 @@ export default function Home() {
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);
-
-  // Initialize Lenis smooth scrolling
-  // useEffect(() => {
-  //   const lenis = new Lenis({
-  //     duration: 1.2,
-  //     easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // https://www.desmos.com/calculator/brs54l4xou
-  //     direction: 'vertical', // vertical, horizontal
-  //     gestureDirection: 'vertical', // vertical, horizontal, both
-  //     smooth: true,
-  //     mouseMultiplier: 1,
-  //     smoothTouch: false,
-  //     touchMultiplier: 2,
-  //     infinite: false,
-  //   })
-
-  //   function raf(time) {
-  //     lenis.raf(time)
-  //     requestAnimationFrame(raf)
-  //   }
-
-  //   requestAnimationFrame(raf)
-
-  //   return () => {
-  //     lenis.destroy()
-  //   }
-  // }, [])
-
   return (
     <main>
       <div className="home-component">
@@ -64,10 +37,8 @@ export default function Home() {
                   <Nav />
                 </div>
                 <Hero />
-                <div className="home-component-counter-about">
-                  <CountdownTimer />
-                  <About />
-                </div>
+                <CountdownTimer />
+                <About />
                 <Events />
                 <Gallery />
                 <Team/>
@@ -76,6 +47,9 @@ export default function Home() {
                 <div className="home-component-footer">
                   <Footer />
                 </div>
+                <Link href="/events/register" className="floating-register-btn">
+                  Register Now
+                </Link>
               </>
             )}
           </div>

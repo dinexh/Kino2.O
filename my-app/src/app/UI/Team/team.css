@@ -36,11 +36,20 @@
     max-width: 1200px;
     margin: 0 auto;
     position: relative;
+    aspect-ratio: 12/7;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .team-image {
     display: block;
     width: 100%;
-    height: auto;
-    object-fit: contain;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.team-image:hover {
+    transform: scale(1.02);
 }

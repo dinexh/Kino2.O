@@ -99,3 +99,124 @@ html {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-scrollbar-hover);
 }
+
+/* Add these new styles for the floating register button */
+.floating-register-btn {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  padding: 0.9rem 2.2rem;
+  background: rgba(255, 213, 0, 0.15);
+  border: 1.5px solid rgba(255, 213, 0, 0.5);
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--yellow);
+  cursor: pointer;
+  text-decoration: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.36),
+    inset 0 0 20px rgba(255, 213, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.floating-register-btn::before {
+  content: '🚀';
+  font-size: 1.2rem;
+  transition: all 0.4s ease;
+}
+
+.floating-register-btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 213, 0, 0.2),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: all 0.4s ease;
+}
+
+.floating-register-btn:hover {
+  transform: translateY(-5px) scale(1.02);
+  background: rgba(255, 213, 0, 0.2);
+  border-color: rgba(255, 213, 0, 0.8);
+  color: #FFD500;
+  padding-right: 2.5rem;
+  padding-left: 1.9rem;
+  box-shadow: 
+    0 15px 40px rgba(255, 213, 0, 0.2),
+    inset 0 0 20px rgba(255, 213, 0, 0.2);
+}
+
+.floating-register-btn:hover::before {
+  transform: translateX(-3px) rotate(-45deg) scale(1.2);
+}
+
+.floating-register-btn:hover::after {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.floating-register-btn:active {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 20px rgba(255, 213, 0, 0.2),
+    inset 0 0 10px rgba(255, 213, 0, 0.2);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.36),
+      inset 0 0 20px rgba(255, 213, 0, 0.1),
+      0 0 0 0 rgba(255, 213, 0, 0.3);
+  }
+  70% {
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.36),
+      inset 0 0 20px rgba(255, 213, 0, 0.1),
+      0 0 0 15px rgba(255, 213, 0, 0);
+  }
+  100% {
+    box-shadow: 
+      0 8px 32px 0 rgba(0, 0, 0, 0.36),
+      inset 0 0 20px rgba(255, 213, 0, 0.1),
+      0 0 0 0 rgba(255, 213, 0, 0);
+  }
+}
+
+.floating-register-btn {
+  animation: pulse 2.5s infinite;
+}
+
+@media (max-width: 768px) {
+  .floating-register-btn {
+    bottom: 1.5rem;
+    right: 1.5rem;
+    padding: 0.7rem 1.8rem;
+    font-size: 0.8rem;
+    border-radius: 15px;
+  }
+  
+  .floating-register-btn::before {
+    font-size: 1rem;
+  }
+  
+  .floating-register-btn:hover {
+    padding-right: 2rem;
+    padding-left: 1.6rem;
+    transform: translateY(-3px) scale(1.01);
+  }
+}
