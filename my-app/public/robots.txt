@@ -1,0 +1,12 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /private
+Disallow: /admin
+
+# Host
+Host: https://chitramela.in
+
+# Sitemaps
+Sitemap: https://chitramela.in/sitemap.xml
+Sitemap: https://chitramela.in/server-sitemap.xml
