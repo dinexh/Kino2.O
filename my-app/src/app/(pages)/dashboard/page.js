@@ -4,7 +4,7 @@ import Navigation from '../components/navdash/navdash';
 import Footer from '../components/footer/footerdash';
 import { CSVLink } from 'react-csv'
 import './dashboard.css'
-import { db } from '../../../firebase/config'
+import { db } from '../../../config/firebase'
 import { collection, getDocs, doc, updateDoc } from 'firebase/firestore'
 
 export default function Dashboard() {
