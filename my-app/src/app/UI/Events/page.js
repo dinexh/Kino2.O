@@ -99,7 +99,7 @@ const Events = () => {
                 <div className="event-modal-details-in">
                   <div className="events-modal-details-heading-one">
                   <p className='date'><strong>Date:</strong> {selectedActivity.date}</p>
-                  <p className='endDate'><strong>End Date to Register : {selectedActivity.End}</strong></p>
+                  <p className='endDate'><strong>End Date to Register and Submit : {selectedActivity.End}</strong></p>
                   </div>
                   <div className="events-modal-details-heading-two">
                   <p className='description'>{selectedActivity.description}</p>
