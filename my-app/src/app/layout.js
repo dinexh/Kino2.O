@@ -4,12 +4,15 @@ import "./globals.css";
 
 export const metadata = {
   metadataBase: new URL('https://chitramela.in'),
-  title: "Chitramela 2024 | Official Website",
-  description: "Chitramela (చిత్రమేళ) - The Premier Art, Photography & Film Festival by KL University SAC. Annual cultural festival celebrating creative arts at Koneru Lakshmaiah Education Foundation, Vijayawada.",
-  keywords: "Chitramela, Chitramela 2025, Chitra Mela, చిత్రమేళ, KL University fest, KLEF cultural fest, Avanflix, ZeroOne, Corgnetrix, Student Activity Center KLU, Koneru Lakshmaiah Education Foundation events, Vijayawada arts festival, Andhra Pradesh cultural events",
+  title: "Chitramela 2024 - KL University Arts Festival | చిత్రమేళ",
+  description: "Chitramela (చిత్రమేళ) is KL University's Premier Art, Photography & Film Festival in Vijayawada. Experience art exhibitions, photography contests, and film screenings at KLEF's biggest cultural event.",
+  keywords: "Chitramela, చిత్రమేళ, KL University arts festival, Chitramela 2024, KLU cultural fest, KLEF events Vijayawada, art festival Andhra Pradesh, photography contest Vijayawada, student film festival AP",
+  alternates: {
+    canonical: 'https://chitramela.in',
+  },
   openGraph: {
-    title: "Chitramela 2024 | Official Website",
-    description: "Chitramela (చిత్రమేళ) - The Premier Art, Photography & Film Festival by KL University SAC, sponsored by Avanflix, ZeroOne, and Corgnetrix. Join us for a celebration of creative arts and culture at KLEF, Vijayawada.",
+    title: "Chitramela 2024 - KL University Arts Festival | చిత్రమేళ",
+    description: "Chitramela (చిత్రమేళ) is KL University's Premier Art, Photography & Film Festival. Join us for exhibitions, contests & cultural celebrations at KLEF, Vijayawada.",
     url: "https://chitramela.in",
     siteName: "Chitramela 2024",
     images: [
@@ -17,10 +20,10 @@ export const metadata = {
         url: "https://chitramela.in/assets/newlogo.png",
         width: 1200,
         height: 630,
-        alt: "Chitramela 2024 - KL University's Premier Arts Festival"
+        alt: "Chitramela 2024 - KL University Arts Festival"
       },
     ],
-    locale: "en_US",
+    locale: "en_IN",
     type: "website",
   },
   twitter: {
@@ -70,6 +73,43 @@ export const metadata = {
     ],
   },
   manifest: '/site.webmanifest',
+};
+
+export const generateMetadata = () => {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Event',
+    name: 'Chitramela 2024',
+    description: 'KL University\'s Premier Art, Photography & Film Festival',
+    image: 'https://chitramela.in/assets/newlogo.png',
+    organizer: {
+      '@type': 'Organization',
+      name: 'KL University Student Activity Center',
+      url: 'https://sac.kluniversity.in/'
+    },
+    location: {
+      '@type': 'Place',
+      name: 'Koneru Lakshmaiah Education Foundation',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Vijayawada',
+        addressRegion: 'Andhra Pradesh',
+        addressCountry: 'IN'
+      }
+    },
+    offers: {
+      '@type': 'Offer',
+      url: 'https://chitramela.in',
+      availability: 'https://schema.org/InStock'
+    }
+  };
+
+  return {
+    ...metadata,
+    other: {
+      'script:ld+json': JSON.stringify(jsonLd),
+    },
+  };
 };
 
 export const viewport = {
