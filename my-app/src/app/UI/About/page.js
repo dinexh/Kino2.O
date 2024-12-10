@@ -34,7 +34,7 @@ const About = () => {
         <div className="about-header">
           <h2>
             <p className="about">ABOUT</p>
-            <p> THE FESTVAL</p>
+            <p> THE FESTIVAL</p>
           </h2>
         </div>
 

@@ -48,9 +48,9 @@ export default function Nav() {
   const navLinks = [
     { href: 'about-info', label: 'About' },
     { href: 'events', label: 'Events' },
+    { href: 'gallery', label: 'Gallery' },
     { href: 'team', label: 'Team' },
     { href: 'sponsors', label: 'Partners' },
-    { href: 'gallery', label: 'Gallery' },
   ]
 
   return (

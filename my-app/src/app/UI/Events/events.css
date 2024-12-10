@@ -2,6 +2,10 @@
   padding: 4rem 2rem;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   width: 100%;
 }
 
@@ -302,7 +306,13 @@
   font-size: 1.2rem;
   font-weight: 500;
 }
-
+.endDate{
+  text-align: center;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  color: white;
+  text-decoration: underline;
+}
 .description {
   color: #e0e0e0;
   font-size: 1rem;
