@@ -10,14 +10,14 @@ export const viewport = {
 export function generateMetadata() {
   const metadata = {
     metadataBase: new URL('https://chitramela.in'),
-    title: "Chitramela 2025 - KL University Arts Festival | చిత్రమేళ",
+    title: "Chitramela 2025 - KL University Film Festival",
     description: "Chitramela (చిత్రమేళ) is KL University's Premier Art, Photography & Film Festival happening on January 4th, 2025 in Vijayawada. Experience art exhibitions, photography contests, and film screenings at KLEF's biggest cultural event.",
     keywords: "Chitramela 2025, చిత్రమేళ, KL University arts festival, January 2025 events Vijayawada, KLU cultural fest, KLEF events Vijayawada, art festival Andhra Pradesh, photography contest Vijayawada, student film festival AP",
     alternates: {
       canonical: 'https://chitramela.in',
     },
     openGraph: {
-      title: "Chitramela 2025 - KL University Arts Festival | చిత్రమేళ",
+      title: "Chitramela 2025 - KL University Film Festival",
       description: "Chitramela (చిత్రమేళ) is KL University's Premier Art, Photography & Film Festival. Join us for exhibitions, contests & cultural celebrations at KLEF, Vijayawada.",
       url: "https://chitramela.in",
       siteName: "Chitramela 2025",
@@ -26,7 +26,7 @@ export function generateMetadata() {
           url: "https://chitramela.in/assets/newlogo.png",
           width: 1200,
           height: 630,
-          alt: "Chitramela 2025 - KL University Arts Festival"
+          alt: "Chitramela 2025 - KL University Film Festival"
         },
       ],
       locale: "en_IN",
@@ -104,7 +104,7 @@ export function generateMetadata() {
         streetAddress: 'Green Fields',
         addressLocality: 'Vaddeswaram',
         addressRegion: 'Andhra Pradesh',
-        postalCode: '522502',
+        postalCode: '522302',
         addressCountry: 'IN'
       }
     },
