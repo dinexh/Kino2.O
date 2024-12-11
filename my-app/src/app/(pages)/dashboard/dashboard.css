@@ -1,0 +1,224 @@
+.admin-dashboard {
+    min-height: 100vh;
+    background: #1a1a1a;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    background: rgba(30, 30, 30, 0.95);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header-top h1 {
+    color: gold;
+    margin: 0;
+    font-size: 2rem;
+}
+
+.header-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.header-actions button {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.download-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.logout-btn {
+    background: #f44336;
+    color: white;
+}
+
+.header-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: rgba(45, 45, 45, 0.9);
+    padding: 1.5rem;
+    border-radius: 0.8rem;
+    text-align: center;
+}
+
+.stat-card h3 {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-card p {
+    color: gold;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.dashboard-controls {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.search-box {
+    flex: 1;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(45, 45, 45, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 1rem;
+}
+
+.filter-controls select {
+    padding: 1rem;
+    background: rgba(45, 45, 45, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.registrations-table {
+    background: rgba(30, 30, 30, 0.95);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #2d2d2d;
+    color: gold;
+    padding: 1rem;
+    text-align: left;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 1.5rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-name {
+    font-size: 1.1rem;
+    color: white;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.registration-id {
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.registration-date {
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.event-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background: rgba(255, 215, 0, 0.1);
+    color: gold;
+    border-radius: 1rem;
+    font-size: 0.9rem;
+    margin: 0.2rem;
+}
+
+.payment-info {
+    margin-top: 1rem;
+    color: #e0e0e0;
+}
+
+.view-receipt {
+    margin-top: 0.8rem;
+    padding: 0.5rem 1rem;
+    background: gold;
+    color: black;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.status-select {
+    width: 100%;
+    padding: 0.8rem;
+    border: none;
+    border-radius: 0.3rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.status-select.pending {
+    background: #FFA726;
+    color: black;
+}
+
+.status-select.verified {
+    background: #66BB6A;
+    color: black;
+}
+
+.status-select.rejected {
+    background: #EF5350;
+    color: white;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.edit-btn, .delete-btn {
+    flex: 1;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.edit-btn {
+    background: #2196F3;
+    color: white;
+}
+
+.delete-btn {
+    background: #f44336;
+    color: white;
+}
+
+/* Keep existing modal styles */
+ 
