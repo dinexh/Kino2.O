@@ -24,11 +24,16 @@ const Dashboard = () => {
       const snapshot = await getDocs(registrationsRef);
       const registrationsData = snapshot.docs.map(doc => {
         const data = doc.data();
-        console.log('Registration data:', data);
+        // Add timestamp if it doesn't exist
+        const timestamp = data.timestamp || new Date();
+        
+        console.log('Raw timestamp:', data.timestamp);
+        console.log('Processed timestamp:', timestamp);
         
         return {
           id: doc.id,
           ...data,
+          timestamp: timestamp,
           phone: data.phone || data.phoneNumber || data.mobile || data.mobileNumber || 'N/A'
         };
       });
@@ -72,8 +77,12 @@ const Dashboard = () => {
 
   const downloadCSV = () => {
     const formatDate = (timestamp) => {
-      if (!timestamp) return '';
-      return new Date(timestamp.toDate()).toLocaleDateString();
+      if (!timestamp || !timestamp.toDate) return 'No date';
+      try {
+        return timestamp.toDate().toLocaleDateString();
+      } catch (error) {
+        return 'Invalid date';
+      }
     };
 
     // Updated headers to include payment information
@@ -143,7 +152,13 @@ const Dashboard = () => {
               <td>{reg.name}</td>
               <td>{reg.email}</td>
               <td>{reg.phone !== 'N/A' ? reg.phone : 'No phone number'}</td>
-              <td>{new Date(reg.timestamp?.toDate()).toLocaleDateString()}</td>
+              <td>
+                {reg.timestamp ? 
+                  (reg.timestamp instanceof Date ? 
+                    reg.timestamp.toLocaleDateString() :
+                    new Date(reg.timestamp.seconds * 1000).toLocaleDateString()
+                  ) : 'No date'}
+              </td>
               <td>{reg.paymentMethod || 'Not specified'}</td>
               <td>{reg.transactionId || 'N/A'}</td>
               <td>
@@ -238,7 +253,11 @@ const Dashboard = () => {
                   </p>
                   <p>
                     <span>📅</span>
-                    {new Date(reg.timestamp?.toDate()).toLocaleDateString()}
+                    {reg.timestamp ? 
+                      (reg.timestamp instanceof Date ? 
+                        reg.timestamp.toLocaleDateString() :
+                        new Date(reg.timestamp.seconds * 1000).toLocaleDateString()
+                      ) : 'No date'}
                   </p>
                   <div className="payment-info">
                     <p>
