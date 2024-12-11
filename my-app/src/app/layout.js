@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 import "./globals.css";
 import Offline from './offline/offline';
+import { AuthProvider } from '../context/AuthContext';
 
 export const viewport = {
   width: "device-width",
@@ -148,8 +149,10 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Offline />
-        {children}
+        <AuthProvider>
+          <Offline />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,14 +1,16 @@
 .admin-dashboard {
     min-height: 100vh;
-    background: #1a1a1a;
+    background: linear-gradient(to bottom, #000000, #1a1a1a);
     padding: 2rem;
 }
 
 .dashboard-header {
-    background: rgba(30, 30, 30, 0.95);
+    background: rgba(0, 0, 0, 0.8);
     border-radius: 1rem;
     padding: 1.5rem;
     margin-bottom: 2rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.1);
 }
 
 .header-top {
@@ -22,6 +24,13 @@
     color: gold;
     margin: 0;
     font-size: 2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.user-info {
+    color: gold;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .header-actions {
@@ -31,20 +40,18 @@
 
 .header-actions button {
     padding: 0.8rem 1.5rem;
-    border: none;
+    border: 1px solid gold;
     border-radius: 0.5rem;
     font-weight: 600;
     cursor: pointer;
+    background: transparent;
+    color: gold;
+    transition: all 0.3s ease;
 }
 
-.download-btn {
-    background: #4CAF50;
-    color: white;
-}
-
-.logout-btn {
-    background: #f44336;
-    color: white;
+.header-actions button:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 
 .header-stats {
@@ -54,10 +61,12 @@
 }
 
 .stat-card {
-    background: rgba(45, 45, 45, 0.9);
+    background: rgba(0, 0, 0, 0.8);
     padding: 1.5rem;
     border-radius: 0.8rem;
     text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.1);
 }
 
 .stat-card h3 {
@@ -70,155 +79,476 @@
     color: gold;
     font-size: 1.8rem;
     font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .dashboard-controls {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     display: flex;
     gap: 1rem;
-    margin-bottom: 2rem;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .search-box {
     flex: 1;
+    min-width: 250px;
 }
 
-.search-box input {
-    width: 100%;
-    padding: 1rem;
-    background: rgba(45, 45, 45, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 0.5rem;
-    color: white;
-    font-size: 1rem;
+.filter-controls {
+    min-width: 150px;
 }
 
+.search-box input,
 .filter-controls select {
-    padding: 1rem;
-    background: rgba(45, 45, 45, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    padding: 0.75rem 1rem;
     border-radius: 0.5rem;
-    color: white;
-    font-size: 1rem;
-    cursor: pointer;
+    color: gold;
+    font-size: 0.9rem;
+    width: 100%;
 }
 
 .registrations-table {
-    background: rgba(30, 30, 30, 0.95);
+    background: rgba(0, 0, 0, 0.8);
     border-radius: 1rem;
-    padding: 1.5rem;
+    padding: 1rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     overflow-x: auto;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.9rem;
 }
 
 th {
-    background: #2d2d2d;
+    background: rgba(0, 0, 0, 0.95);
     color: gold;
-    padding: 1rem;
+    padding: 0.75rem;
     text-align: left;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     text-transform: uppercase;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 td {
-    padding: 1.5rem 1rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    color: #ffffff;
+    font-size: 0.9rem;
 }
 
 .user-name {
-    font-size: 1.1rem;
-    color: white;
+    color: gold;
+    font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
 }
 
-.registration-id {
-    color: #888;
-    font-size: 0.9rem;
-}
-
+.registration-id,
 .registration-date {
     color: #888;
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
+    font-size: 0.8rem;
 }
 
 .event-badge {
     display: inline-block;
-    padding: 0.3rem 0.8rem;
+    padding: 0.25rem 0.5rem;
     background: rgba(255, 215, 0, 0.1);
     color: gold;
     border-radius: 1rem;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     margin: 0.2rem;
-}
-
-.payment-info {
-    margin-top: 1rem;
-    color: #e0e0e0;
-}
-
-.view-receipt {
-    margin-top: 0.8rem;
-    padding: 0.5rem 1rem;
-    background: gold;
-    color: black;
-    border: none;
-    border-radius: 0.3rem;
-    cursor: pointer;
-    font-weight: 600;
+    border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .status-select {
     width: 100%;
-    padding: 0.8rem;
-    border: none;
+    padding: 0.5rem;
+    border: 1px solid rgba(255, 215, 0, 0.3);
     border-radius: 0.3rem;
-    margin-bottom: 1rem;
+    background: rgba(0, 0, 0, 0.9);
+    color: gold;
     cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
-.status-select.pending {
-    background: #FFA726;
-    color: black;
+.status-select:hover {
+    border-color: gold;
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
 }
 
-.status-select.verified {
-    background: #66BB6A;
-    color: black;
+.status-select:focus {
+    outline: none;
+    border-color: gold;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
 }
 
-.status-select.rejected {
-    background: #EF5350;
-    color: white;
-}
-
-.action-buttons {
+.pagination {
+    margin-top: 1.5rem;
     display: flex;
+    justify-content: center;
     gap: 0.5rem;
 }
 
-.edit-btn, .delete-btn {
-    flex: 1;
-    padding: 0.5rem;
-    border: none;
+.pagination-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid gold;
+    background: transparent;
+    color: gold;
     border-radius: 0.3rem;
     cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.pagination-btn.active {
+    background: gold;
+    color: black;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.view-toggle {
+    display: flex;
+    gap: 1rem;
+    margin-right: 1rem;
+}
+
+.toggle-btn {
+    padding: 0.75rem 1.5rem;
+    border: 1px solid gold;
+    background: transparent;
+    color: gold;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    min-width: 160px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-btn:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.15);
+    transform: translateY(-1px);
+}
+
+.toggle-btn.active {
+    background: gold;
+    color: black;
     font-weight: 600;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
 }
 
-.edit-btn {
-    background: #2196F3;
-    color: white;
+.toggle-btn.active:hover {
+    background: #ffd700;
+    box-shadow: 0 6px 18px rgba(255, 215, 0, 0.4);
 }
 
-.delete-btn {
-    background: #f44336;
-    color: white;
+.status-actions {
+    width: 120px;
+    min-width: 120px;
+    padding: 0.75rem !important;
 }
 
-/* Keep existing modal styles */
+/* Update payment details styles */
+.payment-details {
+    min-width: 200px;
+    padding: 0.75rem !important;
+}
+
+.payment-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.payment-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.payment-info-item .label {
+    color: #888;
+    min-width: 70px;
+}
+
+.payment-info-item .value {
+    color: gold;
+    font-weight: 500;
+}
+
+/* Update table cell widths for better alignment */
+.contact-details {
+    width: 25%;
+    min-width: 200px;
+}
+
+.events-cell {
+    width: 30%;
+    min-width: 180px;
+}
+
+.payment-details {
+    width: 25%;
+    min-width: 200px;
+}
+
+.status-actions {
+    width: 20%;
+    min-width: 140px;
+}
+
+/* Make the table more compact */
+td {
+    padding: 0.75rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    vertical-align: top;
+}
+
+/* Update events list to be more compact */
+.events-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.event-badge {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+.download-btn {
+    padding: 0.8rem 1.5rem;
+    border: 1px solid gold;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: transparent;
+    color: gold;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.download-btn:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    transform: translateY(-1px);
+}
+
+.download-btn:active {
+    transform: translateY(0);
+}
+
+/* Add these mobile responsive styles at the end of your dashboard.css */
+
+@media screen and (max-width: 1024px) {
+    .admin-dashboard {
+        padding: 1rem;
+    }
+
+    .dashboard-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .header-top {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .header-actions {
+        flex-direction: row;
+        justify-content: center;
+        width: 100%;
+        gap: 1rem;
+    }
+
+    .header-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+    .dashboard-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .view-toggle {
+        width: 100%;
+    }
+
+    .search-box {
+        width: 100%;
+    }
+
+    .filter-controls {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .registrations-table {
+        overflow-x: auto;
+    }
+
+    .registrations-table table {
+        min-width: 800px; /* Ensure table can be scrolled horizontally */
+    }
+
+    .stat-card {
+        padding: 0.8rem;
+    }
+
+    .stat-card h3 {
+        font-size: 0.9rem;
+    }
+
+    .stat-card p {
+        font-size: 1.2rem;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .pagination-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .header-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .download-btn,
+    .logout-btn {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+
+    .view-toggle button {
+        padding: 8px;
+        font-size: 0.9rem;
+    }
+
+    .search-box input,
+    .filter-controls select {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
+
+    .contact-details {
+        padding: 0.8rem;
+    }
+
+    .user-name {
+        font-size: 0.95rem;
+    }
+
+    .contact-info {
+        font-size: 0.85rem;
+    }
+
+    .events-cell {
+        padding: 0.8rem;
+    }
+
+    .event-badge {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+
+    .modal-content {
+        width: 95%;
+        padding: 1rem;
+    }
+
+    .modal-close {
+        top: 0.5rem;
+        right: 0.5rem;
+        font-size: 1.5rem;
+    }
+}
+
+/* Add smooth scrolling for table overflow */
+.registrations-table {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 215, 0, 0.5) rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar styles */
+.registrations-table::-webkit-scrollbar {
+    height: 6px;
+}
+
+.registrations-table::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.registrations-table::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 215, 0, 0.5);
+    border-radius: 3px;
+}
+
+/* Add loading spinner styles */
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #000000, #1a1a1a, #2c2c2c);
+    color: #FFD700;
+    font-size: 1.2rem;
+}
+
+.loading::after {
+    content: '';
+    width: 30px;
+    height: 30px;
+    margin-left: 15px;
+    border: 3px solid #FFD700;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: loading-spinner 0.8s linear infinite;
+}
+
+@keyframes loading-spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
  

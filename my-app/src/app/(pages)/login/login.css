@@ -1,0 +1,214 @@
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #000000, #1a1a1a, #2c2c2c);
+    position: relative;
+    overflow: hidden;
+}
+
+.film-reel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('/images/film-reel-pattern.png');
+    opacity: 0.05;
+    animation: moveBackground 30s linear infinite;
+    pointer-events: none;
+}
+
+.login-form {
+    background: rgba(18, 18, 18, 0.95);
+    padding: 2.5rem;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    z-index: 1;
+    backdrop-filter: blur(10px);
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.login-form h1 {
+    color: #ffffff;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.login-form input:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+    outline: none;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.login-form input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.login-form button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #FFD700, #B8860B);
+    color: #000;
+    border: 1px solid rgba(255, 217, 0, 0.3);
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.login-form button:hover {
+    background: linear-gradient(135deg, #FFE55C, #DAA520);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+}
+
+.switch-mode-btn,
+.forgot-password-btn {
+    background: transparent !important;
+    color: rgba(255, 215, 0, 0.8) !important;
+    margin-top: 0.5rem;
+    border: none !important;
+    text-transform: none !important;
+    text-shadow: none !important;
+}
+
+.switch-mode-btn:hover,
+.forgot-password-btn:hover {
+    color: #FFD700 !important;
+    background: rgba(255, 215, 0, 0.1) !important;
+}
+
+@keyframes moveBackground {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: 100% 100%;
+    }
+}
+
+.password-input-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.password-input-container input {
+    width: 100%;
+    padding-right: 45px; /* Slightly more space for the icon */
+}
+
+.password-toggle-btn {
+    position: absolute !important;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none !important;
+    border: none !important;
+    padding: 8px !important;
+    cursor: pointer;
+    width: auto !important;
+    height: auto !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 215, 0, 0.6) !important;
+    transition: all 0.3s ease;
+}
+
+.password-toggle-btn:hover {
+    color: #FFD700 !important;
+    background: none !important;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.password-toggle-btn svg {
+    width: 18px;
+    height: 18px;
+    opacity: 0.9;
+}
+
+/* Remove any existing margin-bottom from the password input since the container handles it */
+.password-input-container input {
+    margin-bottom: 0;
+}
+
+/* For dark theme */
+.password-toggle-btn {
+    color: rgba(255, 215, 0, 0.8);
+}
+
+.password-toggle-btn:hover {
+    color: #FFD700;
+}
+
+/* Mobile Responsive Styles */
+@media screen and (max-width: 768px) {
+    .login-form {
+        margin: 1rem;
+        padding: 1.5rem;
+        max-width: 100%;
+    }
+
+    .logo-container img {
+        width: 160px !important;
+        height: auto !important;
+    }
+
+    .login-form h1 {
+        font-size: 1.5rem;
+        margin-bottom: 1.2rem;
+    }
+
+    .login-form input,
+    .login-form button {
+        padding: 10px;
+        font-size: 0.95rem;
+    }
+
+    .film-reel-overlay {
+        opacity: 0.03; /* Slightly reduce overlay opacity on mobile */
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .login-form {
+        padding: 1.2rem;
+    }
+
+    .logo-container {
+        margin-bottom: 1.5rem;
+    }
+
+    .logo-container img {
+        width: 140px !important;
+    }
+} 
