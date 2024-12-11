@@ -17,7 +17,7 @@ const Footer = () => {
 
     const router = useRouter();
     const GoToLogin = () => {
-        router.push('/auth/login');
+        router.push('/login');
     };
 
     return (
