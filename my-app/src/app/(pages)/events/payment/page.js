@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Footer from '../../../components/Footer/Footer';
 import './payment.css';
 import Image from 'next/image';
-import DemoQR from '../../../Assets/DemoQR.png';
+import DemoQR from '../../../Assets/QR.png';
 import { db } from '../../../../config/firebase';
 import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';

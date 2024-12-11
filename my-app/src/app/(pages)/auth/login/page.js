@@ -1,15 +1,27 @@
 "use client";
-import React from "react";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { Toaster } from 'react-hot-toast';
+import { auth } from '@/config/firebase';
+import { signInWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 
 import "./page.css";
 
 const Login = () => {
   const router = useRouter();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is already logged in, redirect to dashboard
+        router.replace("/admin/dashboard");
+      }
+    });
+
+    return () => unsubscribe();
+  }, [router]);
 
   const [userData, setUserData] = useState({
     username: "",
@@ -40,42 +52,13 @@ const Login = () => {
     const loadingToast = toast.loading("Authenticating...");
 
     try {
-      // Replace Firebase authentication with your API call
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          username: userData.username.toLowerCase(),
-          password: userData.password
-        })
-      });
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        userData.username,
+        userData.password
+      );
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Login failed');
-      }
-
-      // Store token
-      localStorage.setItem('token', data.token);
-
-      const userRole = data.user.role;
-      const roleRoutes = {
-        superadmin: "/admin/dashboard",
-        admin: "/admin/dashboard",
-        registeredUser: "/user/dashboard"
-      };
-
-      const targetRoute = roleRoutes[userRole];
-
-      if (!targetRoute) {
-        toast.dismiss(loadingToast);
-        toast.error(`Unauthorized access: Invalid role (${userRole})`);
-        setIsLoading(false);
-        return;
-      }
+      const user = userCredential.user;
 
       // Dismiss loading toast and show success
       toast.dismiss(loadingToast);
@@ -86,7 +69,7 @@ const Login = () => {
 
       // Add slight delay before redirect
       setTimeout(() => {
-        router.replace(targetRoute);
+        router.replace("/admin/dashboard");
       }, 1000);
 
       // Reset login attempts on successful login

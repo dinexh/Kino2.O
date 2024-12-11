@@ -459,7 +459,7 @@ function RegisterPage() {
                         </div>
                     </div>
     
-                    <div className="form-group" style={{ textDecoration: "underline" }}>
+                    <div className="form-group-register" style={{ textDecoration: "underline" }}>
 
                         End Date to Register and Submit : 30th December 2024                   
                     </div>

@@ -228,7 +228,12 @@
     padding: 1rem;
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
 }
-
+.form-group-register{
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 400;
+    color: gold;
+}
 @media (max-width: 768px) {
     .events-grid {
         grid-template-columns: 1fr;
