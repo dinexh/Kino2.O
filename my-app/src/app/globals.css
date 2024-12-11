@@ -220,3 +220,21 @@ html {
     transform: translateY(-3px) scale(1.01);
   }
 }
+
+/* Add these new rules after your existing CSS */
+
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  pointer-events: none;
+  cursor: default;
+}
+
+/* For any clickable images inside links or buttons */
+a img, button img {
+  pointer-events: auto;
+  cursor: pointer;
+}

@@ -1,6 +1,7 @@
 import { Inter } from 'next/font/google'
 const inter = Inter({ subsets: ['latin'] })
 import "./globals.css";
+import Offline from './offline';
 
 export const viewport = {
   width: "device-width",
@@ -12,9 +13,13 @@ export function generateMetadata() {
     metadataBase: new URL('https://chitramela.in'),
     title: "Chitramela 2025 - KL University Film Festival",
     description: "Chitramela (చిత్రమేళ) is KL University's Premier Art, Photography & Film Festival happening on January 4th, 2025 in Vijayawada. Experience art exhibitions, photography contests, and film screenings at KLEF's biggest cultural event.",
-    keywords: "Chitramela 2025, చిత్రమేళ, KL University arts festival, January 2025 events Vijayawada, KLU cultural fest, KLEF events Vijayawada, art festival Andhra Pradesh, photography contest Vijayawada, student film festival AP",
+    keywords: "Chitramela 2025, చిత్రమేళ, Chitra Mela, Chitramela, KL University arts festival, January 2025 events Vijayawada, KLU cultural fest, KLEF events Vijayawada, art festival Andhra Pradesh, photography contest Vijayawada, student film festival AP, Koneru Lakshmaiah Film Festival, KLU Film Fest",
     alternates: {
       canonical: 'https://chitramela.in',
+      languages: {
+        'en-IN': 'https://chitramela.in',
+        'te': 'https://chitramela.in',
+      }
     },
     openGraph: {
       title: "Chitramela 2025 - KL University Film Festival",
@@ -31,6 +36,7 @@ export function generateMetadata() {
       ],
       locale: "en_IN",
       type: "website",
+      alternateLocale: ["te_IN"],
     },
     twitter: {
       card: "summary_large_image",
@@ -79,6 +85,15 @@ export function generateMetadata() {
       ],
     },
     manifest: '/site.webmanifest',
+    category: "Event",
+    classification: "Arts & Culture Festival",
+    coverage: "Andhra Pradesh, India",
+    distribution: "Global",
+    rating: "General",
+    revisitAfter: "7 days",
+    'og:site_name': ["Chitramela", "చిత్రమేళ", "Chitra Mela", "Chitramela 2025", "KLU Film Festival"],
+    'og:locale:alternate': ['te_IN'],
+    'news_keywords': "Chitramela, చిత్రమేళ, Chitra Mela, KL University Film Festival, KLEF Cultural Fest, Koneru Lakshmaiah University Events",
   };
 
   const jsonLd = {
@@ -123,6 +138,7 @@ export function generateMetadata() {
   return {
     ...metadata,
     other: {
+      ...metadata.other,
       'script:ld+json': JSON.stringify(jsonLd),
     },
   };
@@ -132,6 +148,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Offline />
         {children}
       </body>
     </html>
