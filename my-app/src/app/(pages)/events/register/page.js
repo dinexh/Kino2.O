@@ -70,9 +70,6 @@ function RegisterPage() {
         confirmPassword: '',
     });
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
     const events = [
         "Photography Contest",
         "Short Film Contest",
@@ -157,7 +154,7 @@ function RegisterPage() {
 
         try {
             // Simplified connection test
-            const registrationsRef = collection(db, 'registrations');
+            const registrationsRef = collection(db, 'newRegistrations');
             
             // Check if email already exists
             try {
@@ -188,7 +185,7 @@ function RegisterPage() {
 
             // Create registration document
             try {
-                await addDoc(registrationsRef, {
+                const docRef = await addDoc(registrationsRef, {
                     name: formData.name,
                     email: formData.email,
                     phoneNumber: formData.countryCode + formData.phoneNumber,
@@ -203,12 +200,19 @@ function RegisterPage() {
                     paymentStatus: 'pending'
                 });
 
+                // Store registration data in session storage
+                sessionStorage.setItem('registrationData', JSON.stringify({
+                    name: formData.name,
+                    email: formData.email,
+                    phoneNumber: formData.countryCode + formData.phoneNumber,
+                    selectedEvents: formData.selectedEvents
+                }));
+
                 toast.dismiss(loadingToast);
                 toast.success("Registration successful!");
                 
-                setTimeout(() => {
-                    router.push('/events/coming');
-                }, 1000);
+                // Use replace instead of push to prevent back navigation
+                router.replace('/events/payment');
             } catch (saveError) {
                 console.error('Error saving registration:', saveError);
                 toast.dismiss(loadingToast);
@@ -459,47 +463,6 @@ function RegisterPage() {
 
                         End Date to Register and Submit : 30th December 2024                   
                     </div>
-
-                    {/* <div className="form-group password-group">
-                        <label>Create Password: *</label>
-                        <div className="password-input-container">
-                            <input 
-                                type={showPassword ? "text" : "password"}
-                                value={formData.password}
-                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                placeholder="Enter your password"
-                                required
-                            />
-                            <button 
-                                type="button" 
-                                className="password-toggle"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? "Hide" : "Show"}
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="form-group password-group">
-                        <label>Confirm Password: *</label>
-                        <div className="password-input-container">
-                            <input 
-                                type={showConfirmPassword ? "text" : "password"}
-                                value={formData.confirmPassword}
-                                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                                placeholder="Confirm your password"
-                                required
-                            />
-                            <button 
-                                type="button" 
-                                className="password-toggle"
-                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            >
-                                {showConfirmPassword ? "Hide" : "Show"}
-                            </button>
-                        </div>
-                    </div> */}
-
                     <button type="submit" className="submit-button">Next</button>
                 </form>
                 </div>

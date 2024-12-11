@@ -1,15 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['firebasestorage.googleapis.com', 'i.imghippo.com'],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '**',
+            },
+        ],
     },
     webpack: (config) => {
         config.resolve.fallback = {
             ...config.resolve.fallback,
-            module: false,
+            fs: false,
+            net: false,
+            tls: false,
         };
         return config;
-    },
+    }
 };
 
 export default nextConfig;
