@@ -193,6 +193,151 @@
     left: 100%;
 }
 
+/* Modal Background */
+.terms-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Ensure it appears above other content */
+}
+
+/* Modal Content */
+.terms-content {
+    background-color: white; /* White background for the modal */
+    padding: 2rem;
+    border-radius: 10px; /* Rounded corners */
+    position: relative;
+    max-width: 500px; /* Maximum width of the modal */
+    width: 90%; /* Responsive width */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+
+/* Terms and Conditions Text */
+.terms-content h3 {
+    font-size: 1rem;
+}
+
+.terms-content p {
+    font-size: 0.8rem;
+}
+
+/* Checkbox Label */
+label {
+    display: flex; /* Flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    gap: .5rem;
+}
+
+/* Accept and Continue Button */
+.accept {
+    margin-top: 1rem; /* Space above the button */
+    padding: 0.8rem 1.5rem; /* Padding for the button */
+    background-color: #FFD700; /* Gold background */
+    color: #000; /* Black text */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+/* Button Hover Effect */
+.accept:hover {
+    background-color: #FFA500; /* Darker gold on hover */
+}
+
+
+
+.file-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+}
+
+.file-name {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.submit-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.screenshot-preview {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.screenshot-preview img {
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+}
+
+.file-name {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.telegram-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.telegram-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    position: relative;
+    max-width: 500px;
+    width: 90%;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 50%;
+}
+
+.close-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.redirect-notice {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+    text-align: center;
+}
+
+
 @media (max-width: 768px) {
     .payment-container {
         padding: 1.5rem;
@@ -414,87 +559,4 @@
         margin-bottom: 0.5rem;
         border-radius: 8px;
     }
-}
-
-.file-input {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: white;
-}
-
-.file-name {
-    margin-top: 5px;
-    font-size: 0.9em;
-    color: #666;
-}
-
-.submit-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-}
-
-.screenshot-preview {
-    margin-top: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-}
-
-.screenshot-preview img {
-    max-width: 100%;
-    height: auto;
-    margin-top: 10px;
-}
-
-.file-name {
-    margin-bottom: 10px;
-    color: #666;
-}
-
-.telegram-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.telegram-content {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    position: relative;
-    max-width: 500px;
-    width: 90%;
-}
-
-.close-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 50%;
-}
-
-.close-button:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.redirect-notice {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-    text-align: center;
 }

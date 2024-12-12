@@ -18,6 +18,9 @@ function PaymentPage() {
     const [paymentMethod, setPaymentMethod] = useState('');
     const [otherPaymentMethod, setOtherPaymentMethod] = useState('');
     const [showTelegramPopup, setShowTelegramPopup] = useState(false);
+    const [amt, Setamt] = useState('');
+    const [isTermsAccepted, setIsTermsAccepted] = useState(false);
+    const [showTermsModal, setShowTermsModal] = useState(false);
 
     // Payment methods array
     const paymentMethods = ['Google Pay', 'PhonePe', 'Paytm', 'Other'];
@@ -32,6 +35,7 @@ function PaymentPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Form submitted with transaction ID:", transactionId); // Log transaction ID
 
         if (!transactionId.trim()) {
             toast.error("Please enter the transaction ID/UPI reference/UTR number");
@@ -65,10 +69,10 @@ function PaymentPage() {
 
             // Create registration document directly
             const docRef = await addDoc(registrationsRef, {
-                name: registrationData.name || '', // Default to empty string if undefined
-                email: registrationData.email || '',
-                phoneNumber: registrationData.phoneNumber || '',
-                profession: registrationData.profession || 'unknown', // Default to 'unknown' if undefined
+                name: registrationData.name,
+                email: registrationData.email,
+                phoneNumber: registrationData.phoneNumber,
+                profession: registrationData.profession,
                 idType: registrationData.profession === 'working' ? registrationData.idType || '' : null,
                 idNumber: registrationData.idNumber || '',
                 college: registrationData.profession === 'student' ? registrationData.college || '' : null,
@@ -88,11 +92,6 @@ function PaymentPage() {
 
             // Show Telegram popup instead of immediate redirect
             setShowTelegramPopup(true);
-            
-            // Redirect after 10 seconds
-            setTimeout(() => {
-                router.push('/');
-            }, 10000);
         } catch (error) {
             console.error('Error:', error);
             toast.dismiss(loadingToast);
@@ -102,29 +101,58 @@ function PaymentPage() {
         }
     };
 
-    // Add this new function to handle popup close
-    const handleClosePopup = () => {
-        setShowTelegramPopup(false);
-        router.push('/');
+    // Function to handle amount change
+    const handleAmountChange = (e) => {
+        const value = e.target.value;
+        console.log("Amount entered:", value); // Log the entered amount
+        if (value === '350') {
+            Setamt(value);
+            setShowTermsModal(true);
+            console.log("Showing terms modal"); // Log when modal is shown
+        } else {
+            Setamt(value);
+        }
     };
 
-    // Update the TelegramPopup component
-    const TelegramPopup = () => (
-        <div className="telegram-popup" onClick={handleClosePopup}>
-            <div className="telegram-content" onClick={(e) => e.stopPropagation()}>
-                <button className="close-button" onClick={handleClosePopup}>×</button>
-                <h2 className='success'>You've Successfully paid ₹350 towards Chitramela</h2>
-                <h2>Join Our Telegram Group!</h2>
-                <p>Stay updated with event details and connect with other participants</p>
-                <a 
-                    href="https://t.me/+qpJmuwnkAc5hMDVl" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="telegram-button"
-                >
-                    Join Telegram Group
-                </a>
-                <p className="redirect-notice">Click anywhere to continue to homepage</p>
+    // Function to handle terms acceptance
+    const handleTermsAccept = () => {
+        setIsTermsAccepted(true);
+        setShowTermsModal(false);
+        console.log("Terms accepted"); // Log when terms are accepted
+    };
+
+    // Modal component for terms
+    const TermsModal = () => (
+        <div className="terms-modal" onClick={() => setShowTermsModal(false)}>
+            <div className="terms-content" onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={() => setShowTermsModal(false)}>×</button>
+                <h2>Terms and Conditions</h2>
+                <p>Please read and accept the terms and conditions to proceed.</p>
+                <h3>1. Payment Amount:</h3>
+                <p>The total amount due for registration is ₹350. Participants are required to pay this exact amount. Payments of any other amount will not be accepted.</p>
+                <h3>2. Transaction ID Requirement:</h3>
+                <p>Upon completing the payment, you must provide a valid Transaction ID, UPI Reference, or UTR Number. This ID must correspond to the payment of ₹350 made through any UPI application.</p>
+                <h3>3. Validity of Transaction ID:</h3>
+                <p>Only unique and valid Transaction IDs will be accepted. Duplicate IDs or fake IDs will result in the rejection of your payment and registration.</p>
+                <h3>4. Payment Confirmation:</h3>
+                <p>After submitting your Transaction ID, your payment will be verified. You will receive a confirmation email once your payment has been successfully processed.</p>
+                <h3>5. Refund Policy:</h3>
+                <p>Payments are non-refundable once processed. Ensure that you are ready to complete the registration before making the payment.</p>
+                <h3>6. Acceptance of Terms:</h3>
+                <p>By proceeding with the payment, you acknowledge that you have read, understood, and agree to these terms and conditions. If you do not agree with any part of these terms, please do not proceed with the payment.</p>
+                <h3>7. Contact Information:</h3>
+                <p>For any queries or concerns regarding the payment process, please contact our support team at <a href="mailto:klsacphotography@gmail.com">support@example.com</a>.</p>
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={isTermsAccepted}
+                        onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                    />
+                    I accept the terms and conditions
+                </label>
+                <button className='accept' onClick={handleTermsAccept} disabled={!isTermsAccepted}>
+                    Accept and Continue
+                </button>
             </div>
         </div>
     );
@@ -152,71 +180,84 @@ function PaymentPage() {
                     <p><strong>Total Amount:</strong> ₹350</p>
                 </div>
 
-                <div className="payment-instructions">
-                    <h2>Payment Instructions</h2>
-                    <p>1. Scan the QR code below using any UPI app</p>
-                    <p>2. Pay the total amount shown above</p>
-                    <p>3. Enter the transaction ID/UPI reference/UTR number below</p>
-                    <p>4. Submit to complete your registration</p>
-                </div>
-
-                <div className="qr-code">
-                    <Image 
-                        src={DemoQR.src} 
-                        alt="Payment QR Code" 
-                        width={300} 
-                        height={300}
+                <div className="form-group">
+                    <label>Enter Amount</label>
+                    <input 
+                        type="number"
+                        value={amt}
+                        onChange={handleAmountChange}
+                        placeholder="₹350"
+                        disabled={amt === '350'}
                     />
                 </div>
 
-                <form onSubmit={handleSubmit} className="payment-form">
-                    <div className="form-group">
-                        <label>Payment Method: *</label>
-                        <select
-                            value={paymentMethod}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                            required
-                        >
-                            <option value="">Select Payment Method</option>
-                            {paymentMethods.map((method) => (
-                                <option key={method} value={method}>{method}</option>
-                            ))}
-                        </select>
-                    </div>
+                {isTermsAccepted && amt === '350' && (
+                    <form onSubmit={handleSubmit} className="payment-form">
+                        <div className="payment-instructions">
+                            <h2>Payment Instructions</h2>
+                            <p>1. Scan the QR code below using any UPI app</p>
+                            <p>2. Pay the total amount shown above</p>
+                            <p>3. Enter the transaction ID/UPI reference/UTR number below</p>
+                            <p>4. Submit to complete your registration</p>
+                        </div>
 
-                    {paymentMethod === 'Other' && (
+                        <div className="qr-code">
+                            <Image 
+                                src={DemoQR.src} 
+                                alt="Payment QR Code" 
+                                width={300} 
+                                height={300}
+                            />
+                        </div>
                         <div className="form-group">
-                            <label>Specify Payment Method: *</label>
+                            <label>Payment Method: *</label>
+                            <select
+                                value={paymentMethod}
+                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                required
+                            >
+                                <option value="">Select Payment Method</option>
+                                {paymentMethods.map((method) => (
+                                    <option key={method} value={method}>{method}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {paymentMethod === 'Other' && (
+                            <div className="form-group">
+                                <label>Specify Payment Method: *</label>
+                                <input
+                                    type="text"
+                                    value={otherPaymentMethod}
+                                    onChange={(e) => setOtherPaymentMethod(e.target.value)}
+                                    placeholder="Enter payment method name"
+                                    required
+                                />
+                            </div>
+                        )}
+
+                        <div className="form-group">
+                            <label>Transaction ID / UPI Reference / UTR Number: *</label>
                             <input
                                 type="text"
-                                value={otherPaymentMethod}
-                                onChange={(e) => setOtherPaymentMethod(e.target.value)}
-                                placeholder="Enter payment method name"
+                                value={transactionId}
+                                onChange={(e) => setTransactionId(e.target.value)}
+                                placeholder="Enter transaction ID/UPI reference/UTR number"
                                 required
                             />
                         </div>
-                    )}
 
-                    <div className="form-group">
-                        <label>Transaction ID / UPI Reference / UTR Number: *</label>
-                        <input
-                            type="text"
-                            value={transactionId}
-                            onChange={(e) => setTransactionId(e.target.value)}
-                            placeholder="Enter transaction ID/UPI reference/UTR number"
-                            required
-                        />
-                    </div>
-
-                    <button 
-                        type="submit" 
-                        className="submit-button" 
-                        disabled={isProcessing}
-                    >
-                        {isProcessing ? 'Processing...' : 'Complete Registration'}
-                    </button>
-                </form>
+                        <button 
+                            type="submit" 
+                            className="submit-button" 
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? 'Processing...' : 'Complete Registration'}
+                        </button>
+                    </form>
+                )}
             </div>
+            {showTermsModal && <TermsModal />}
             <Footer />
         </div>
     );
