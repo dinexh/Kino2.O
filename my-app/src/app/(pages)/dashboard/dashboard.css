@@ -551,4 +551,46 @@ td {
         transform: rotate(360deg);
     }
 }
+
+/* Add these styles for the delete button */
+.status-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.delete-btn {
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid #ff4444;
+    color: #ff4444;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    width: 100%;
+}
+
+.delete-btn:hover {
+    background: rgba(255, 68, 68, 0.1);
+    box-shadow: 0 0 10px rgba(255, 68, 68, 0.2);
+}
+
+.delete-btn:active {
+    transform: scale(0.98);
+}
+
+/* Update the status-actions width to accommodate the new button */
+.status-actions {
+    width: 20%;
+    min-width: 150px;
+}
+
+/* Add responsive styles for the delete button */
+@media screen and (max-width: 768px) {
+    .delete-btn {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+}
  

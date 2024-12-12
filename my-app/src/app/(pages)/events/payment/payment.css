@@ -441,7 +441,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -452,34 +452,30 @@
     background-color: white;
     padding: 2rem;
     border-radius: 10px;
-    text-align: center;
-    max-width: 400px;
+    position: relative;
+    max-width: 500px;
     width: 90%;
 }
 
-.telegram-content h2 {
-    color: #0088cc;
-    margin-bottom: 1rem;
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 50%;
 }
 
-.telegram-button {
-    display: inline-block;
-    background-color: #0088cc;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 5px;
-    text-decoration: none;
-    margin: 1rem 0;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-.telegram-button:hover {
-    background-color: #006699;
+.close-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
 .redirect-notice {
+    margin-top: 1rem;
     font-size: 0.9rem;
     color: #666;
-    margin-top: 1rem;
+    text-align: center;
 }

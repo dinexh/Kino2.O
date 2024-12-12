@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { db, auth } from '../../../config/firebase';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
 import './dashboard.css';
@@ -80,39 +80,22 @@ export default function Dashboard() {
                     throw new Error('User not authenticated');
                 }
 
-                // Fetch new registrations
-                const paymentsRef = collection(db, 'newRegistrations');
-                const paymentsQuery = query(paymentsRef, orderBy('paymentDate', 'desc'));
-                const paymentsSnapshot = await getDocs(paymentsQuery).catch(error => {
-                    console.error('Error fetching new registrations:', error);
-                    throw new Error('Failed to fetch new registrations');
-                });
-                
-                const paymentData = paymentsSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    paymentDate: doc.data().paymentDate?.toDate().toLocaleString() || 'N/A'
-                }));
-                
-                const oldRegRef = collection(db, 'registrations');
-                const oldRegQuery = query(oldRegRef, orderBy('registrationDate', 'desc'));
-                const oldRegSnapshot = await getDocs(oldRegQuery);
-                
-                const oldRegData = oldRegSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    registrationDate: doc.data().registrationDate?.toDate().toLocaleString() || 'N/A'
-                }));
-                
-                const workshopsRef = collection(db, 'workshopRegistrations');
-                const workshopsQuery = query(workshopsRef, orderBy('registrationDate', 'desc'));
-                const workshopsSnapshot = await getDocs(workshopsQuery);
-                
-                const workshopData = workshopsSnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                    registrationDate: doc.data().registrationDate?.toDate().toLocaleString() || 'N/A'
-                }));
+                const fetchCollection = async (collectionName, orderByField = 'paymentDate') => {
+                    const collectionRef = collection(db, collectionName);
+                    const q = query(collectionRef, orderBy(orderByField, 'desc'));
+                    const snapshot = await getDocs(q);
+                    return snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data(),
+                        paymentDate: doc.data()[orderByField]?.toDate().toLocaleString() || 'N/A'
+                    }));
+                };
+
+                const [paymentData, oldRegData, workshopData] = await Promise.all([
+                    fetchCollection('newRegistrations'),
+                    fetchCollection('registrations', 'registrationDate'),
+                    fetchCollection('workshopRegistrations', 'registrationDate')
+                ]);
 
                 setPayments(paymentData);
                 setOldRegistrations(oldRegData);
@@ -122,7 +105,6 @@ export default function Dashboard() {
                 console.error('Error fetching data:', error);
                 toast.error(error.message || 'Error loading dashboard data', { id: loadingToast });
                 
-                // If it's an authentication error, redirect to login
                 if (error.code === 'permission-denied' || error.message === 'User not authenticated') {
                     router.push('/login');
                 }
@@ -210,6 +192,56 @@ export default function Dashboard() {
         verifiedPayments: payments.filter(p => p.paymentStatus === 'verified').length,
         totalWorkshops: workshopRegistrations.length,
         oldRegistrations: oldRegistrations.length
+    };
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this registration? This action cannot be undone.')) {
+            return;
+        }
+
+        const loadingToast = toast.loading('Deleting registration...');
+        try {
+            const collectionRef = activeView === 'new' ? 'newRegistrations' : 'registrations';
+            await deleteDoc(doc(db, collectionRef, id));
+            
+            // Update the local state
+            if (activeView === 'new') {
+                setPayments(payments.filter(item => item.id !== id));
+            } else {
+                setOldRegistrations(oldRegistrations.filter(item => item.id !== id));
+            }
+            
+            toast.success('Registration deleted successfully!', { id: loadingToast });
+        } catch (error) {
+            console.error('Error deleting registration:', error);
+            toast.error('Failed to delete registration', { id: loadingToast });
+        }
+    };
+
+    const handleStatusChange = async (id, newStatus) => {
+        const loadingToast = toast.loading('Updating status...');
+        try {
+            const collectionRef = activeView === 'new' ? 'newRegistrations' : 'registrations';
+            await updateDoc(doc(db, collectionRef, id), {
+                paymentStatus: newStatus
+            });
+            
+            // Update local state
+            if (activeView === 'new') {
+                setPayments(payments.map(item => 
+                    item.id === id ? { ...item, paymentStatus: newStatus } : item
+                ));
+            } else {
+                setOldRegistrations(oldRegistrations.map(item => 
+                    item.id === id ? { ...item, paymentStatus: newStatus } : item
+                ));
+            }
+            
+            toast.success('Status updated successfully!', { id: loadingToast });
+        } catch (error) {
+            console.error('Error updating status:', error);
+            toast.error('Failed to update status', { id: loadingToast });
+        }
     };
 
     return (
@@ -339,12 +371,20 @@ export default function Dashboard() {
                                 <td className="status-actions">
                                     <select 
                                         className={`status-select ${item.paymentStatus}`}
-                                        defaultValue={item.paymentStatus}
+                                        value={item.paymentStatus}
+                                        onChange={(e) => handleStatusChange(item.id, e.target.value)}
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="verified">Verified</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
+                                    <button 
+                                        className="delete-btn"
+                                        onClick={() => handleDelete(item.id)}
+                                        aria-label="Delete registration"
+                                    >
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))}

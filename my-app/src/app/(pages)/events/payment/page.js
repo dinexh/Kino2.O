@@ -88,10 +88,17 @@ function PaymentPage() {
         }
     };
 
-    // Add the Telegram popup component
+    // Add this new function to handle popup close
+    const handleClosePopup = () => {
+        setShowTelegramPopup(false);
+        router.push('/');
+    };
+
+    // Update the TelegramPopup component
     const TelegramPopup = () => (
-        <div className="telegram-popup">
-            <div className="telegram-content">
+        <div className="telegram-popup" onClick={handleClosePopup}>
+            <div className="telegram-content" onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={handleClosePopup}>×</button>
                 <h2>Join Our Telegram Group!</h2>
                 <p>Stay updated with event details and connect with other participants</p>
                 <a 
@@ -102,7 +109,7 @@ function PaymentPage() {
                 >
                     Join Telegram Group
                 </a>
-                {/* <p className="redirect-notice">You will be redirected to homepage in 10 seconds...</p> */}
+                <p className="redirect-notice">Click anywhere to continue to homepage</p>
             </div>
         </div>
     );
