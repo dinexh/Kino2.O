@@ -56,8 +56,8 @@
 
 .header-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
 }
 
 .stat-card {
@@ -364,6 +364,7 @@ td {
 .download-btn:active {
     transform: translateY(0);
 }
+
 
 /* Add these mobile responsive styles at the end of your dashboard.css */
 

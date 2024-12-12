@@ -279,6 +279,10 @@ export default function Dashboard() {
                         <p>{dashboardStats.pendingPayments}</p>
                     </div>
                     <div className="stat-card">
+                        <h3>Total Revenue Generated</h3>
+                        <p>{dashboardStats.totalRegistrations*350}</p>
+                    </div>
+                    <div className="stat-card">
                         <h3>Verified Payments</h3>
                         <p>{dashboardStats.verifiedPayments}</p>
                     </div>

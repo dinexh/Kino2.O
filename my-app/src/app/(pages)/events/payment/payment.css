@@ -170,6 +170,11 @@
     transition: 0.5s;
 }
 
+.success{
+    color:  #FFA500;
+    text-align: center;
+}
+
 .submit-button:hover::before {
     left: 100%;
 }

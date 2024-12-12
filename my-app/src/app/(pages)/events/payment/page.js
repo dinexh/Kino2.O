@@ -99,6 +99,7 @@ function PaymentPage() {
         <div className="telegram-popup" onClick={handleClosePopup}>
             <div className="telegram-content" onClick={(e) => e.stopPropagation()}>
                 <button className="close-button" onClick={handleClosePopup}>×</button>
+                <h2 className='success'>You've Successfully paid ₹350 towards Chitramela</h2>
                 <h2>Join Our Telegram Group!</h2>
                 <p>Stay updated with event details and connect with other participants</p>
                 <a 
