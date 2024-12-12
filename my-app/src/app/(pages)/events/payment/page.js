@@ -6,7 +6,7 @@ import './payment.css';
 import Image from 'next/image';
 import DemoQR from '../../../Assets/QR.png';
 import { db } from '../../../../config/firebase';
-import { doc, updateDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import { doc, updateDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
 
 function PaymentPage() {
@@ -53,32 +53,45 @@ function PaymentPage() {
         try {
             // Get the registration document
             const registrationsRef = collection(db, 'newRegistrations');
-            const q = query(registrationsRef, where("email", "==", registrationData.email));
-            const querySnapshot = await getDocs(q);
-            
-            if (!querySnapshot.empty) {
-                const registrationDoc = querySnapshot.docs[0];
-                
-                // Update payment status without screenshot
-                await updateDoc(doc(db, 'newRegistrations', registrationDoc.id), {
-                    paymentStatus: 'pending_verification',
-                    transactionId: transactionId,
-                    paymentDate: new Date(),
-                    paymentMethod: paymentMethod === 'Other' ? otherPaymentMethod : paymentMethod
-                });
 
-                sessionStorage.removeItem('registrationData');
-                toast.dismiss(loadingToast);
-                toast.success("Payment recorded successfully! We will verify your payment and send you a confirmation email.");
-
-                // Show Telegram popup instead of immediate redirect
-                setShowTelegramPopup(true);
-                
-                // Redirect after 10 seconds
-                setTimeout(() => {
-                    router.push('/');
-                }, 10000);
+            // Check if registrationData is defined and has all required fields
+            if (!registrationData) {
+                throw new Error("Registration data is not available.");
             }
+
+            // Log registrationData for debugging
+            console.log("Registration Data:", registrationData);
+
+            // Create registration document directly
+            const docRef = await addDoc(registrationsRef, {
+                name: registrationData.name || '', // Default to empty string if undefined
+                email: registrationData.email || '',
+                phoneNumber: registrationData.phoneNumber || '',
+                profession: registrationData.profession || 'unknown', // Default to 'unknown' if undefined
+                idType: registrationData.profession === 'working' ? registrationData.idType || '' : null,
+                idNumber: registrationData.idNumber || '',
+                college: registrationData.profession === 'student' ? registrationData.college || '' : null,
+                gender: registrationData.gender || '',
+                referralName: registrationData.referralName || null,
+                selectedEvents: registrationData.selectedEvents || [],
+                registrationDate: serverTimestamp(),
+                paymentStatus: 'pending_verification',
+                transactionId: transactionId,
+                paymentDate: new Date(),
+                paymentMethod: paymentMethod === 'Other' ? otherPaymentMethod : paymentMethod
+            });
+
+            sessionStorage.removeItem('registrationData');
+            toast.dismiss(loadingToast);
+            toast.success("Payment recorded successfully! We will verify your payment and send you a confirmation email.");
+
+            // Show Telegram popup instead of immediate redirect
+            setShowTelegramPopup(true);
+            
+            // Redirect after 10 seconds
+            setTimeout(() => {
+                router.push('/');
+            }, 10000);
         } catch (error) {
             console.error('Error:', error);
             toast.dismiss(loadingToast);

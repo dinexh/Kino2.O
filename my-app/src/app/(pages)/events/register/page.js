@@ -4,8 +4,8 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
-import { db } from '../../../../config/firebase';
-import { collection, addDoc, getDocs, query, where, serverTimestamp, limit } from 'firebase/firestore';
+// import { db } from '../../../../config/firebase';
+// import { collection, addDoc, getDocs, query, where, serverTimestamp, limit } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
 
 function RegisterPage() {
@@ -114,10 +114,10 @@ function RegisterPage() {
         }
 
         // Password confirmation validation
-        if (formData.password !== formData.confirmPassword) {
-            toast.error("Passwords do not match");
-            return false;
-        }
+        // if (formData.password !== formData.confirmPassword) {
+        //     toast.error("Passwords do not match");
+        //     return false;
+        // }
 
         // Profession-specific validation
         if (formData.profession === 'student') {
@@ -153,10 +153,26 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
-            const registrationsRef = collection(db, 'newRegistrations');
+            // const registrationsRef = collection(db, 'newRegistrations');
             
             // Create registration document directly
-            const docRef = await addDoc(registrationsRef, {
+            // const docRef = await addDoc(registrationsRef, {
+            //     name: formData.name,
+            //     email: formData.email,
+            //     phoneNumber: formData.countryCode + formData.phoneNumber,
+            //     profession: formData.profession,
+            //     idType: formData.profession === 'working' ? formData.idType : null,
+            //     idNumber: formData.idNumber,
+            //     college: formData.profession === 'student' ? formData.college : null,
+            //     gender: formData.gender,
+            //     referralName: formData.referralName || null,
+            //     selectedEvents: formData.selectedEvents,
+            //     registrationDate: serverTimestamp(),
+            //     paymentStatus: 'pending'
+            // });
+
+            // Store registration data in session storage
+            sessionStorage.setItem('registrationData', JSON.stringify({
                 name: formData.name,
                 email: formData.email,
                 phoneNumber: formData.countryCode + formData.phoneNumber,
@@ -167,16 +183,7 @@ function RegisterPage() {
                 gender: formData.gender,
                 referralName: formData.referralName || null,
                 selectedEvents: formData.selectedEvents,
-                registrationDate: serverTimestamp(),
-                paymentStatus: 'pending'
-            });
-
-            // Store registration data in session storage
-            sessionStorage.setItem('registrationData', JSON.stringify({
-                name: formData.name,
-                email: formData.email,
-                phoneNumber: formData.countryCode + formData.phoneNumber,
-                selectedEvents: formData.selectedEvents
+                // Add any other fields you want to store
             }));
 
             toast.dismiss(loadingToast);
