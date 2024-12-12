@@ -157,6 +157,29 @@ function PaymentPage() {
         </div>
     );
 
+    // Telegram Popup Component
+    const TelegramPopup = () => (
+        <div className="telegram-popup" onClick={() => {
+            setShowTelegramPopup(false);
+            router.push('/'); // Redirect to homepage when closing the popup
+        }}>
+            <div className="telegram-content" onClick={(e) => e.stopPropagation()}>
+                <h2 className='success'>You've Successfully paid ₹350 towards Chitramela</h2>
+                <h2>Join Our Telegram Group!</h2>
+                <p>Stay updated with event details and connect with other participants</p>
+                <a 
+                    href="https://t.me/+qpJmuwnkAc5hMDVl" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="telegram-button"
+                >
+                    Join Telegram Group
+                </a>
+                <p className="redirect-notice">Click anywhere to continue to homepage</p>
+            </div>
+        </div>
+    );
+
     if (!registrationData) {
         return <div>Loading...</div>;
     }
