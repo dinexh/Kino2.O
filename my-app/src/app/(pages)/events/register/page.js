@@ -153,71 +153,37 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
-            // Simplified connection test
             const registrationsRef = collection(db, 'newRegistrations');
             
-            // Check if email already exists
-            try {
-                const emailQuery = query(registrationsRef, where('email', '==', formData.email));
-                const emailSnapshot = await getDocs(emailQuery);
-                
-                if (!emailSnapshot.empty) {
-                    toast.dismiss(loadingToast);
-                    toast.error("This email is already registered");
-                    return;
-                }
+            // Create registration document directly
+            const docRef = await addDoc(registrationsRef, {
+                name: formData.name,
+                email: formData.email,
+                phoneNumber: formData.countryCode + formData.phoneNumber,
+                profession: formData.profession,
+                idType: formData.profession === 'working' ? formData.idType : null,
+                idNumber: formData.idNumber,
+                college: formData.profession === 'student' ? formData.college : null,
+                gender: formData.gender,
+                referralName: formData.referralName || null,
+                selectedEvents: formData.selectedEvents,
+                registrationDate: serverTimestamp(),
+                paymentStatus: 'pending'
+            });
 
-                // Check if ID number already exists
-                const idQuery = query(registrationsRef, where('idNumber', '==', formData.idNumber));
-                const idSnapshot = await getDocs(idQuery);
-                
-                if (!idSnapshot.empty) {
-                    toast.dismiss(loadingToast);
-                    toast.error("This ID number is already registered");
-                    return;
-                }
-            } catch (queryError) {
-                console.error('Error checking existing registrations:', queryError);
-                toast.dismiss(loadingToast);
-                toast.error("Unable to verify registration details. Please try again.");
-                return;
-            }
+            // Store registration data in session storage
+            sessionStorage.setItem('registrationData', JSON.stringify({
+                name: formData.name,
+                email: formData.email,
+                phoneNumber: formData.countryCode + formData.phoneNumber,
+                selectedEvents: formData.selectedEvents
+            }));
 
-            // Create registration document
-            try {
-                const docRef = await addDoc(registrationsRef, {
-                    name: formData.name,
-                    email: formData.email,
-                    phoneNumber: formData.countryCode + formData.phoneNumber,
-                    profession: formData.profession,
-                    idType: formData.profession === 'working' ? formData.idType : null,
-                    idNumber: formData.idNumber,
-                    college: formData.profession === 'student' ? formData.college : null,
-                    gender: formData.gender,
-                    referralName: formData.referralName || null,
-                    selectedEvents: formData.selectedEvents,
-                    registrationDate: serverTimestamp(),
-                    paymentStatus: 'pending'
-                });
-
-                // Store registration data in session storage
-                sessionStorage.setItem('registrationData', JSON.stringify({
-                    name: formData.name,
-                    email: formData.email,
-                    phoneNumber: formData.countryCode + formData.phoneNumber,
-                    selectedEvents: formData.selectedEvents
-                }));
-
-                toast.dismiss(loadingToast);
-                toast.success("Registration successful!");
-                
-                // Use replace instead of push to prevent back navigation
-                router.replace('/events/payment');
-            } catch (saveError) {
-                console.error('Error saving registration:', saveError);
-                toast.dismiss(loadingToast);
-                toast.error("Failed to save registration. Please try again.");
-            }
+            toast.dismiss(loadingToast);
+            toast.success("Registration successful!");
+            
+            // Use replace instead of push to prevent back navigation
+            router.replace('/events/payment');
 
         } catch (error) {
             console.error('Error during registration:', error);

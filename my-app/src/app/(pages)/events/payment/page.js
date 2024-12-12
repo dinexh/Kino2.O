@@ -16,6 +16,7 @@ function PaymentPage() {
     const [isProcessing, setIsProcessing] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState('');
     const [otherPaymentMethod, setOtherPaymentMethod] = useState('');
+    const [showTelegramPopup, setShowTelegramPopup] = useState(false);
 
     // Payment methods array
     const paymentMethods = ['Google Pay', 'PhonePe', 'Paytm', 'Other'];
@@ -70,9 +71,13 @@ function PaymentPage() {
                 toast.dismiss(loadingToast);
                 toast.success("Payment recorded successfully! We will verify your payment and send you a confirmation email.");
 
+                // Show Telegram popup instead of immediate redirect
+                setShowTelegramPopup(true);
+                
+                // Redirect after 10 seconds
                 setTimeout(() => {
                     router.push('/');
-                }, 1000);
+                }, 10000);
             }
         } catch (error) {
             console.error('Error:', error);
@@ -83,6 +88,25 @@ function PaymentPage() {
         }
     };
 
+    // Add the Telegram popup component
+    const TelegramPopup = () => (
+        <div className="telegram-popup">
+            <div className="telegram-content">
+                <h2>Join Our Telegram Group!</h2>
+                <p>Stay updated with event details and connect with other participants</p>
+                <a 
+                    href="https://t.me/+qpJmuwnkAc5hMDVl" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="telegram-button"
+                >
+                    Join Telegram Group
+                </a>
+                {/* <p className="redirect-notice">You will be redirected to homepage in 10 seconds...</p> */}
+            </div>
+        </div>
+    );
+
     if (!registrationData) {
         return <div>Loading...</div>;
     }
@@ -90,6 +114,7 @@ function PaymentPage() {
     return (
         <div className="payment-page">
             <Toaster position="top-right" />
+            {showTelegramPopup && <TelegramPopup />}
             <div className="payment-container">
                 <h1>Complete Your Payment</h1>
                 <div className="payment-details">
@@ -102,7 +127,7 @@ function PaymentPage() {
                             <li key={index}>{event}</li>
                         ))}
                     </ul>
-                    <p><strong>Total Amount:</strong> ₹360</p>
+                    <p><strong>Total Amount:</strong> ₹350</p>
                 </div>
 
                 <div className="payment-instructions">
