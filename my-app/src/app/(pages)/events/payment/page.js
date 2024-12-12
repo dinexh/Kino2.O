@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Footer from '../../../components/Footer/Footer';
+import backgroundImage from '../../../Assets/register3.webp';
 import './payment.css';
 import Image from 'next/image';
 import DemoQR from '../../../Assets/QR.png';
@@ -133,7 +134,7 @@ function PaymentPage() {
     }
 
     return (
-        <div className="payment-page">
+        <div className="payment-page" style={{ backgroundImage: `url(${backgroundImage.src})` }}>
             <Toaster position="top-right" />
             {showTelegramPopup && <TelegramPopup />}
             <div className="payment-container">

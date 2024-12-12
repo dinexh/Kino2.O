@@ -8,20 +8,34 @@
     flex-direction: column;
     background: #1a1a1a;
     position: relative;
-    padding: 4rem 1rem;
+    /* padding: 4rem 1rem; */
+}
+
+.payment-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1;
 }
 
 .payment-container {
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto 4rem auto;
-    padding: 2.5rem;
-    background: rgba(30, 30, 30, 0.95);
+    max-width: 750px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: black;
     backdrop-filter: blur(10px);
-    border-radius: 1.5rem;
-    border: 1px solid rgba(255, 215, 0, 0.15);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-    flex: 1;
+    border-radius: 2rem;
+    margin: 2rem auto;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+    z-index: 2;
+    padding: 1.5rem;
 }
 
 .payment-container h1 {
