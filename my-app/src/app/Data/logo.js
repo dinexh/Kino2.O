@@ -7,10 +7,10 @@ export const logo = [
     //     logo: "/logo/student_tribe.png",
     //     url: "https://www.studenttribe.in/"
     // },
-    {
-        logo: "/logo/hand.png",
-        url: "https://www.instagram.com/avanflix/?hl=en"
-    },
+    // {
+    //     logo: "/logo/hand.png",
+    //     url: "https://www.instagram.com/avanflix/?hl=en"
+    // },
     {
         logo: "/logo/avanflix.png",
         url: "https://www.instagram.com/avanflix/?hl=en"
