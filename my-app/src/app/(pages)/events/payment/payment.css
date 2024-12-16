@@ -560,3 +560,65 @@ label {
         border-radius: 8px;
     }
 }
+
+/* Media Queries for Terms Modal */
+@media (max-width: 768px) {
+    .terms-content {
+        padding: 1.5rem; /* Reduce padding for smaller screens */
+        width: 90%; /* Ensure it takes up most of the screen width */
+    }
+
+    .terms-content h2 {
+        font-size: 1.5rem; /* Adjust heading size */
+    }
+
+    .terms-content h3 {
+        font-size: 1rem; /* Adjust subheading size */
+    }
+
+    .terms-content p {
+        font-size: 0.9rem; /* Adjust paragraph text size */
+    }
+
+    .accept {
+        padding: 0.6rem 1rem; /* Adjust button padding */
+        font-size: 0.9rem; /* Adjust button font size */
+    }
+}
+
+@media (max-width: 360px) {
+    .terms-content {
+        padding: 1rem; /* Further reduce padding for very small screens */
+        font-size: 0.8rem;
+    }
+
+    .terms-content h2 {
+        font-size: 0.8rem; /* Further adjust heading size */
+    }
+
+    .terms-content h3 {
+        font-size: 0.6rem; /* Further adjust subheading size */
+    }
+
+    .terms-content p {
+        font-size: 0.5rem; /* Further adjust paragraph text size */
+    }
+
+    .accept {
+        padding: 0.5rem 0.8rem; /* Further adjust button padding */
+        font-size: 0.5rem; /* Further adjust button font size */
+    }
+}
+
+.modal-open {
+    pointer-events: none; /* Disable pointer events on the body */
+}
+
+.modal-open .payment-page {
+    pointer-events: none; /* Allow pointer events on the payment page */
+}
+
+/* Ensure the modal content is still interactive */
+.check,.accept{
+    pointer-events: auto;
+}

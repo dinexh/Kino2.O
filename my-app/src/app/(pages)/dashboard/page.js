@@ -18,7 +18,8 @@ const downloadCSV = (data, filename) => {
         'UTR/ID',
         'Payment Method',
         'Payment Date',
-        'Status'
+        'Status',
+        'College'
     ];
 
     // Convert data to CSV format
@@ -30,7 +31,8 @@ const downloadCSV = (data, filename) => {
         item.transactionId || '',
         item.paymentMethod || '',
         item.paymentDate || '',
-        item.paymentStatus || ''
+        item.paymentStatus || '',
+        item.College || ''
     ]);
 
     // Combine headers and data
@@ -63,6 +65,7 @@ export default function Dashboard() {
     const [oldRegistrations, setOldRegistrations] = useState([]);
     const [activeView, setActiveView] = useState('new');
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedDetails, setSelectedDetails] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -146,7 +149,7 @@ export default function Dashboard() {
     };
 
     const closeModal = () => {
-        setSelectedImage(null);
+        setSelectedDetails(null);
     };
 
     const getFilteredData = () => {
@@ -242,6 +245,10 @@ export default function Dashboard() {
             console.error('Error updating status:', error);
             toast.error('Failed to update status', { id: loadingToast });
         }
+    };
+
+    const openModal = (item) => {
+        setSelectedDetails(item);
     };
 
     return (
@@ -347,7 +354,9 @@ export default function Dashboard() {
                                     <div className="contact-info">
                                         <div>{item.phoneNumber}</div>
                                         <div>{item.email}</div>
+                                        <div className="college-name">{item.college || 'N/A'}</div>
                                     </div>
+                                    <button className="details-btn" onClick={() => openModal(item)}>View Details</button>
                                 </td>
                                 <td className="events-cell">
                                     <div className="events-list">
@@ -440,6 +449,22 @@ export default function Dashboard() {
                                 maxHeight: '90vh'
                             }}
                         />
+                    </div>
+                </div>
+            )}
+
+            {selectedDetails && (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={closeModal}>×</button>
+                        <h2>{selectedDetails.name}</h2>
+                        <p><strong>Email:</strong> {selectedDetails.email}</p>
+                        <p><strong>Phone:</strong> {selectedDetails.phoneNumber}</p>
+                        <p><strong>College:</strong> {selectedDetails.college || 'N/A'}</p>
+                        <p><strong>Payment Method:</strong> {selectedDetails.paymentMethod || 'N/A'}</p>
+                        <p><strong>Payment Date:</strong> {selectedDetails.paymentDate || 'N/A'}</p>
+                        <p><strong>Status:</strong> {selectedDetails.paymentStatus || 'N/A'}</p>
+                        <p><strong>Selected Events:</strong> {selectedDetails.selectedEvents?.join(', ') || 'N/A'}</p>
                     </div>
                 </div>
             )}

@@ -33,6 +33,20 @@ function PaymentPage() {
         }
     }, [router]);
 
+    useEffect(() => {
+        // Add class to body when terms modal is shown
+        if (showTermsModal) {
+            document.body.classList.add('modal-open');
+        } else {
+            document.body.classList.remove('modal-open');
+        }
+
+        // Cleanup function to remove class on unmount
+        return () => {
+            document.body.classList.remove('modal-open');
+        };
+    }, [showTermsModal]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         console.log("Form submitted with transaction ID:", transactionId); // Log transaction ID
@@ -125,7 +139,7 @@ function PaymentPage() {
     const TermsModal = () => (
         <div className="terms-modal" onClick={() => setShowTermsModal(false)}>
             <div className="terms-content" onClick={(e) => e.stopPropagation()}>
-                <button className="close-button" onClick={() => setShowTermsModal(false)}>×</button>
+                {/* <button className="close-button" onClick={() => setShowTermsModal(false)}>×</button> */}
                 <h2>Terms and Conditions</h2>
                 <p>Please read and accept the terms and conditions to proceed.</p>
                 <h3>1. Payment Amount:</h3>
@@ -144,6 +158,7 @@ function PaymentPage() {
                 <p>For any queries or concerns regarding the payment process, please contact our support team at <a href="mailto:klsacphotography@gmail.com">support@example.com</a>.</p>
                 <label>
                     <input
+                        className='check'
                         type="checkbox"
                         checked={isTermsAccepted}
                         onChange={(e) => setIsTermsAccepted(e.target.checked)}
