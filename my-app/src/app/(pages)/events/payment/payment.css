@@ -586,7 +586,7 @@ label {
     }
 }
 
-@media (max-width: 360px) {
+@media (max-width: 320px) {
     .terms-content {
         padding: 1rem; /* Further reduce padding for very small screens */
         font-size: 0.8rem;
