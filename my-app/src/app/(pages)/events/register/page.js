@@ -119,19 +119,6 @@ function RegisterPage() {
         //     return false;
         // }
 
-        // Profession-specific validation
-        if (formData.profession === 'student') {
-            if (!formData.college || !formData.idNumber) {
-                toast.error("Please fill in all student details");
-                return false;
-            }
-        } else if (formData.profession === 'working') {
-            if (!formData.idType || !formData.idNumber) {
-                toast.error("Please fill in all professional details");
-                return false;
-            }
-        }
-
         // Required fields validation
         if (!formData.name || !formData.email || !formData.phoneNumber || 
             !formData.profession || !formData.gender || 
@@ -152,14 +139,61 @@ function RegisterPage() {
 
         const loadingToast = toast.loading("Processing registration...");
 
-        try {
-            // Check for duplicate phone number or email
-            const registrationsRef = collection(db, 'newRegistrations');
-            const phoneQuery = query(registrationsRef, where('phoneNumber', '==', formData.countryCode + formData.phoneNumber));
-            const emailQuery = query(registrationsRef, where('email', '==', formData.email));
+        // try {
+            // const registrationsRef = collection(db, 'newRegistrations');
+            
+            // Create registration document directly
+            // const docRef = await addDoc(registrationsRef, {
+            //     name: formData.name,
+            //     email: formData.email,
+            //     phoneNumber: formData.countryCode + formData.phoneNumber,
+            //     profession: formData.profession,
+            //     idType: formData.profession === 'working' ? formData.idType : null,
+            //     idNumber: formData.idNumber,
+            //     college: formData.profession === 'student' ? formData.college : null,
+            //     gender: formData.gender,
+            //     referralName: formData.referralName || null,
+            //     selectedEvents: formData.selectedEvents,
+            //     registrationDate: serverTimestamp(),
+            //     paymentStatus: 'pending'
+            // });
 
-            const phoneSnapshot = await getDocs(phoneQuery);
-            const emailSnapshot = await getDocs(emailQuery);
+            // Store registration data in session storage
+
+            try {
+                // Check for duplicate phone number or email
+                const registrationsRef = collection(db, 'newRegistrations');
+                const phoneQuery = query(registrationsRef, where('phoneNumber', '==', formData.countryCode + formData.phoneNumber));
+                const emailQuery = query(registrationsRef, where('email', '==', formData.email));
+                const phoneSnapshot = await getDocs(phoneQuery);
+                const emailSnapshot = await getDocs(emailQuery);
+
+                if (!phoneSnapshot.empty) {
+                    toast.dismiss(loadingToast);
+                    toast.error("Phone number already registered.");
+                    return;
+                }
+                if (!emailSnapshot.empty) {
+                    toast.dismiss(loadingToast);
+                    toast.error("Email already registered.");
+                    return;
+                }
+                
+            
+
+            sessionStorage.setItem('registrationData', JSON.stringify({
+                name: formData.name,
+                email: formData.email,
+                phoneNumber: formData.countryCode + formData.phoneNumber,
+                profession: formData.profession,
+                idType: formData.profession === 'working' ? formData.idType : null,
+                idNumber: formData.idNumber,
+                college: formData.profession === 'student' ? formData.college : null,
+                gender: formData.gender,
+                referralName: formData.referralName || null,
+                selectedEvents: formData.selectedEvents,
+                // Add any other fields you want to store
+            }));
 
             if (!phoneSnapshot.empty) {
                 toast.dismiss(loadingToast);

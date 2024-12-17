@@ -22,7 +22,7 @@ function PaymentPage() {
     const [paymentMethod, setPaymentMethod] = useState('');
     const [otherPaymentMethod, setOtherPaymentMethod] = useState('');
     const [showTelegramPopup, setShowTelegramPopup] = useState(false);
-    const [amt, Setamt] = useState('');
+    const [amt, setAmt] = useState('');
     const [isTermsAccepted, setIsTermsAccepted] = useState(false);
     const [showTermsModal, setShowTermsModal] = useState(false);
     const [showScreenshotModal, setShowScreenshotModal] = useState(false);
@@ -86,7 +86,20 @@ function PaymentPage() {
                 return;
             }
 
-            // Proceed with payment processing if no duplicates found
+
+            const   transactionQuery = query(registrationsRef, where('transactionId', '==', transactionId));
+            const transactionSnapshot = await getDocs(transactionQuery);
+
+            if (!transactionSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("Duplicate Transaction");
+                return;
+            }
+
+            // Log registrationData for debugging
+            console.log("Registration Data:", registrationData);
+
+            // Create registration document directly
             const docRef = await addDoc(registrationsRef, {
                 name: registrationData.name,
                 email: registrationData.email,
@@ -130,11 +143,11 @@ function PaymentPage() {
         const value = e.target.value;
         console.log("Amount entered:", value); // Log the entered amount
         if (value === '350') {
-            Setamt(value);
+            setAmt(value);
             setShowTermsModal(true);
             console.log("Showing terms modal"); // Log when modal is shown
         } else {
-            Setamt(value);
+            setAmt(value);
         }
     };
 
