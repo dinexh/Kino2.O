@@ -66,7 +66,7 @@ const Footer = () => {
                     </button>
                 </div>
                 <div className="footer-credits">
-                    <p>Designed by <Link href="https://in.linkedin.com/in/dinesh-korukonda-513855271">Dinesh Korukonda</Link> & <Link href="https://in.linkedin.com/in/pavankarthikgaraga">Pavan Karthik Garaga</Link> </p>
+                    <p>Designed & Developed by <Link href="https://in.linkedin.com/in/dinesh-korukonda-513855271">Dinesh Korukonda</Link> & <Link href="https://in.linkedin.com/in/pavankarthikgaraga">Pavan Karthik Garaga</Link> </p>
                     <p>&copy; 2024 <span>Chitramela</span>. All rights reserved.</p>
                 </div>
             </div>
