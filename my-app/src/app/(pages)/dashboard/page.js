@@ -9,30 +9,26 @@ import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
 
 const downloadCSV = (data, filename) => {
-    // Define CSV headers based on your data structure
+    // Define CSV headers based on your requirements
     const headers = [
+        'SNO',
         'Name',
-        'Email',
-        'Phone',
+        'Phone Number',
+        'College',
         'Events',
-        'UTR/ID',
-        'Payment Method',
-        'Payment Date',
-        'Status',
-        'College'
+        'Payment Details - Name',
+        'Payment Details - Number'
     ];
 
-    // Convert data to CSV format
-    const csvData = data.map(item => [
+    // Convert data to CSV format with serial numbers
+    const csvData = data.map((item, index) => [
+        index + 1, // SNO
         item.name || '',
-        item.email || '',
-        item.phoneNumber || '',
-        (item.selectedEvents || []).join(', '),
-        item.transactionId || '',
+        `'${item.phoneNumber || ''}'`, // Add quotes to preserve phone number format
+        item.college || '',
+        (item.selectedEvents || []).join(' | '), // Using | as separator for better readability
         item.paymentMethod || '',
-        item.paymentDate || '',
-        item.paymentStatus || '',
-        item.College || ''
+        item.transactionId || ''
     ]);
 
     // Combine headers and data
@@ -41,8 +37,9 @@ const downloadCSV = (data, filename) => {
         ...csvData
     ].map(row => row.join(',')).join('\n');
 
-    // Create blob and download
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Create blob and download with UTF-8 BOM to help Excel recognize the encoding
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
