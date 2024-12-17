@@ -180,7 +180,7 @@ function PaymentPage() {
             router.push('/'); // Redirect to homepage when closing the popup
         }}>
             <div className="telegram-content" onClick={(e) => e.stopPropagation()}>
-                <h2 className='success'>You've Successfully paid ₹350 towards Chitramela</h2>
+                <h2 className='success'>You've Successfully paid ��350 towards Chitramela</h2>
                 <h2>Join Our Telegram Group!</h2>
                 <p>Stay updated with event details and connect with other participants</p>
                 <a 

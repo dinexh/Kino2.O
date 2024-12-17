@@ -58,6 +58,7 @@ export default function Dashboard() {
     const { user } = useAuth();
     const [payments, setPayments] = useState([]);
     const [workshopRegistrations, setWorkshopRegistrations] = useState([]);
+    const [referral, setReferral] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -355,6 +356,7 @@ export default function Dashboard() {
                                         <div>{item.phoneNumber}</div>
                                         <div>{item.email}</div>
                                         <div className="college-name">{item.college || 'N/A'}</div>
+                                        <div className="referral-name">{item.referralName || 'N/A'}</div>
                                     </div>
                                     <button className="details-btn" onClick={() => openModal(item)}>View Details</button>
                                 </td>

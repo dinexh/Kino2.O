@@ -187,7 +187,7 @@ function RegisterPage() {
             }));
 
             toast.dismiss(loadingToast);
-            toast.success("Registration successful!");
+            toast.success("You will be redirected to payment page!");
             
             // Use replace instead of push to prevent back navigation
             router.replace('/events/payment');
