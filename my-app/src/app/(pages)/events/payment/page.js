@@ -146,21 +146,17 @@ function PaymentPage() {
             <div className="terms-content" onClick={(e) => e.stopPropagation()}>
                 {/* <button className="close-button" onClick={() => setShowTermsModal(false)}>×</button> */}
                 <h2>Terms and Conditions</h2>
-                <p>Please read and accept the terms and conditions to proceed.</p>
-                <h3>1. Payment Amount:</h3>
-                <p>The total amount due for registration is ₹350. Participants are required to pay this exact amount. Payments of any other amount will not be accepted.</p>
-                <h3>2. Transaction ID Requirement:</h3>
-                <p>Upon completing the payment, you must provide a valid Transaction ID, UPI Reference, or UTR Number. This ID must correspond to the payment of ₹350 made through any UPI application.</p>
-                <h3>3. Validity of Transaction ID:</h3>
-                <p>Only unique and valid Transaction IDs will be accepted. Duplicate IDs or fake IDs will result in the rejection of your payment and registration.</p>
-                <h3>4. Payment Confirmation:</h3>
-                <p>After submitting your Transaction ID, your payment will be verified. You will receive a confirmation email once your payment has been successfully processed.</p>
-                <h3>5. Refund Policy:</h3>
-                <p>Payments are non-refundable once processed. Ensure that you are ready to complete the registration before making the payment.</p>
-                <h3>6. Acceptance of Terms:</h3>
-                <p>By proceeding with the payment, you acknowledge that you have read, understood, and agree to these terms and conditions. If you do not agree with any part of these terms, please do not proceed with the payment.</p>
-                <h3>7. Contact Information:</h3>
-                <p>For any queries or concerns regarding the payment process, please contact our support team at <a href="mailto:klsacphotography@gmail.com">support@example.com</a>.</p>
+                <p>Payment Amount:
+                    The registration fee is ₹350. Only this exact amount will be accepted.
+                    Transaction ID Requirement:
+                    After payment, provide a valid Transaction ID, UPI Reference, or UTR Number for verification.
+                    Validity of Payment:
+                    Only unique and valid IDs will be accepted. Duplicate or fake IDs will result in rejection.
+                    Refund Policy:
+                    Payments are non-refundable. Please ensure you are ready to proceed before making the payment.
+                    Acceptance of Terms:
+                    By paying, you confirm that you have read, understood, and agree to these terms.
+                    For queries, contact us at: 📧 chitrmela@example.com</p>
                 <label>
                     <input
                         className='check'
