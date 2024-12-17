@@ -9,6 +9,10 @@ import DemoQR from '../../../Assets/QR.png';
 import { db } from '../../../../config/firebase';
 import { doc, updateDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
+import Link from 'next/link';
+import screenshot1 from '../../../Assets/1.png';
+import screenshot2 from '../../../Assets/2.png';
+import screenshot3 from '../../../Assets/3.png';
 
 function PaymentPage() {
     const router = useRouter();
@@ -21,6 +25,7 @@ function PaymentPage() {
     const [amt, Setamt] = useState('');
     const [isTermsAccepted, setIsTermsAccepted] = useState(false);
     const [showTermsModal, setShowTermsModal] = useState(false);
+    const [showScreenshotModal, setShowScreenshotModal] = useState(false);
 
     // Payment methods array
     const paymentMethods = ['Google Pay', 'PhonePe', 'Paytm', 'Other'];
@@ -195,6 +200,44 @@ function PaymentPage() {
         </div>
     );
 
+    const ScreenshotModal = () => (
+        <div className="screenshot-modal" onClick={() => setShowScreenshotModal(false)}>
+            <div className="screenshot-content" onClick={(e) => e.stopPropagation()}>
+                <button className="close-button" onClick={() => setShowScreenshotModal(false)}>×</button>
+                <h2>How to Find Your Transaction ID</h2>
+                <div className="screenshot-grid">
+                    <div className="screenshot-item">
+                        <Image 
+                            src={screenshot1} 
+                            alt="Screenshot 1" 
+                            width={300} 
+                            height={500}
+                        />
+                        <p>Google Pay Transaction ID Location</p>
+                    </div>
+                    <div className="screenshot-item">
+                        <Image 
+                            src={screenshot2} 
+                            alt="Screenshot 2" 
+                            width={300} 
+                            height={500}
+                        />
+                        <p>PhonePe UPI Reference Location</p>
+                    </div>
+                    <div className="screenshot-item">
+                        <Image 
+                            src={screenshot3} 
+                            alt="Screenshot 3" 
+                            width={300} 
+                            height={500}
+                        />
+                        <p>Paytm UTR Number Location</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     if (!registrationData) {
         return <div>Loading...</div>;
     }
@@ -273,7 +316,15 @@ function PaymentPage() {
                                 />
                             </div>
                         )}
-
+                         <div className="form-group-screenshot">
+                            <p>Please look at the screenshots to locate your payment ID/transaction ID/UPI reference/UTR number</p>
+                            <button 
+                                className="view-screenshot-btn" 
+                                onClick={() => setShowScreenshotModal(true)}
+                            >
+                                View Sample Screenshots
+                            </button>
+                        </div>
                         <div className="form-group">
                             <label>Transaction ID / UPI Reference / UTR Number: *</label>
                             <input
@@ -284,7 +335,6 @@ function PaymentPage() {
                                 required
                             />
                         </div>
-
                         <button 
                             type="submit" 
                             className="submit-button" 
@@ -297,6 +347,7 @@ function PaymentPage() {
             </div>
             {showTermsModal && <TermsModal />}
             <Footer />
+            {showScreenshotModal && <ScreenshotModal />}
         </div>
     );
 }
