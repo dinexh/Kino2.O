@@ -52,41 +52,41 @@ function PaymentPage() {
         };
     }, [showTermsModal]);
 
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            alert("Your session has expired due to inactivity. Please refresh the page.");
+            // Optionally, redirect to login or home page
+            router.push('/');
+        }, 600000); // 5 minutes timeout
+
+        return () => clearTimeout(timeout); // Cleanup on unmount
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form submitted with transaction ID:", transactionId); // Log transaction ID
 
-        if (!transactionId.trim()) {
-            toast.error("Please enter the transaction ID/UPI reference/UTR number");
-            return;
-        }
+        console.log("Submitting payment...");
 
-        if (!paymentMethod) {
-            toast.error("Please select a payment method");
-            return;
-        }
-
-        if (paymentMethod === 'Other' && !otherPaymentMethod.trim()) {
-            toast.error("Please specify the payment method");
-            return;
-        }
+        // if (!validateForm()) {
+        //     return;
+        // }
 
         const loadingToast = toast.loading("Processing payment...");
-        setIsProcessing(true);
 
         try {
-            // Get the registration document
+            // Check for duplicate transaction ID
             const registrationsRef = collection(db, 'newRegistrations');
+            const transactionIdQuery = query(registrationsRef, where('transactionId', '==', transactionId));
 
-            // Check if registrationData is defined and has all required fields
-            if (!registrationData) {
-                throw new Error("Registration data is not available.");
+            const transactionIdSnapshot = await getDocs(transactionIdQuery);
+
+            if (!transactionIdSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("Transaction ID already registered.");
+                return;
             }
 
-            // Log registrationData for debugging
-            console.log("Registration Data:", registrationData);
-
-            // Create registration document directly
+            // Proceed with payment processing if no duplicates found
             const docRef = await addDoc(registrationsRef, {
                 name: registrationData.name,
                 email: registrationData.email,
@@ -112,11 +112,16 @@ function PaymentPage() {
             // Show Telegram popup instead of immediate redirect
             setShowTelegramPopup(true);
         } catch (error) {
-            console.error('Error:', error);
+            console.error('Error during registration:', error);
             toast.dismiss(loadingToast);
-            toast.error("Failed to process payment. Please try again.");
-        } finally {
-            setIsProcessing(false);
+            
+            if (error.code === 'permission-denied') {
+                toast.error("Permission denied. Please check your connection and try again.");
+            } else if (error.code === 'unavailable' || error.code === 'not-found') {
+                toast.error("Service temporarily unavailable. Please try again later.");
+            } else {
+                toast.error("Registration failed. Please try again later.");
+            }
         }
     };
 
@@ -180,7 +185,7 @@ function PaymentPage() {
             router.push('/'); // Redirect to homepage when closing the popup
         }}>
             <div className="telegram-content" onClick={(e) => e.stopPropagation()}>
-                <h2 className='success'>You've Successfully paid ��350 towards Chitramela</h2>
+                <h2 className='success'>You've Successfully paid ₹350 towards Chitramela</h2>
                 <h2>Join Our Telegram Group!</h2>
                 <p>Stay updated with event details and connect with other participants</p>
                 <a 

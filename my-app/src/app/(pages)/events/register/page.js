@@ -4,8 +4,8 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
-// import { db } from '../../../../config/firebase';
-// import { collection, addDoc, getDocs, query, where, serverTimestamp, limit } from 'firebase/firestore';
+import { db } from '../../../../config/firebase';
+import { collection, addDoc, getDocs, query, where, serverTimestamp, limit } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
 
 function RegisterPage() {
@@ -153,43 +153,31 @@ function RegisterPage() {
         const loadingToast = toast.loading("Processing registration...");
 
         try {
-            // const registrationsRef = collection(db, 'newRegistrations');
-            
-            // Create registration document directly
-            // const docRef = await addDoc(registrationsRef, {
-            //     name: formData.name,
-            //     email: formData.email,
-            //     phoneNumber: formData.countryCode + formData.phoneNumber,
-            //     profession: formData.profession,
-            //     idType: formData.profession === 'working' ? formData.idType : null,
-            //     idNumber: formData.idNumber,
-            //     college: formData.profession === 'student' ? formData.college : null,
-            //     gender: formData.gender,
-            //     referralName: formData.referralName || null,
-            //     selectedEvents: formData.selectedEvents,
-            //     registrationDate: serverTimestamp(),
-            //     paymentStatus: 'pending'
-            // });
+            // Check for duplicate phone number or email
+            const registrationsRef = collection(db, 'newRegistrations');
+            const phoneQuery = query(registrationsRef, where('phoneNumber', '==', formData.countryCode + formData.phoneNumber));
+            const emailQuery = query(registrationsRef, where('email', '==', formData.email));
 
-            // Store registration data in session storage
-            sessionStorage.setItem('registrationData', JSON.stringify({
-                name: formData.name,
-                email: formData.email,
-                phoneNumber: formData.countryCode + formData.phoneNumber,
-                profession: formData.profession,
-                idType: formData.profession === 'working' ? formData.idType : null,
-                idNumber: formData.idNumber,
-                college: formData.profession === 'student' ? formData.college : null,
-                gender: formData.gender,
-                referralName: formData.referralName || null,
-                selectedEvents: formData.selectedEvents,
-                // Add any other fields you want to store
-            }));
+            const phoneSnapshot = await getDocs(phoneQuery);
+            const emailSnapshot = await getDocs(emailQuery);
 
+            if (!phoneSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("Phone number already registered.");
+                return;
+            }
+
+            if (!emailSnapshot.empty) {
+                toast.dismiss(loadingToast);
+                toast.error("Email already registered.");
+                return;
+            }
+
+            // If no duplicates found, you can proceed with any other logic or just show a success message
             toast.dismiss(loadingToast);
-            toast.success("You will be redirected to payment page!");
-            
-            // Use replace instead of push to prevent back navigation
+            toast.success("No duplicates found. You can proceed with registration!");
+
+            // Optionally, you can redirect to the payment page or another page here
             router.replace('/events/payment');
 
         } catch (error) {
