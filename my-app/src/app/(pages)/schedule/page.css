@@ -1,0 +1,146 @@
+.schedule-component {
+  padding: 2rem;
+  min-height: 100vh;
+  background: #000000;
+  color: #ffffff;
+}
+
+.schedule-component-in-heading h1 {
+  text-align: center;
+  color: #ffd700;
+  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+.venues-info {
+  text-align: center;
+  margin-bottom: 3rem;
+  color: #ffd700;
+  font-size: 1.2rem;
+}
+
+.venues-info p {
+  display: inline-block;
+  padding: 0.5rem 1.5rem;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 30px;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.schedule-card {
+  border-radius: 15px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Theme-specific gradients */
+.movie-gradient {
+  background: linear-gradient(135deg, #000428, #004e92);  /* Dark cinema-like gradient */
+  box-shadow: 0 5px 15px rgba(0, 78, 146, 0.3);
+}
+
+.anime-gradient {
+  background: linear-gradient(135deg, #FC466B, #3F5EFB);  /* Vibrant anime-style gradient */
+  box-shadow: 0 5px 15px rgba(252, 70, 107, 0.3);
+}
+
+.cinema-gradient {
+  background: linear-gradient(135deg, #200122, #6f0000);  /* Classic cinema red gradient */
+  box-shadow: 0 5px 15px rgba(111, 0, 0, 0.3);
+}
+
+.retro-gradient {
+  background: linear-gradient(135deg, #4B0082, #FF1493);  /* 80s retro neon gradient */
+  box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+}
+
+.special-gradient {
+  background: linear-gradient(135deg, #0F2027, #203A43, #2C5364);  /* Premium dark gradient */
+  box-shadow: 0 5px 15px rgba(44, 83, 100, 0.3);
+}
+
+.musical-gradient {
+  background: linear-gradient(135deg, #8E2DE2, #4A00E0);  /* Musical purple gradient */
+  box-shadow: 0 5px 15px rgba(142, 45, 226, 0.3);
+}
+
+.schedule-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+}
+
+.emoji-circle {
+  width: 70px;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+  backdrop-filter: blur(5px);
+}
+
+.schedule-card:hover .emoji-circle {
+  transform: scale(1.1);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.schedule-card .date {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+}
+
+.schedule-card .event-name {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.schedule-card .description {
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.4;
+  font-size: 0.95rem;
+  flex-grow: 1;
+}
+
+@media (max-width: 768px) {
+  .schedule-component {
+    padding: 1rem;
+  }
+  
+  .schedule-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .emoji-circle {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+  }
+
+  .schedule-card .event-name {
+    font-size: 1.3rem;
+  }
+}
