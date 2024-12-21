@@ -16,5 +16,13 @@ export const logo = [
     {
         logo: "/logo/movie.png",
         url: "https://www.instagram.com/kl_sac_moviemakers/"
-    }
+    },
+    {
+            logo: "/logo/hand.png",
+            url: "https://www.instagram.com/avanflix/?hl=en"
+        },
+        {
+            logo: "/logo/avanflix.png",
+            url: "https://www.instagram.com/avanflix/?hl=en"
+        },
 ];
