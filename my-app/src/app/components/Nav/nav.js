@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import './nav.css'
 import Image from 'next/image'
-import logo from '../../Assets/newlogo.png'
+import Promotion from '../../(pages)/promotions/page';
 
 export default function Nav() {
   const [isVisible, setIsVisible] = useState(false)
@@ -46,11 +46,12 @@ export default function Nav() {
   }
 
   const navLinks = [
-    { href: 'about-info', label: 'About' },
-    { href: 'events', label: 'Events' },
-    { href: 'gallery', label: 'Gallery' },
-    { href: 'team', label: 'Team' },
-    { href: 'sponsors', label: 'Partners' },
+    { href: 'about-info', label: 'About', isSection: true },
+    { href: 'events', label: 'Events', isSection: true },
+    { href: 'gallery', label: 'Gallery', isSection: true },
+    { href: 'team', label: 'Team', isSection: true },
+    { href: 'sponsors', label: 'Partners', isSection: true },
+    { href: '/schedule', label: 'schedule', isSection: false },
   ]
 
   return (
@@ -80,16 +81,19 @@ export default function Nav() {
         </button>
 
         <div className={`nav-in-two ${isMobileMenuOpen ? 'mobile-open' : ''}`}>
-          {navLinks.map(({ href, label }) => (
+          {navLinks.map(({ href, label, isSection }) => (
             <Link 
               key={href}
-              href={`#${href}`}
-              onClick={() => handleNavClick(href)}
+              href={isSection ? `#${href}` : href}
+              onClick={isSection ? () => handleNavClick(href) : undefined}
               className="navigation-link"
             >
               {label}
             </Link>
           ))}
+           {/* <Link href="/promotions" className="navigation-link-register">
+            Promotional
+          </Link> */}
           <Link href="/events/register" className="navigation-link-register">
             Register
           </Link>

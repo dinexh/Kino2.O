@@ -47,9 +47,14 @@ export default function Home() {
                 <div className="home-component-footer">
                   <Footer />
                 </div>
+                <div className="home-floating" style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                <Link href="/promotionsal" className="floating-register-btn-promo">
+                  Promotional Evnets
+                </Link>
                 <Link href="/events/register" className="floating-register-btn">
                   Register Now
                 </Link>
+                </div>
               </>
             )}
           </div>

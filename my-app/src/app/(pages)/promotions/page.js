@@ -1,12 +1,12 @@
 import "./page.css";
 import { scheduleData } from "../../Data/scheduleData";
-
+import Footer from "@/app/components/Footer/Footer";
 export default function Schedule() {
   return (
     <div className="schedule-component">
       <div className="schedule-component-in">
         <div className="schedule-component-in-heading">
-          <h1>Event Schedule</h1>
+          <h1>Promotional Events Schedule</h1>
           <div className="venues-info">
             <p>🏛️ Venues: New Seminar Hall & Peacock Hall 🏛️</p>
           </div>
@@ -20,6 +20,9 @@ export default function Schedule() {
               <div className="description">{item.description}</div>
             </div>
           ))}
+        </div>
+        <div className="schedule-component-in-footer">
+          <Footer/>
         </div>
       </div>
     </div>

@@ -9,16 +9,21 @@ import logo from '../../Assets/newlogo.png';
 import SACLogo from "../../Assets/sac_logo.png";
 
 const Footer = () => {
+    const router = useRouter();
+    
+    const GoToSAC = () => {
+        window.open("https://sac.kluniversity.in/", "_blank", "noopener,noreferrer");
+    };
+
+    const GoToLogin = () => {
+        router.push('/login');
+    };
+
     const socialLinks = [
         { href: '#', icon: <FaFacebookF />, label: 'Facebook' },
         { href: '#', icon: <FaInstagram />, label: 'Instagram' },
         { href: '#', icon: <FaYoutube />, label: 'YouTube' }
     ];
-
-    const router = useRouter();
-    const GoToLogin = () => {
-        router.push('/login');
-    };
 
     return (
         <footer className="footer">
@@ -36,8 +41,20 @@ const Footer = () => {
                 </div>
 
                 <div className="footer-section logos">
-                    <Image src={logo} alt="Chitramela logo" className="footer-logo" />
-                    <Image src={SACLogo} alt="Student Activity Center Logo" className="footer-logo" />
+                    <Link href="/" style={{ cursor: 'pointer' }}>
+                        <Image 
+                            src={logo} 
+                            alt="Chitramela logo" 
+                            className="footer-logo"
+                        />
+                    </Link>
+                    <div onClick={GoToSAC} style={{ cursor: 'pointer' }}>
+                        <Image 
+                            src={SACLogo} 
+                            alt="Student Activity Center Logo" 
+                            className="footer-logo"
+                        />
+                    </div>
                 </div>
 
                 <div className="footer-section contact">
