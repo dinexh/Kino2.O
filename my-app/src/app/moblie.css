@@ -1,0 +1,15 @@
+
+.about-container h2,
+.events-container-one h2,
+.countdown-container h2,
+.gallery-container-in-one h2,
+.sponcer-container-in-one h2,
+.team-container-in-one h2,
+.faq-container-in-one h2 {
+  font-size: 2rem;
+  line-height: 1.2;
+  margin: 2rem 0;
+  text-align: center;
+  font-weight: 600;
+  color: #333;
+}

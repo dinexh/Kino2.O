@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import Loader from "../../components/Loader/Loader";
 
 import "./hero.css";
-
+import '../../moblie.css';
 const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
 

@@ -685,4 +685,31 @@ td {
 .details-btn:active {
     transform: scale(0.95); /* Slightly shrink on click */
 }
+
+.last-backup {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.25rem;
+}
+
+.backup-btn {
+    background-color: #2c3e50;
+    color: #ffd700;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ffd700;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 1rem;
+    transition: all 0.2s ease;
+}
+
+.backup-btn:hover {
+    background-color: #34495e;
+    transform: translateY(-1px);
+}
+
+.backup-btn:active {
+    transform: translateY(0);
+}
  

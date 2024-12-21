@@ -7,33 +7,209 @@ import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
 import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { createBackup } from '../../../utils/backup';
+const styles = `
+    .stat-card.clickable {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .stat-card.clickable:hover {
+        transform: scale(1.02);
+        background-color: #f0f0f0;
+    }
+
+    .toggle-btn.referral-btn {
+        background-color: #2c3e50;
+        color: #ffd700;
+        margin-left: 10px;
+        border: 1px solid #ffd700;
+    }
+
+    .toggle-btn.referral-btn:hover {
+        background-color: #34495e;
+        transform: translateY(-1px);
+    }
+
+    .referral-stats-list {
+        max-height: 70vh;
+        overflow-y: auto;
+        padding: 1rem;
+    }
+
+    .referral-stat-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        margin: 0.5rem 0;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .referrer-name {
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .referral-count {
+        background-color: #e9ecef;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    .referral-modal {
+        width: 90%;
+        max-width: 1200px;
+        max-height: 80vh;
+        background: #1e1e1e;
+        border: 1px solid #333;
+    }
+
+    .referral-table-container {
+        margin-top: 1rem;
+        overflow-x: auto;
+        max-height: 60vh;
+    }
+
+    .referral-table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #1e1e1e;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .referral-table th,
+    .referral-table td {
+        padding: 15px 20px;
+        text-align: left;
+        border-bottom: 1px solid #333;
+        color: #fff;
+    }
+
+    .referral-table th {
+        background-color: #2c3e50;
+        color: #ffd700;
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .referral-table tr:hover {
+        background-color: #2a2a2a;
+    }
+
+    .referral-table tr.rank-1 {
+        background-color: rgba(255, 215, 0, 0.1);
+    }
+
+    .referral-table tr.rank-2 {
+        background-color: rgba(192, 192, 192, 0.1);
+    }
+
+    .referral-table tr.rank-3 {
+        background-color: rgba(205, 127, 50, 0.1);
+    }
+
+    .header-stats {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .stat-card {
+        background: #1e1e1e;
+        border-radius: 8px;
+        padding: 1.2rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #333;
+    }
+
+    .stat-card h3 {
+        color: #888;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .stat-card p {
+        color: #ffd700;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .stat-card.total,
+    .stat-card.pending,
+    .stat-card.verified,
+    .stat-card.collected {
+        background: #1e1e1e;
+    }
+`;
+
+// Add the style tag to the document
+if (typeof document !== 'undefined') {
+    const styleElement = document.createElement('style');
+    styleElement.textContent = styles;
+    document.head.appendChild(styleElement);
+}
 
 const downloadCSV = (data, filename) => {
     // Define CSV headers based on your requirements
     const headers = [
         'SNO',
         'Name',
+        'Email',
         'Phone Number',
         'College',
         'Events',
-        'Payment Details - Name',
-        'Payment Details - Number'
+        'Payment Method',
+        'Transaction ID/UTR',
+        'Payment Status',
+        'Payment Date',
+        'Amount (₹)',
+        'Referral Name'
     ];
 
     // Convert data to CSV format with serial numbers
-    const csvData = data.map((item, index) => [
-        index + 1, // SNO
-        item.name || '',
-        `'${item.phoneNumber || ''}'`, // Add quotes to preserve phone number format
-        item.college || '',
-        (item.selectedEvents || []).join(' | '), // Using | as separator for better readability
-        item.paymentMethod || '',
-        item.transactionId || ''
-    ]);
+    const csvData = data.map((item, index) => {
+        // Wrap text fields in quotes and escape existing quotes
+        const wrapInQuotes = (text) => {
+            if (!text) return '""';
+            // Replace any quotes in the text with double quotes (CSV standard for escaping)
+            const escaped = String(text).replace(/"/g, '""');
+            return `"${escaped}"`;
+        };
+
+        // Special handling for phone numbers and transaction IDs
+        const formatNumberAsText = (value) => {
+            if (!value) return '""';
+            // Add a single quote prefix to force Excel to treat it as text
+            return `"'${String(value).trim()}"`;
+        };
+
+        return [
+            index + 1, // SNO
+            wrapInQuotes(item.name),
+            wrapInQuotes(item.email),
+            formatNumberAsText(item.phoneNumber), // Special handling for phone number
+            wrapInQuotes(item.college),
+            wrapInQuotes((item.selectedEvents || []).join(', ')), // Using comma as separator
+            wrapInQuotes(item.paymentMethod),
+            formatNumberAsText(item.transactionId), // Special handling for transaction ID
+            wrapInQuotes(item.paymentStatus),
+            wrapInQuotes(item.paymentDate),
+            350, // Fixed amount per registration
+            wrapInQuotes(item.referralName)
+        ];
+    });
 
     // Combine headers and data
     const csvContent = [
-        headers,
+        headers.map(header => `"${header}"`), // Wrap headers in quotes
         ...csvData
     ].map(row => row.join(',')).join('\n');
 
@@ -55,15 +231,15 @@ export default function Dashboard() {
     const { user } = useAuth();
     const [payments, setPayments] = useState([]);
     const [workshopRegistrations, setWorkshopRegistrations] = useState([]);
-    const [referral, setReferral] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
-    const [oldRegistrations, setOldRegistrations] = useState([]);
     const [activeView, setActiveView] = useState('new');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDetails, setSelectedDetails] = useState(null);
+    const [referralStats, setReferralStats] = useState(null);
+    const [lastBackupTime, setLastBackupTime] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -72,6 +248,28 @@ export default function Dashboard() {
             return;
         }
     }, [user, router]);
+
+    useEffect(() => {
+        if (!user) return;
+
+        const performBackup = async () => {
+            const result = await createBackup();
+            if (result.success) {
+                setLastBackupTime(new Date().toLocaleString());
+                toast.success('Backup completed successfully');
+            } else {
+                toast.error('Backup failed: ' + result.message);
+            }
+        };
+
+        // Perform initial backup
+        performBackup();
+
+        // Schedule backup every 24 hours
+        const backupInterval = setInterval(performBackup, 24 * 60 * 60 * 1000);
+
+        return () => clearInterval(backupInterval);
+    }, [user]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -92,14 +290,12 @@ export default function Dashboard() {
                     }));
                 };
 
-                const [paymentData, oldRegData, workshopData] = await Promise.all([
+                const [paymentData, workshopData] = await Promise.all([
                     fetchCollection('newRegistrations'),
-                    fetchCollection('registrations', 'registrationDate'),
                     fetchCollection('workshopRegistrations', 'registrationDate')
                 ]);
 
                 setPayments(paymentData);
-                setOldRegistrations(oldRegData);
                 setWorkshopRegistrations(workshopData);
                 toast.success('Dashboard data loaded successfully!', { id: loadingToast });
             } catch (error) {
@@ -152,26 +348,28 @@ export default function Dashboard() {
 
     const getFilteredData = () => {
         if (activeView === 'new') {
-            return payments.filter(payment => {
+            const filtered = payments.filter(payment => {
                 const matchesSearch = 
                     payment.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     payment.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     payment.phoneNumber?.includes(searchTerm);
                 
-                const matchesStatus = filterStatus === 'all' || payment.paymentStatus === filterStatus;
+                const matchesStatus = 
+                    filterStatus === 'all' ? true :
+                    filterStatus === 'pending' ? payment.paymentStatus !== 'verified' :
+                    payment.paymentStatus === filterStatus;
                 
                 return matchesSearch && matchesStatus;
             });
-        } else {
-            return oldRegistrations.filter(reg => {
-                const matchesSearch = 
-                    reg.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    reg.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    reg.idNumber?.includes(searchTerm);
-                
-                return matchesSearch;
+
+            // Sort by payment date in descending order (newest first)
+            return filtered.sort((a, b) => {
+                const dateA = a.paymentDate ? new Date(a.paymentDate) : new Date(0);
+                const dateB = b.paymentDate ? new Date(b.paymentDate) : new Date(0);
+                return dateB - dateA;
             });
         }
+        return [];
     };
 
     const itemsPerPage = 10;
@@ -188,11 +386,31 @@ export default function Dashboard() {
     };
 
     const dashboardStats = {
-        totalRegistrations: payments.length + workshopRegistrations.length + oldRegistrations.length,
-        pendingPayments: payments.filter(p => p.paymentStatus === 'pending').length,
+        totalRegistrations: payments.length + workshopRegistrations.length,
+        pendingPayments: payments.filter(p => p.paymentStatus !== 'verified').length,
         verifiedPayments: payments.filter(p => p.paymentStatus === 'verified').length,
         totalWorkshops: workshopRegistrations.length,
-        oldRegistrations: oldRegistrations.length
+        totalReferrals: payments.filter(p => p.referralName).length,
+        totalAmountCollected: payments.filter(p => p.paymentStatus === 'verified').length * 350
+    };
+
+    const calculateReferralStats = () => {
+        const referralCounts = payments.reduce((acc, registration) => {
+            if (registration.referralName) {
+                acc[registration.referralName] = (acc[registration.referralName] || 0) + 1;
+            }
+            return acc;
+        }, {});
+
+        const stats = Object.entries(referralCounts)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
+
+        setReferralStats(stats);
+    };
+
+    const handleViewReferrals = () => {
+        calculateReferralStats();
     };
 
     const handleDelete = async (id) => {
@@ -208,8 +426,6 @@ export default function Dashboard() {
             // Update the local state
             if (activeView === 'new') {
                 setPayments(payments.filter(item => item.id !== id));
-            } else {
-                setOldRegistrations(oldRegistrations.filter(item => item.id !== id));
             }
             
             toast.success('Registration deleted successfully!', { id: loadingToast });
@@ -230,10 +446,6 @@ export default function Dashboard() {
             // Update local state
             if (activeView === 'new') {
                 setPayments(payments.map(item => 
-                    item.id === id ? { ...item, paymentStatus: newStatus } : item
-                ));
-            } else {
-                setOldRegistrations(oldRegistrations.map(item => 
                     item.id === id ? { ...item, paymentStatus: newStatus } : item
                 ));
             }
@@ -258,6 +470,11 @@ export default function Dashboard() {
                         <h1>Admin Dashboard</h1>
                         <div className="user-info">
                             Welcome, {user?.email}
+                            {lastBackupTime && (
+                                <span className="last-backup">
+                                    Last backup: {lastBackupTime}
+                                </span>
+                            )}
                         </div>
                     </div>
                     <div className="header-actions">
@@ -265,7 +482,7 @@ export default function Dashboard() {
                             className="download-btn" 
                             onClick={() => {
                                 const filename = `registrations-${new Date().toISOString().split('T')[0]}.csv`;
-                                const dataToDownload = activeView === 'new' ? payments : oldRegistrations;
+                                const dataToDownload = activeView === 'new' ? payments : [];
                                 downloadCSV(dataToDownload, filename);
                             }}
                         >
@@ -275,25 +492,25 @@ export default function Dashboard() {
                     </div>
                 </div>
                 <div className="header-stats">
-                    <div className="stat-card">
+                    <div className="stat-card total">
                         <h3>Total Registrations</h3>
                         <p>{dashboardStats.totalRegistrations}</p>
                     </div>
-                    <div className="stat-card">
-                        <h3>Pending Payments</h3>
+                    <div className="stat-card pending">
+                        <h3>Pending Verification</h3>
                         <p>{dashboardStats.pendingPayments}</p>
                     </div>
-                    <div className="stat-card">
-                        <h3>Total Revenue Generated</h3>
-                        <p>{dashboardStats.totalRegistrations*350}</p>
-                    </div>
-                    <div className="stat-card">
-                        <h3>Verified Payments</h3>
+                    <div className="stat-card verified">
+                        <h3>Verified Registrations</h3>
                         <p>{dashboardStats.verifiedPayments}</p>
                     </div>
-                    <div className="stat-card">
-                        <h3>Old Registrations</h3>
-                        <p>{dashboardStats.oldRegistrations}</p>
+                    <div className="stat-card collected">
+                        <h3>Amount Collected</h3>
+                        <p>₹{dashboardStats.totalAmountCollected}</p>
+                    </div>
+                    <div className="stat-card total">
+                        <h3>Total Workshops</h3>
+                        <p>{dashboardStats.totalWorkshops}</p>
                     </div>
                 </div>
             </div>
@@ -307,10 +524,10 @@ export default function Dashboard() {
                         New Registrations
                     </button>
                     <button 
-                        className={`toggle-btn ${activeView === 'old' ? 'active' : ''}`}
-                        onClick={() => setActiveView('old')}
+                        className="toggle-btn referral-btn"
+                        onClick={handleViewReferrals}
                     >
-                        Old Registrations
+                        View Referrals ({dashboardStats.totalReferrals})
                     </button>
                 </div>
                 <div className="search-box">
@@ -464,6 +681,37 @@ export default function Dashboard() {
                         <p><strong>Payment Date:</strong> {selectedDetails.paymentDate || 'N/A'}</p>
                         <p><strong>Status:</strong> {selectedDetails.paymentStatus || 'N/A'}</p>
                         <p><strong>Selected Events:</strong> {selectedDetails.selectedEvents?.join(', ') || 'N/A'}</p>
+                    </div>
+                </div>
+            )}
+
+            {referralStats && (
+                <div className="modal-overlay" onClick={() => setReferralStats(null)}>
+                    <div className="modal-content referral-modal" onClick={e => e.stopPropagation()}>
+                        <button className="modal-close" onClick={() => setReferralStats(null)}>×</button>
+                        <h2>Referral Statistics</h2>
+                        <div className="referral-table-container">
+                            <table className="referral-table">
+                                <thead>
+                                    <tr>
+                                        <th>Rank</th>
+                                        <th>Name</th>
+                                        <th>Referrals</th>
+                                        <th>Amount Generated</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {referralStats.map((stat, index) => (
+                                        <tr key={index} className={index < 3 ? `rank-${index + 1}` : ''}>
+                                            <td>{index + 1}</td>
+                                            <td>{stat.name}</td>
+                                            <td>{stat.count}</td>
+                                            <td>₹{stat.count * 350}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             )}

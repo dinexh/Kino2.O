@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import './faq.css';
-
+import '../../moblie.css';
 import { faqs } from '../../Data/faqs';
 
 const FAQ = () => {

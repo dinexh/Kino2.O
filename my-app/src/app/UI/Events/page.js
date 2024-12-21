@@ -1,12 +1,11 @@
 "use client"
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRef, useState } from 'react';
 import './events.css';
 import { activities } from '../../Data/activities';
 import Modal from '../../components/Modal/Modal';
-import { rules } from '../../Data/rules';
 import { useRouter } from 'next/navigation';
+import '../../moblie.css';
 
 const Events = () => {
   const router = useRouter();

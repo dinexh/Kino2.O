@@ -60,7 +60,7 @@ function PaymentPage() {
         }, 600000); // 5 minutes timeout
 
         return () => clearTimeout(timeout); // Cleanup on unmount
-    }, []);
+    }, [router]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

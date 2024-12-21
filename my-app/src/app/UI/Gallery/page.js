@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { galleryImages } from '../../Data/gallery';
 import './gallery.css';
+import '../../moblie.css';
 
 const Gallery = () => {
   return (

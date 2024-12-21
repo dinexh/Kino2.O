@@ -5,6 +5,7 @@ import logo from '../../Assets/about-img.webp';
 import { about1, about2 } from '../../Data/about';
 import { useState } from 'react';
 import Modal from '../../components/Modal/Modal';
+import '../../moblie.css';
 
 const About = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import './counter.css'
-
+import '../../moblie.css';
 const CountdownTimer = () => {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 

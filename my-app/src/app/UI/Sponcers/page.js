@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { logo } from '../../Data/logo';
 import './sponcers.css';
 import Link from 'next/link';
+import '../../moblie.css';
 
 const Sponcers = () => {
   return (

@@ -1,8 +1,7 @@
 "use client";
 import "./team.css";
-// import Link from "next/link";
 import Image from "next/image";
-
+import '../../moblie.css';
 const Team = () => {
     return (
         <div className="team-container" id="team">
