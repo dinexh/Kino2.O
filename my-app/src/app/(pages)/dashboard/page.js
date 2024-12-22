@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
 import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
-import { createBackup } from '../../../utils/backup';
 const styles = `
     .stat-card.clickable {
         cursor: pointer;
@@ -239,7 +238,6 @@ export default function Dashboard() {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDetails, setSelectedDetails] = useState(null);
     const [referralStats, setReferralStats] = useState(null);
-    const [lastBackupTime, setLastBackupTime] = useState(null);
 
     useEffect(() => {
         if (!user) {
@@ -248,28 +246,6 @@ export default function Dashboard() {
             return;
         }
     }, [user, router]);
-
-    useEffect(() => {
-        if (!user) return;
-
-        const performBackup = async () => {
-            const result = await createBackup();
-            if (result.success) {
-                setLastBackupTime(new Date().toLocaleString());
-                toast.success('Backup completed successfully');
-            } else {
-                toast.error('Backup failed: ' + result.message);
-            }
-        };
-
-        // Perform initial backup
-        performBackup();
-
-        // Schedule backup every 24 hours
-        const backupInterval = setInterval(performBackup, 24 * 60 * 60 * 1000);
-
-        return () => clearInterval(backupInterval);
-    }, [user]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -470,11 +446,6 @@ export default function Dashboard() {
                         <h1>Admin Dashboard</h1>
                         <div className="user-info">
                             Welcome, {user?.email}
-                            {lastBackupTime && (
-                                <span className="last-backup">
-                                    Last backup: {lastBackupTime}
-                                </span>
-                            )}
                         </div>
                     </div>
                     <div className="header-actions">
