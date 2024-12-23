@@ -348,7 +348,7 @@ export default function Dashboard() {
         return [];
     };
 
-    const itemsPerPage = 10;
+    const itemsPerPage = 20;
     
     const filteredData = getFilteredData();
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -466,6 +466,9 @@ export default function Dashboard() {
                     <div className="stat-card total">
                         <h3>Total Registrations</h3>
                         <p>{dashboardStats.totalRegistrations}</p>
+                        <small style={{ color: '#888', fontSize: '0.8rem' }}>
+                            {((dashboardStats.totalRegistrations / 500) * 100).toFixed(1)}% of target
+                        </small>
                     </div>
                     <div className="stat-card pending">
                         <h3>Pending Verification</h3>
@@ -479,9 +482,24 @@ export default function Dashboard() {
                         <h3>Amount Collected</h3>
                         <p>₹{dashboardStats.totalAmountCollected}</p>
                     </div>
-                    <div className="stat-card total">
-                        <h3>Total Workshops</h3>
-                        <p>{dashboardStats.totalWorkshops}</p>
+                    <div className="stat-card target">
+                        <h3>Target Progress</h3>
+                        <p>{dashboardStats.totalRegistrations}/500</p>
+                        <div className="progress-bar" style={{
+                            width: '100%',
+                            height: '4px',
+                            backgroundColor: '#333',
+                            marginTop: '8px',
+                            borderRadius: '2px',
+                            overflow: 'hidden'
+                        }}>
+                            <div style={{
+                                width: `${Math.min((dashboardStats.totalRegistrations / 500) * 100, 100)}%`,
+                                height: '100%',
+                                backgroundColor: '#ffd700',
+                                transition: 'width 0.3s ease'
+                            }}></div>
+                        </div>
                     </div>
                 </div>
             </div>
