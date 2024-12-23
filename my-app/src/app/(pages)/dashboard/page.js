@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
 import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
+import Footer from '../../../components/Footer';
 const styles = `
     .stat-card.clickable {
         cursor: pointer;
@@ -146,6 +147,21 @@ const styles = `
     .stat-card.verified,
     .stat-card.collected {
         background: #1e1e1e;
+    }
+
+    .college-cell {
+        padding: 1rem;
+        font-size: 0.9rem;
+        color: #fff;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .college-cell:hover {
+        white-space: normal;
+        word-wrap: break-word;
     }
 `;
 
@@ -328,7 +344,8 @@ export default function Dashboard() {
                 const matchesSearch = 
                     payment.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                     payment.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    payment.phoneNumber?.includes(searchTerm);
+                    payment.phoneNumber?.includes(searchTerm) ||
+                    payment.college?.toLowerCase().includes(searchTerm.toLowerCase());
                 
                 const matchesStatus = 
                     filterStatus === 'all' ? true :
@@ -348,7 +365,7 @@ export default function Dashboard() {
         return [];
     };
 
-    const itemsPerPage = 20;
+    const itemsPerPage = 10;
     
     const filteredData = getFilteredData();
     const totalPages = Math.ceil(filteredData.length / itemsPerPage);
@@ -522,7 +539,7 @@ export default function Dashboard() {
                 <div className="search-box">
                     <input
                         type="text"
-                        placeholder="Search by name, email, or phone..."
+                        placeholder="Search by name, email, phone, or college..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -545,6 +562,7 @@ export default function Dashboard() {
                     <thead>
                         <tr>
                             <th>Name & Contact</th>
+                            <th>College</th>
                             <th>Events</th>
                             <th>Payment Details</th>
                             <th>Actions</th>
@@ -558,10 +576,12 @@ export default function Dashboard() {
                                     <div className="contact-info">
                                         <div>{item.phoneNumber}</div>
                                         <div>{item.email}</div>
-                                        <div className="college-name">{item.college || 'N/A'}</div>
                                         <div className="referral-name">{item.referralName || 'N/A'}</div>
                                     </div>
                                     <button className="details-btn" onClick={() => openModal(item)}>View Details</button>
+                                </td>
+                                <td className="college-cell">
+                                    {item.college || 'N/A'}
                                 </td>
                                 <td className="events-cell">
                                     <div className="events-list">
@@ -704,6 +724,8 @@ export default function Dashboard() {
                     </div>
                 </div>
             )}
+
+            <Footer />
         </div>
     );
 } 
