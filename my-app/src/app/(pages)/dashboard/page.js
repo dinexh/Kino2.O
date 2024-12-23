@@ -7,7 +7,6 @@ import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
 import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
-import Footer from '../../../components/Footer';
 const styles = `
     .stat-card.clickable {
         cursor: pointer;
@@ -724,8 +723,6 @@ export default function Dashboard() {
                     </div>
                 </div>
             )}
-
-            <Footer />
         </div>
     );
 } 
