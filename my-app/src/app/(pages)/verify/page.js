@@ -13,10 +13,12 @@ export default function VerifyPage() {
         const unsubscribe = onSnapshot(collection(db, 'newRegistrations'), (snapshot) => {
             const registrationData = snapshot.docs.map(doc => {
                 const data = doc.data();
+                console.log('Registration data:', data);
                 return {
                     id: doc.id,
                     ...data,
-                    phoneNumber: data.phoneNumber || data.phone
+                    phoneNumber: data.phoneNumber || data.phone,
+                    name: data.Name || data.name || ''
                 };
             });
             setRegistrations(registrationData);
@@ -30,7 +32,9 @@ export default function VerifyPage() {
     }, []);
 
     const handleSearch = (e) => {
-        setSearchQuery(e.target.value.toLowerCase());
+        const value = e.target.value;
+        console.log('Search value:', value);
+        setSearchQuery(value);
     };
 
     const formatPhoneNumber = (phone) => {
@@ -44,14 +48,23 @@ export default function VerifyPage() {
     };
 
     const filteredRegistrations = registrations.filter(reg => {
-        const searchLower = searchQuery.toLowerCase();
+        if (!searchQuery) return true;
+        
+        const searchLower = searchQuery.toLowerCase().trim();
         const phoneSearch = searchQuery.replace(/\D/g, '');
         
-        return (
-            reg.name?.toLowerCase().includes(searchLower) ||
-            reg.idNumber?.toLowerCase().includes(searchLower) ||
-            (reg.phoneNumber?.toString() || '').replace(/\D/g, '').includes(phoneSearch)
-        );
+        console.log('Checking registration:', reg);
+        console.log('Name field:', reg.name || reg.Name);
+        
+        const nameMatch = (reg.name || reg.Name) && 
+            (reg.name?.toLowerCase().includes(searchLower) || reg.Name?.toLowerCase().includes(searchLower));
+        const idMatch = reg.idNumber && reg.idNumber.toString().toLowerCase().includes(searchLower);
+        const phoneMatch = reg.phoneNumber && reg.phoneNumber.toString().replace(/\D/g, '').includes(phoneSearch);
+        
+        const isMatch = nameMatch || idMatch || phoneMatch;
+        console.log('Is match:', isMatch);
+        
+        return isMatch;
     });
 
     const handleVerifyToggle = async (id) => {
@@ -81,7 +94,7 @@ export default function VerifyPage() {
                 <div className="search-container">
                     <input
                         type="text"
-                        placeholder="Search by ID number, name or phone number..."
+                        placeholder="Search by ID number or phone number..."
                         value={searchQuery}
                         onChange={handleSearch}
                         className="search-input"
