@@ -11,9 +11,10 @@
     "postbuild": "next-sitemap --config next-sitemap.config.cjs"
   },
   "dependencies": {
-    "firebase": "^11.1.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2",
-    "next": "14.1.0",
+    "next": "^14.2.21",
     "next-sitemap": "^4.2.3",
     "react": "^18",
     "react-dom": "^18",
@@ -23,9 +24,9 @@
   },
   "devDependencies": {
     "@types/node": "22.10.1",
-    "@types/react": "19.0.1",
-    "eslint": "^8.56.0",
-    "eslint-config-next": "^14.0.0",
+    "@types/react": "^19.0.2",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.2",
     "typescript": "5.7.2"
   },
   "type": "module"

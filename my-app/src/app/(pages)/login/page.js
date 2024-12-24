@@ -1,7 +1,5 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { auth } from '../../../config/firebase';
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
 import Image from 'next/image';
@@ -12,10 +10,9 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 export default function Login() {
     const router = useRouter();
-    const { user } = useAuth();
+    const { user, login } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isResetMode, setIsResetMode] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     useEffect(() => {
@@ -29,29 +26,12 @@ export default function Login() {
         const loadingToast = toast.loading('Logging in...');
         
         try {
-            await signInWithEmailAndPassword(auth, email, password);
+            await login(email, password);
             toast.success('Logged in successfully!', { id: loadingToast });
+            router.push('/dashboard');
         } catch (error) {
             console.error('Login error:', error);
-            toast.error('Invalid login credentials', { id: loadingToast });
-        }
-    };
-
-    const handleForgotPassword = async (e) => {
-        e.preventDefault();
-        if (!email) {
-            toast.error('Please enter your email address');
-            return;
-        }
-
-        const loadingToast = toast.loading('Sending reset link...');
-        
-        try {
-            await sendPasswordResetEmail(auth, email);
-            toast.success('Password reset link sent to your email!', { id: loadingToast });
-            setIsResetMode(false);
-        } catch (error) {
-            toast.error('Error sending reset link. Please try again.', { id: loadingToast });
+            toast.error(error.message || 'Invalid login credentials', { id: loadingToast });
         }
     };
 
@@ -74,61 +54,33 @@ export default function Login() {
                         priority
                     />
                 </div>
-                <h1>{isResetMode ? 'Reset Password' : 'Admin Login'}</h1>
-                
-                {isResetMode ? (
-                    <form onSubmit={handleForgotPassword}>
+                <h1>Admin Login</h1>
+                <form onSubmit={handleLogin}>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                    <div className="password-input-container">
                         <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            type={showPassword ? "text" : "password"}
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                             required
                         />
-                        <button type="submit">Send Reset Link</button>
-                        <button 
-                            type="button" 
-                            className="switch-mode-btn"
-                            onClick={() => setIsResetMode(false)}
+                        <button
+                            type="button"
+                            className="password-toggle-btn"
+                            onClick={() => setShowPassword(!showPassword)}
                         >
-                            Back to Login
+                            {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
-                    </form>
-                ) : (
-                    <form onSubmit={handleLogin}>
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <div className="password-input-container">
-                            <input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                            />
-                            <button
-                                type="button"
-                                className="password-toggle-btn"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
-                            </button>
-                        </div>
-                        <button type="submit">Login</button>
-                        <button 
-                            type="button" 
-                            className="forgot-password-btn"
-                            onClick={() => setIsResetMode(true)}
-                        >
-                            Forgot Password?
-                        </button>
-                    </form>
-                )}
+                    </div>
+                    <button type="submit">Login</button>
+                </form>
             </div>
         </div>
     );
