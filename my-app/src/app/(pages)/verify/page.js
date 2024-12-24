@@ -1,40 +1,55 @@
 'use client';
 import './page.css';
 import { useState, useEffect } from 'react';
-import { db } from '../../../config/firebase';
-import { collection, onSnapshot, doc, updateDoc } from 'firebase/firestore';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../../context/AuthContext';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function VerifyPage() {
+    const router = useRouter();
+    const { user } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const unsubscribe = onSnapshot(collection(db, 'newRegistrations'), (snapshot) => {
-            const registrationData = snapshot.docs.map(doc => {
-                const data = doc.data();
-                console.log('Registration data:', data);
-                return {
-                    id: doc.id,
-                    ...data,
-                    phoneNumber: data.phoneNumber || data.phone,
-                    name: data.Name || data.name || ''
-                };
-            });
-            setRegistrations(registrationData);
-            setLoading(false);
-        }, (error) => {
-            console.error("Error fetching registrations:", error);
-            setLoading(false);
-        });
+        if (!user) {
+            toast.error('Please login to access the verify page');
+            router.push('/login');
+            return;
+        }
+    }, [user, router]);
 
-        return () => unsubscribe();
+    const fetchRegistrations = async (search = '') => {
+        try {
+            const queryParams = new URLSearchParams();
+            if (search) {
+                queryParams.append('search', search);
+            }
+
+            const response = await fetch(`/api/verify?${queryParams}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch registrations');
+            }
+
+            const data = await response.json();
+            setRegistrations(data.registrations);
+        } catch (error) {
+            console.log('Error fetching registrations:', error);
+            toast.error('Failed to fetch registrations');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchRegistrations();
     }, []);
 
     const handleSearch = (e) => {
         const value = e.target.value;
-        console.log('Search value:', value);
         setSearchQuery(value);
+        fetchRegistrations(value);
     };
 
     const formatPhoneNumber = (phone) => {
@@ -47,35 +62,15 @@ export default function VerifyPage() {
         return phone;
     };
 
-    const filteredRegistrations = registrations.filter(reg => {
-        if (!searchQuery) return true;
-        
-        const searchLower = searchQuery.toLowerCase().trim();
-        const phoneSearch = searchQuery.replace(/\D/g, '');
-        
-        console.log('Checking registration:', reg);
-        console.log('Name field:', reg.name || reg.Name);
-        
-        const nameMatch = (reg.name || reg.Name) && 
-            (reg.name?.toLowerCase().includes(searchLower) || reg.Name?.toLowerCase().includes(searchLower));
-        const idMatch = reg.idNumber && reg.idNumber.toString().toLowerCase().includes(searchLower);
-        const phoneMatch = reg.phoneNumber && reg.phoneNumber.toString().replace(/\D/g, '').includes(phoneSearch);
-        
-        const isMatch = nameMatch || idMatch || phoneMatch;
-        console.log('Is match:', isMatch);
-        
-        return isMatch;
-    });
-
-    const handleVerifyToggle = async (id) => {
+    const handleLogout = async () => {
+        const loadingToast = toast.loading('Logging out...');
         try {
-            const registrationRef = doc(db, 'newRegistrations', id);
-            const registration = registrations.find(reg => reg.id === id);
-            await updateDoc(registrationRef, {
-                verified: !registration.verified
-            });
+            await auth.signOut();
+            toast.success('Logged out successfully!', { id: loadingToast });
+            router.push('/login');
         } catch (error) {
-            console.error("Error updating verification status:", error);
+            console.error('Error logging out:', error);
+            toast.error(error.message || 'Error logging out', { id: loadingToast });
         }
     };
 
@@ -87,10 +82,25 @@ export default function VerifyPage() {
         );
     }
 
+    if (!user) {
+        return <div className="loading">Checking authentication...</div>;
+    }
+
     return (
         <div className="verify-component">
+            <Toaster position="top-center" />
+            <div className="verify-header">
+                <div className="verify-title">
+                    <h1>Total Registrations ({registrations.length})</h1>
+                    <div className="user-info">
+                        Welcome, {user?.email}
+                    </div>
+                </div>
+                <div className="header-actions">
+                    <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                </div>
+            </div>
             <div className="verify-component-in">
-                <h1>Total Registrations ({registrations.length})</h1>
                 <div className="search-container">
                     <input
                         type="text"
@@ -113,25 +123,22 @@ export default function VerifyPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredRegistrations.map((registration) => (
-                            <tr key={registration.id}>
+                        {registrations.map((registration) => (
+                            <tr key={registration._id}>
                                 <td>{registration.idNumber}</td>
                                 <td>{registration.name}</td>
                                 <td>{formatPhoneNumber(registration.phoneNumber)}</td>
                                 <td>{registration.college || 'N/A'}</td>
                                 <td>
-                                    <button
-                                        className={`verify-button ${registration.verified ? 'verified' : 'not-verified'}`}
-                                        onClick={() => handleVerifyToggle(registration.id)}
-                                    >
+                                    <div className={`verify-status ${registration.verified ? 'verified' : 'not-verified'}`}>
                                         {registration.verified ? 'Verified' : 'Not Verified'}
-                                    </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
-                        {filteredRegistrations.length === 0 && (
+                        {registrations.length === 0 && (
                             <tr>
-                                <td colSpan="4" className="no-results">
+                                <td colSpan="5" className="no-results">
                                     No registrations found
                                 </td>
                             </tr>

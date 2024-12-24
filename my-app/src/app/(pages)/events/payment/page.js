@@ -6,8 +6,6 @@ import backgroundImage from '../../../Assets/register3.webp';
 import './payment.css';
 import Image from 'next/image';
 import DemoQR from '../../../Assets/QR.png';
-import { db } from '../../../../config/firebase';
-import { doc, updateDoc, collection, query, where, getDocs, addDoc, serverTimestamp } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 import screenshot1 from '../../../Assets/1.png';
@@ -62,78 +60,152 @@ function PaymentPage() {
         return () => clearTimeout(timeout); // Cleanup on unmount
     }, [router]);
 
+    // Add validation function for transaction ID
+    const validateTransactionId = (id) => {
+        // Basic validation rules
+        if (!id || id.trim().length < 8) {
+            toast.error("Transaction ID must be at least 8 characters long");
+            return false;
+        }
+
+        // Remove spaces and special characters for consistent format
+        const cleanId = id.replace(/[^a-zA-Z0-9]/g, '');
+        
+        // Common payment platform patterns
+        const patterns = {
+            'Google Pay': /^[a-zA-Z0-9]{10,}$/i,  // GPay usually has alphanumeric IDs
+            'PhonePe': /^[A-Z0-9]{6,}$/,          // PhonePe typically uses uppercase and numbers
+            'Paytm': /^[0-9]{10,}$/,              // Paytm usually has numeric IDs
+        };
+
+        if (paymentMethod !== 'Other' && patterns[paymentMethod]) {
+            if (!patterns[paymentMethod].test(cleanId)) {
+                toast.error(`Invalid ${paymentMethod} transaction ID format`);
+                return false;
+            }
+        }
+
+        return true;
+    };
+
+    // Add function to check for duplicate transaction ID
+    const checkDuplicateTransactionId = async (transactionId) => {
+        try {
+            const response = await fetch(`/api/payment?transactionId=${transactionId}`);
+            const data = await response.json();
+            
+            if (response.status === 404) {
+                // 404 means transaction ID not found, which is what we want
+                return false;
+            }
+            
+            // If we get a result, it means the transaction ID exists
+            return true;
+        } catch (error) {
+            console.error('Error checking transaction ID:', error);
+            return false;
+        }
+    };
+
+    const validateForm = () => {
+        if (!paymentMethod) {
+            toast.error("Please select a payment method");
+            return false;
+        }
+
+        if (paymentMethod === 'Other' && !otherPaymentMethod) {
+            toast.error("Please specify the payment method");
+            return false;
+        }
+
+        if (!transactionId) {
+            toast.error("Please enter the transaction ID");
+            return false;
+        }
+
+        if (!validateTransactionId(transactionId)) {
+            return false;
+        }
+
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log("Submitting payment...");
+        if (!validateForm()) {
+            return;
+        }
 
-        // if (!validateForm()) {
-        //     return;
-        // }
-
-        const loadingToast = toast.loading("Processing payment...");
+        const loadingToast = toast.loading("Validating payment details...");
 
         try {
-            // Check for duplicate transaction ID
-            const registrationsRef = collection(db, 'newRegistrations');
-            const transactionIdQuery = query(registrationsRef, where('transactionId', '==', transactionId));
-
-            const transactionIdSnapshot = await getDocs(transactionIdQuery);
-
-            if (!transactionIdSnapshot.empty) {
+            // Check for duplicate transaction ID first
+            const isDuplicate = await checkDuplicateTransactionId(transactionId);
+            if (isDuplicate) {
                 toast.dismiss(loadingToast);
-                toast.error("Transaction ID already registered.");
+                toast.error("This transaction ID has already been used");
                 return;
             }
 
+            // Combine registration data with payment details
+            const paymentData = {
+                ...registrationData,
+                transactionId: transactionId.trim(), // Clean the transaction ID
+                paymentMethod: paymentMethod,
+                otherPaymentMethod: otherPaymentMethod,
+                paymentDate: new Date()
+            };
 
-            const   transactionQuery = query(registrationsRef, where('transactionId', '==', transactionId));
-            const transactionSnapshot = await getDocs(transactionQuery);
+            // Log the data being sent
+            console.log('Sending payment data:', paymentData);
 
-            if (!transactionSnapshot.empty) {
-                toast.dismiss(loadingToast);
-                toast.error("Duplicate Transaction");
-                return;
-            }
-
-            // Log registrationData for debugging
-            console.log("Registration Data:", registrationData);
-
-            // Create registration document directly
-            const docRef = await addDoc(registrationsRef, {
-                name: registrationData.name,
-                email: registrationData.email,
-                phoneNumber: registrationData.phoneNumber,
-                profession: registrationData.profession,
-                idType: registrationData.profession === 'working' ? registrationData.idType || '' : null,
-                idNumber: registrationData.idNumber || '',
-                college: registrationData.profession === 'student' ? registrationData.college || '' : null,
-                gender: registrationData.gender || '',
-                referralName: registrationData.referralName || null,
-                selectedEvents: registrationData.selectedEvents || [],
-                registrationDate: serverTimestamp(),
-                paymentStatus: 'pending_verification',
-                transactionId: transactionId,
-                paymentDate: new Date(),
-                paymentMethod: paymentMethod === 'Other' ? otherPaymentMethod : paymentMethod
+            // Send payment data to API
+            const response = await fetch('/api/payment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(paymentData)
             });
 
+            // Log the raw response
+            console.log('Raw response:', response);
+
+            let result;
+            try {
+                result = await response.json();
+                console.log('Parsed response:', result);
+            } catch (error) {
+                console.error('Error parsing response:', error);
+                throw new Error('Failed to parse server response');
+            }
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Payment processing failed');
+            }
+
+            // Clear registration data from session storage
             sessionStorage.removeItem('registrationData');
+            
             toast.dismiss(loadingToast);
             toast.success("Payment recorded successfully! We will verify your payment and send you a confirmation email.");
 
-            // Show Telegram popup instead of immediate redirect
+            // Show Telegram popup
             setShowTelegramPopup(true);
+
         } catch (error) {
-            console.error('Error during registration:', error);
+            console.error('Error during payment:', error);
             toast.dismiss(loadingToast);
             
-            if (error.code === 'permission-denied') {
-                toast.error("Permission denied. Please check your connection and try again.");
-            } else if (error.code === 'unavailable' || error.code === 'not-found') {
-                toast.error("Service temporarily unavailable. Please try again later.");
+            const errorMessage = error.message || "Payment processing failed. Please try again later";
+            
+            if (errorMessage.includes('already registered') || 
+                errorMessage.includes('already exists') ||
+                errorMessage.includes('Invalid')) {
+                toast.error(errorMessage);
             } else {
-                toast.error("Registration failed. Please try again later.");
+                toast.error("Payment processing failed. Please try again later");
             }
         }
     };

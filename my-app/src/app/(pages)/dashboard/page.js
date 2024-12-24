@@ -1,175 +1,10 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { db, auth } from '../../../config/firebase';
-import { collection, query, orderBy, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import Image from 'next/image';
 import { useAuth } from '../../../context/AuthContext';
 import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
-const styles = `
-    .stat-card.clickable {
-        cursor: pointer;
-        transition: transform 0.2s ease;
-    }
-
-    .stat-card.clickable:hover {
-        transform: scale(1.02);
-        background-color: #f0f0f0;
-    }
-
-    .toggle-btn.referral-btn {
-        background-color: #2c3e50;
-        color: #ffd700;
-        margin-left: 10px;
-        border: 1px solid #ffd700;
-    }
-
-    .toggle-btn.referral-btn:hover {
-        background-color: #34495e;
-        transform: translateY(-1px);
-    }
-
-    .referral-stats-list {
-        max-height: 70vh;
-        overflow-y: auto;
-        padding: 1rem;
-    }
-
-    .referral-stat-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        margin: 0.5rem 0;
-        background-color: #f8f9fa;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .referrer-name {
-        font-weight: 600;
-        color: #2c3e50;
-    }
-
-    .referral-count {
-        background-color: #e9ecef;
-        padding: 0.25rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.9rem;
-        color: #495057;
-    }
-
-    .referral-modal {
-        width: 90%;
-        max-width: 1200px;
-        max-height: 80vh;
-        background: #1e1e1e;
-        border: 1px solid #333;
-    }
-
-    .referral-table-container {
-        margin-top: 1rem;
-        overflow-x: auto;
-        max-height: 60vh;
-    }
-
-    .referral-table {
-        width: 100%;
-        border-collapse: collapse;
-        background: #1e1e1e;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-    }
-
-    .referral-table th,
-    .referral-table td {
-        padding: 15px 20px;
-        text-align: left;
-        border-bottom: 1px solid #333;
-        color: #fff;
-    }
-
-    .referral-table th {
-        background-color: #2c3e50;
-        color: #ffd700;
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .referral-table tr:hover {
-        background-color: #2a2a2a;
-    }
-
-    .referral-table tr.rank-1 {
-        background-color: rgba(255, 215, 0, 0.1);
-    }
-
-    .referral-table tr.rank-2 {
-        background-color: rgba(192, 192, 192, 0.1);
-    }
-
-    .referral-table tr.rank-3 {
-        background-color: rgba(205, 127, 50, 0.1);
-    }
-
-    .header-stats {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 1rem;
-        padding: 1rem;
-    }
-
-    .stat-card {
-        background: #1e1e1e;
-        border-radius: 8px;
-        padding: 1.2rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border: 1px solid #333;
-    }
-
-    .stat-card h3 {
-        color: #888;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-    }
-
-    .stat-card p {
-        color: #ffd700;
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .stat-card.total,
-    .stat-card.pending,
-    .stat-card.verified,
-    .stat-card.collected {
-        background: #1e1e1e;
-    }
-
-    .college-cell {
-        padding: 1rem;
-        font-size: 0.9rem;
-        color: #fff;
-        max-width: 200px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .college-cell:hover {
-        white-space: normal;
-        word-wrap: break-word;
-    }
-`;
-
-// Add the style tag to the document
-if (typeof document !== 'undefined') {
-    const styleElement = document.createElement('style');
-    styleElement.textContent = styles;
-    document.head.appendChild(styleElement);
-}
 
 const downloadCSV = (data, filename) => {
     // Define CSV headers based on your requirements
@@ -243,16 +78,26 @@ const downloadCSV = (data, filename) => {
 export default function Dashboard() {
     const router = useRouter();
     const { user } = useAuth();
-    const [payments, setPayments] = useState([]);
-    const [workshopRegistrations, setWorkshopRegistrations] = useState([]);
+    const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [filterStatus, setFilterStatus] = useState('all');
-    const [activeView, setActiveView] = useState('new');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedDetails, setSelectedDetails] = useState(null);
     const [referralStats, setReferralStats] = useState(null);
+    const [dashboardStats, setDashboardStats] = useState({
+        totalRegistrations: 0,
+        pendingPayments: 0,
+        verifiedPayments: 0,
+        totalReferrals: 0,
+        totalAmountCollected: 0
+    });
+    const [pagination, setPagination] = useState({
+        currentPage: 1,
+        totalPages: 1,
+        totalDocuments: 0
+    });
 
     useEffect(() => {
         if (!user) {
@@ -262,64 +107,90 @@ export default function Dashboard() {
         }
     }, [user, router]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const loadingToast = toast.loading('Loading dashboard data...');
-            try {
-                if (!user) {
-                    throw new Error('User not authenticated');
-                }
+    const fetchDashboardData = useCallback(async () => {
+        setLoading(true);
+        try {
+            const queryParams = new URLSearchParams({
+                page: currentPage,
+                limit: 10,
+                status: filterStatus !== 'all' ? filterStatus : '',
+                search: searchTerm
+            });
 
-                const fetchCollection = async (collectionName, orderByField = 'paymentDate') => {
-                    const collectionRef = collection(db, collectionName);
-                    const q = query(collectionRef, orderBy(orderByField, 'desc'));
-                    const snapshot = await getDocs(q);
-                    return snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data(),
-                        paymentDate: doc.data()[orderByField]?.toDate().toLocaleString() || 'N/A'
-                    }));
-                };
-
-                const [paymentData, workshopData] = await Promise.all([
-                    fetchCollection('newRegistrations'),
-                    fetchCollection('workshopRegistrations', 'registrationDate')
-                ]);
-
-                setPayments(paymentData);
-                setWorkshopRegistrations(workshopData);
-                toast.success('Dashboard data loaded successfully!', { id: loadingToast });
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                toast.error(error.message || 'Error loading dashboard data', { id: loadingToast });
-                
-                if (error.code === 'permission-denied' || error.message === 'User not authenticated') {
-                    router.push('/login');
-                }
-            } finally {
-                setLoading(false);
+            const response = await fetch(`/api/dashboard?${queryParams}`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch dashboard data');
             }
-        };
 
-        if (user) {
-            fetchData();
+            const data = await response.json();
+            setRegistrations(data.registrations);
+            setDashboardStats(data.stats);
+            setPagination(data.pagination);
+            toast.success('Dashboard data loaded successfully!', { id: loadingToast });
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            toast.error(error.message || 'Error loading dashboard data', { id: loadingToast });
+        } finally {
+            setLoading(false);
         }
-    }, [user, router]);
+    }, [currentPage, filterStatus, searchTerm]);
 
-    if (loading) {
-        return <div className="loading">Loading...</div>;
-    }
+    useEffect(() => {
+        fetchDashboardData();
+    }, [fetchDashboardData]);
 
-    if (!user) {
-        return <div className="loading">Checking authentication...</div>;
-    }
+    const handleDelete = async (id) => {
+        if (!window.confirm('Are you sure you want to delete this registration? This action cannot be undone.')) {
+            return;
+        }
+
+        const loadingToast = toast.loading('Deleting registration...');
+        try {
+            const response = await fetch(`/api/dashboard?id=${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete registration');
+            }
+
+            await fetchDashboardData(); // Refresh data
+            toast.success('Registration deleted successfully!', { id: loadingToast });
+        } catch (error) {
+            console.error('Error deleting registration:', error);
+            toast.error('Failed to delete registration', { id: loadingToast });
+        }
+    };
+
+    const handleStatusChange = async (id, newStatus) => {
+        const loadingToast = toast.loading('Updating status...');
+        try {
+            const response = await fetch('/api/dashboard', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    registrationId: id,
+                    status: newStatus
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update status');
+            }
+
+            await fetchDashboardData(); // Refresh data
+            toast.success('Status updated successfully!', { id: loadingToast });
+        } catch (error) {
+            console.error('Error updating status:', error);
+            toast.error('Failed to update status', { id: loadingToast });
+        }
+    };
 
     const handleLogout = async () => {
         const loadingToast = toast.loading('Logging out...');
         try {
-            if (!auth) {
-                throw new Error('Auth service not initialized');
-            }
             await auth.signOut();
             toast.success('Logged out successfully!', { id: loadingToast });
             router.push('/login');
@@ -329,65 +200,12 @@ export default function Dashboard() {
         }
     };
 
-    const handleImageClick = (imageSrc) => {
-        setSelectedImage(imageSrc);
-    };
-
-    const closeModal = () => {
-        setSelectedDetails(null);
-    };
-
-    const getFilteredData = () => {
-        if (activeView === 'new') {
-            const filtered = payments.filter(payment => {
-                const matchesSearch = 
-                    payment.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    payment.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                    payment.phoneNumber?.includes(searchTerm) ||
-                    payment.college?.toLowerCase().includes(searchTerm.toLowerCase());
-                
-                const matchesStatus = 
-                    filterStatus === 'all' ? true :
-                    filterStatus === 'pending' ? payment.paymentStatus !== 'verified' :
-                    payment.paymentStatus === filterStatus;
-                
-                return matchesSearch && matchesStatus;
-            });
-
-            // Sort by payment date in descending order (newest first)
-            return filtered.sort((a, b) => {
-                const dateA = a.paymentDate ? new Date(a.paymentDate) : new Date(0);
-                const dateB = b.paymentDate ? new Date(b.paymentDate) : new Date(0);
-                return dateB - dateA;
-            });
-        }
-        return [];
-    };
-
-    const itemsPerPage = 10;
-    
-    const filteredData = getFilteredData();
-    const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-    const currentData = filteredData.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
-
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-    };
-
-    const dashboardStats = {
-        totalRegistrations: payments.length + workshopRegistrations.length,
-        pendingPayments: payments.filter(p => p.paymentStatus !== 'verified').length,
-        verifiedPayments: payments.filter(p => p.paymentStatus === 'verified').length,
-        totalWorkshops: workshopRegistrations.length,
-        totalReferrals: payments.filter(p => p.referralName).length,
-        totalAmountCollected: payments.filter(p => p.paymentStatus === 'verified').length * 350
+    const openModal = (item) => {
+        setSelectedDetails(item);
     };
 
     const calculateReferralStats = () => {
-        const referralCounts = payments.reduce((acc, registration) => {
+        const referralCounts = registrations.reduce((acc, registration) => {
             if (registration.referralName) {
                 acc[registration.referralName] = (acc[registration.referralName] || 0) + 1;
             }
@@ -405,53 +223,13 @@ export default function Dashboard() {
         calculateReferralStats();
     };
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this registration? This action cannot be undone.')) {
-            return;
-        }
+    if (loading) {
+        return <div className="loading">Loading...</div>;
+    }
 
-        const loadingToast = toast.loading('Deleting registration...');
-        try {
-            const collectionRef = activeView === 'new' ? 'newRegistrations' : 'registrations';
-            await deleteDoc(doc(db, collectionRef, id));
-            
-            // Update the local state
-            if (activeView === 'new') {
-                setPayments(payments.filter(item => item.id !== id));
-            }
-            
-            toast.success('Registration deleted successfully!', { id: loadingToast });
-        } catch (error) {
-            console.error('Error deleting registration:', error);
-            toast.error('Failed to delete registration', { id: loadingToast });
-        }
-    };
-
-    const handleStatusChange = async (id, newStatus) => {
-        const loadingToast = toast.loading('Updating status...');
-        try {
-            const collectionRef = activeView === 'new' ? 'newRegistrations' : 'registrations';
-            await updateDoc(doc(db, collectionRef, id), {
-                paymentStatus: newStatus
-            });
-            
-            // Update local state
-            if (activeView === 'new') {
-                setPayments(payments.map(item => 
-                    item.id === id ? { ...item, paymentStatus: newStatus } : item
-                ));
-            }
-            
-            toast.success('Status updated successfully!', { id: loadingToast });
-        } catch (error) {
-            console.error('Error updating status:', error);
-            toast.error('Failed to update status', { id: loadingToast });
-        }
-    };
-
-    const openModal = (item) => {
-        setSelectedDetails(item);
-    };
+    if (!user) {
+        return <div className="loading">Checking authentication...</div>;
+    }
 
     return (
         <div className="admin-dashboard">
@@ -469,8 +247,7 @@ export default function Dashboard() {
                             className="download-btn" 
                             onClick={() => {
                                 const filename = `registrations-${new Date().toISOString().split('T')[0]}.csv`;
-                                const dataToDownload = activeView === 'new' ? payments : [];
-                                downloadCSV(dataToDownload, filename);
+                                downloadCSV(registrations, filename);
                             }}
                         >
                             Download CSV
@@ -482,7 +259,7 @@ export default function Dashboard() {
                     <div className="stat-card total">
                         <h3>Total Registrations</h3>
                         <p>{dashboardStats.totalRegistrations}</p>
-                        <small style={{ color: '#888', fontSize: '0.8rem' }}>
+                        <small className="target-percentage">
                             {((dashboardStats.totalRegistrations / 500) * 100).toFixed(1)}% of target
                         </small>
                     </div>
@@ -501,20 +278,13 @@ export default function Dashboard() {
                     <div className="stat-card target">
                         <h3>Target Progress</h3>
                         <p>{dashboardStats.totalRegistrations}/500</p>
-                        <div className="progress-bar" style={{
-                            width: '100%',
-                            height: '4px',
-                            backgroundColor: '#333',
-                            marginTop: '8px',
-                            borderRadius: '2px',
-                            overflow: 'hidden'
-                        }}>
-                            <div style={{
-                                width: `${Math.min((dashboardStats.totalRegistrations / 500) * 100, 100)}%`,
-                                height: '100%',
-                                backgroundColor: '#ffd700',
-                                transition: 'width 0.3s ease'
-                            }}></div>
+                        <div className="progress-bar">
+                            <div 
+                                className="progress-bar-fill"
+                                style={{
+                                    width: `${Math.min((dashboardStats.totalRegistrations / 500) * 100, 100)}%`
+                                }}
+                            ></div>
                         </div>
                     </div>
                 </div>
@@ -523,8 +293,7 @@ export default function Dashboard() {
             <div className="dashboard-controls">
                 <div className="view-toggle">
                     <button 
-                        className={`toggle-btn ${activeView === 'new' ? 'active' : ''}`}
-                        onClick={() => setActiveView('new')}
+                        className="toggle-btn active"
                     >
                         New Registrations
                     </button>
@@ -568,8 +337,8 @@ export default function Dashboard() {
                         </tr>
                     </thead>
                     <tbody>
-                        {currentData.map((item) => (
-                            <tr key={item.id}>
+                        {registrations.map((item) => (
+                            <tr key={item._id}>
                                 <td className="contact-details">
                                     <div className="user-name">{item.name}</div>
                                     <div className="contact-info">
@@ -601,7 +370,9 @@ export default function Dashboard() {
                                         </div>
                                         <div className="payment-info-item">
                                             <span className="label">Date:</span>
-                                            <span className="value">{item.paymentDate || 'N/A'}</span>
+                                            <span className="value">
+                                                {new Date(item.paymentDate).toLocaleString() || 'N/A'}
+                                            </span>
                                         </div>
                                     </div>
                                 </td>
@@ -609,7 +380,7 @@ export default function Dashboard() {
                                     <select 
                                         className={`status-select ${item.paymentStatus}`}
                                         value={item.paymentStatus}
-                                        onChange={(e) => handleStatusChange(item.id, e.target.value)}
+                                        onChange={(e) => handleStatusChange(item._id, e.target.value)}
                                     >
                                         <option value="pending">Pending</option>
                                         <option value="verified">Verified</option>
@@ -617,7 +388,7 @@ export default function Dashboard() {
                                     </select>
                                     <button 
                                         className="delete-btn"
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleDelete(item._id)}
                                         aria-label="Delete registration"
                                     >
                                         Delete
@@ -630,17 +401,17 @@ export default function Dashboard() {
 
                 <div className="pagination">
                     <button 
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
+                        onClick={() => setCurrentPage(currentPage - 1)}
+                        disabled={!pagination.hasPrevPage}
                         className="pagination-btn"
                     >
                         Previous
                     </button>
                     
-                    {[...Array(totalPages)].map((_, index) => (
+                    {[...Array(pagination.totalPages)].map((_, index) => (
                         <button
                             key={index + 1}
-                            onClick={() => handlePageChange(index + 1)}
+                            onClick={() => setCurrentPage(index + 1)}
                             className={`pagination-btn ${currentPage === index + 1 ? 'active' : ''}`}
                         >
                             {index + 1}
@@ -648,8 +419,8 @@ export default function Dashboard() {
                     ))}
                     
                     <button 
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
+                        onClick={() => setCurrentPage(currentPage + 1)}
+                        disabled={!pagination.hasNextPage}
                         className="pagination-btn"
                     >
                         Next
@@ -658,35 +429,30 @@ export default function Dashboard() {
             </div>
 
             {selectedImage && (
-                <div className="modal-overlay" onClick={closeModal}>
+                <div className="modal-overlay" onClick={() => setSelectedImage(null)}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <button className="modal-close" onClick={closeModal}>×</button>
+                        <button className="modal-close" onClick={() => setSelectedImage(null)}>×</button>
                         <Image
                             src={selectedImage}
                             alt="Payment Screenshot"
                             width={800}
                             height={800}
-                            style={{ 
-                                objectFit: 'contain',
-                                width: '100%',
-                                height: 'auto',
-                                maxHeight: '90vh'
-                            }}
+                            className="modal-image"
                         />
                     </div>
                 </div>
             )}
 
             {selectedDetails && (
-                <div className="modal-overlay" onClick={closeModal}>
+                <div className="modal-overlay" onClick={() => setSelectedDetails(null)}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
-                        <button className="modal-close" onClick={closeModal}>×</button>
+                        <button className="modal-close" onClick={() => setSelectedDetails(null)}>×</button>
                         <h2>{selectedDetails.name}</h2>
                         <p><strong>Email:</strong> {selectedDetails.email}</p>
                         <p><strong>Phone:</strong> {selectedDetails.phoneNumber}</p>
                         <p><strong>College:</strong> {selectedDetails.college || 'N/A'}</p>
                         <p><strong>Payment Method:</strong> {selectedDetails.paymentMethod || 'N/A'}</p>
-                        <p><strong>Payment Date:</strong> {selectedDetails.paymentDate || 'N/A'}</p>
+                        <p><strong>Payment Date:</strong> {new Date(selectedDetails.paymentDate).toLocaleString() || 'N/A'}</p>
                         <p><strong>Status:</strong> {selectedDetails.paymentStatus || 'N/A'}</p>
                         <p><strong>Selected Events:</strong> {selectedDetails.selectedEvents?.join(', ') || 'N/A'}</p>
                     </div>

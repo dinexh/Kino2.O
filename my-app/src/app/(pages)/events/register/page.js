@@ -4,8 +4,6 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './register.css';
 import { useRouter } from 'next/navigation';
-import { db } from '../../../../config/firebase';
-import { collection, addDoc, getDocs, query, where, serverTimestamp, limit } from 'firebase/firestore';
 import { toast, Toaster } from 'react-hot-toast';
 
 function RegisterPage() {
@@ -137,53 +135,13 @@ function RegisterPage() {
             return;
         }
 
-        const loadingToast = toast.loading("Processing registration...");
+        const loadingToast = toast.loading("Validating registration...");
 
-        // try {
-            // const registrationsRef = collection(db, 'newRegistrations');
-            
-            // Create registration document directly
-            // const docRef = await addDoc(registrationsRef, {
-            //     name: formData.name,
-            //     email: formData.email,
-            //     phoneNumber: formData.countryCode + formData.phoneNumber,
-            //     profession: formData.profession,
-            //     idType: formData.profession === 'working' ? formData.idType : null,
-            //     idNumber: formData.idNumber,
-            //     college: formData.profession === 'student' ? formData.college : null,
-            //     gender: formData.gender,
-            //     referralName: formData.referralName || null,
-            //     selectedEvents: formData.selectedEvents,
-            //     registrationDate: serverTimestamp(),
-            //     paymentStatus: 'pending'
-            // });
-
-            // Store registration data in session storage
-
-            try {
-                // Check for duplicate phone number or email
-                const registrationsRef = collection(db, 'newRegistrations');
-                const phoneQuery = query(registrationsRef, where('phoneNumber', '==', formData.countryCode + formData.phoneNumber));
-                const emailQuery = query(registrationsRef, where('email', '==', formData.email));
-                const phoneSnapshot = await getDocs(phoneQuery);
-                const emailSnapshot = await getDocs(emailQuery);
-
-                if (!phoneSnapshot.empty) {
-                    toast.dismiss(loadingToast);
-                    toast.error("Phone number already registered.");
-                    return;
-                }
-                if (!emailSnapshot.empty) {
-                    toast.dismiss(loadingToast);
-                    toast.error("Email already registered.");
-                    return;
-                }
-                
-            
-
-            sessionStorage.setItem('registrationData', JSON.stringify({
+        try {
+            // Prepare registration data
+            const registrationData = {
                 name: formData.name,
-                email: formData.email,
+                email: formData.email.toLowerCase(),
                 phoneNumber: formData.countryCode + formData.phoneNumber,
                 profession: formData.profession,
                 idType: formData.profession === 'working' ? formData.idType : null,
@@ -191,39 +149,58 @@ function RegisterPage() {
                 college: formData.profession === 'student' ? formData.college : null,
                 gender: formData.gender,
                 referralName: formData.referralName || null,
-                selectedEvents: formData.selectedEvents,
-                // Add any other fields you want to store
-            }));
+                selectedEvents: formData.selectedEvents
+            };
 
-            if (!phoneSnapshot.empty) {
-                toast.dismiss(loadingToast);
-                toast.error("Phone number already registered.");
-                return;
+            // Log the data being sent
+            console.log('Sending registration data:', registrationData);
+
+            // Validate registration data with API
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(registrationData)
+            });
+
+            // Log the raw response
+            console.log('Raw response:', response);
+
+            let result;
+            try {
+                result = await response.json();
+                console.log('Parsed response:', result);
+            } catch (error) {
+                console.error('Error parsing response:', error);
+                throw new Error('Failed to parse server response');
             }
 
-            if (!emailSnapshot.empty) {
-                toast.dismiss(loadingToast);
-                toast.error("Email already registered.");
-                return;
+            if (!response.ok) {
+                throw new Error(result.error || 'Validation failed');
             }
 
-            // If no duplicates found, you can proceed with any other logic or just show a success message
+            // Store registration data in session storage for payment page
+            sessionStorage.setItem('registrationData', JSON.stringify(registrationData));
+
             toast.dismiss(loadingToast);
-            toast.success("No duplicates found. You can proceed with registration!");
+            toast.success("Validation successful! Proceeding to payment.");
 
-            // Optionally, you can redirect to the payment page or another page here
+            // Redirect to payment page
             router.replace('/events/payment');
 
         } catch (error) {
-            console.error('Error during registration:', error);
+            console.error('Error during validation:', error);
             toast.dismiss(loadingToast);
             
-            if (error.code === 'permission-denied') {
-                toast.error("Permission denied. Please check your connection and try again.");
-            } else if (error.code === 'unavailable' || error.code === 'not-found') {
-                toast.error("Service temporarily unavailable. Please try again later.");
+            const errorMessage = error.message || "Validation failed. Please try again later";
+            
+            if (errorMessage.includes('already registered') || 
+                errorMessage.includes('already exists') ||
+                errorMessage.includes('Invalid')) {
+                toast.error(errorMessage);
             } else {
-                toast.error("Registration failed. Please try again later.");
+                toast.error("Validation failed. Please try again later");
             }
         }
     };
@@ -273,6 +250,7 @@ function RegisterPage() {
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                             placeholder="Enter your name"
                             required
+                            autoComplete='name'
                         />
                     </div>
                     <div className="form-group">
@@ -309,6 +287,7 @@ function RegisterPage() {
                                     placeholder="9876543210"
                                     required
                                     style={{ flex: '0 0 60%' }}
+                                    autoComplete='tel'
                                 />
                             </div>
                         </div>
@@ -320,6 +299,7 @@ function RegisterPage() {
                             value={formData.profession}
                             onChange={(e) => setFormData({ ...formData, profession: e.target.value })}
                             required
+                            autoComplete='profession'
                         >
                             <option value="">Select Profession</option>
                             <option value="student">Student</option>
@@ -337,6 +317,7 @@ function RegisterPage() {
                                     onChange={(e) => setFormData({ ...formData, college: e.target.value })}
                                     placeholder="Enter your college name"
                                     required
+                                    autoComplete='college'
                                 />
                             </div>
                             <div className="form-group">
@@ -347,6 +328,7 @@ function RegisterPage() {
                                     onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                                     placeholder="Enter your student ID"
                                     required
+                                    autoComplete='idNumber'
                                 />
                             </div>
                         </>
@@ -360,6 +342,7 @@ function RegisterPage() {
                                     value={formData.idType}
                                     onChange={(e) => setFormData({ ...formData, idType: e.target.value })}
                                     required
+                                    autoComplete='idType'
                                 >
                                     <option value="">Select ID Type</option>
                                     <option value="aadhar">Aadhar Card</option>
@@ -376,6 +359,7 @@ function RegisterPage() {
                                     onChange={(e) => setFormData({ ...formData, idNumber: e.target.value })}
                                     placeholder="Enter your ID number"
                                     required
+                                    autoComplete='idNumber'
                                 />
                             </div>
                         </>
@@ -387,6 +371,7 @@ function RegisterPage() {
                             value={formData.gender}
                             onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
                             required
+                            autoComplete='gender'
                         >
                             <option value="">Select Gender</option>
                             <option value="male">Male</option>
@@ -401,6 +386,7 @@ function RegisterPage() {
                             value={formData.referralName}
                             onChange={(e) => setFormData({ ...formData, referralName: e.target.value })}
                             placeholder="Enter referral name (if any)"
+                            autoComplete='referralName'
                         />
                     </div>
 
