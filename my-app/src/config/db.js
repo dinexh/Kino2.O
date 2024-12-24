@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/chitramela';
+const MONGODB_URI = "mongodb+srv://pavankarthik107:kar188123@cluster0.atnjd.mongodb.net/chitramela?retryWrites=true&w=majority&appName=Cluster0" /*|| 'mongodb://localhost:27017/chitramela'*/;
 
 if (!MONGODB_URI) {
     throw new Error(
