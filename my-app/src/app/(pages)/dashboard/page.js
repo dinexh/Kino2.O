@@ -91,17 +91,32 @@ function DashboardContent() {
     const [selectedDetails, setSelectedDetails] = useState(null);
     const [referralStats, setReferralStats] = useState([]);
     const [showReferralModal, setShowReferralModal] = useState(false);
+    const [showAddUserModal, setShowAddUserModal] = useState(false);
+    const [viewMode, setViewMode] = useState('all');
+    const [newUser, setNewUser] = useState({
+        email: '',
+        password: '',
+        role: 'user'
+    });
 
     useEffect(() => {
         fetchDashboardData();
-    }, [currentPage, searchQuery, statusFilter]);
+    }, [currentPage, searchQuery, statusFilter, viewMode]);
 
     const fetchDashboardData = async () => {
         try {
+            // Set status filter based on view mode
+            let currentStatus = statusFilter;
+            if (viewMode === 'pending') {
+                currentStatus = 'pending';
+            } else if (viewMode === 'verify') {
+                currentStatus = 'verified';
+            }
+
             const queryParams = new URLSearchParams({
                 page: currentPage,
                 limit: 10,
-                status: statusFilter,
+                status: currentStatus,
                 search: searchQuery
             });
 
@@ -135,20 +150,22 @@ function DashboardContent() {
                 },
                 body: JSON.stringify({
                     registrationId,
-                    status: newStatus
+                    status: newStatus,
+                    action: 'updateStatus'
                 }),
                 credentials: 'include'
             });
 
             if (!response.ok) {
-                throw new Error('Failed to update status');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to update status');
             }
 
             await fetchDashboardData();
             toast.success('Status updated successfully', { id: loadingToast });
         } catch (error) {
             console.error('Error updating status:', error);
-            toast.error('Failed to update status', { id: loadingToast });
+            toast.error(error.message || 'Failed to update status', { id: loadingToast });
         }
     };
 
@@ -204,6 +221,66 @@ function DashboardContent() {
         router.push('/verify');
     };
 
+    const handleDelete = async (registrationId) => {
+        if (!window.confirm('Are you sure you want to delete this registration?')) {
+            return;
+        }
+
+        const loadingToast = toast.loading('Deleting registration...');
+        try {
+            const response = await fetch(`/api/dashboard?id=${registrationId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete registration');
+            }
+
+            await fetchDashboardData();
+            toast.success('Registration deleted successfully', { id: loadingToast });
+        } catch (error) {
+            console.error('Error deleting registration:', error);
+            toast.error('Failed to delete registration', { id: loadingToast });
+        }
+    };
+
+    const handleAddUser = async (e) => {
+        e.preventDefault();
+        const loadingToast = toast.loading('Adding new user...');
+        try {
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newUser),
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to add user');
+            }
+
+            await fetchDashboardData();
+            setShowAddUserModal(false);
+            setNewUser({
+                email: '',
+                password: '',
+                role: 'user'
+            });
+            toast.success('User added successfully', { id: loadingToast });
+        } catch (error) {
+            console.error('Error adding user:', error);
+            toast.error('Failed to add user', { id: loadingToast });
+        }
+    };
+
+    const handleViewModeChange = (e) => {
+        setViewMode(e.target.value);
+        setCurrentPage(1);
+    };
+
     if (loading) {
         return <div className="loading">Loading dashboard...</div>;
     }
@@ -218,7 +295,7 @@ function DashboardContent() {
             <div className="dashboard-header">
                 <h1>Dashboard</h1>
                 <div className="header-actions">
-                    <button onClick={handleVerifyClick} className="verify-button">
+                    <button onClick={handleVerifyClick} className="verify-button" >
                         Verify
                     </button>
                     <button onClick={handleLogout} className="logout-button">
@@ -260,17 +337,18 @@ function DashboardContent() {
                         className="search-input"
                     />
                     <select
-                        value={statusFilter}
-                        onChange={handleStatusFilter}
-                        className="status-filter"
+                        value={viewMode}
+                        onChange={handleViewModeChange}
+                        className="view-mode-filter"
                     >
-                        <option value="all">All Status</option>
-                        <option value="pending_verification">Pending</option>
-                        <option value="verified">Verified</option>
-                        <option value="failed">Failed</option>
+                        <option value="pending">Pending Verifications</option>
+                        <option value="verify">Verified Registrations</option>
                     </select>
                 </div>
                 <div className="action-buttons">
+                    <button onClick={() => setShowAddUserModal(true)} className="add-user-btn">
+                        Add User
+                    </button>
                     <button onClick={calculateReferralStats} className="view-referrals-btn">
                         View Referrals
                     </button>
@@ -300,7 +378,7 @@ function DashboardContent() {
                                 <td>{registration.phoneNumber}</td>
                                 <td>{registration.selectedEvents.join(', ')}</td>
                                 <td>
-                                    <span className={`status ${registration.paymentStatus}`}>
+                                    <span>
                                         {registration.paymentStatus}
                                     </span>
                                 </td>
@@ -316,10 +394,16 @@ function DashboardContent() {
                                         onChange={(e) => handleStatusChange(registration._id, e.target.value)}
                                         className="status-select"
                                     >
-                                        <option value="pending_verification">Pending</option>
-                                        <option value="verified">Verify</option>
-                                        <option value="failed">Reject</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="verified">Verified</option>
+                                        <option value="rejected">Rejected</option>
                                     </select>
+                                    <button
+                                        onClick={() => handleDelete(registration._id)}
+                                        className="delete-btn"
+                                    >
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
                         ))}
@@ -415,6 +499,44 @@ function DashboardContent() {
                         <button onClick={() => setShowReferralModal(false)} className="close-btn">
                             Close
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {showAddUserModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h2>Add New User</h2>
+                        <form onSubmit={handleAddUser}>
+                            <div className="form-grid">
+                                <div className="form-group">
+                                    <label>Email:</label>
+                                    <input
+                                        type="email"
+                                        value={newUser.email}
+                                        onChange={(e) => setNewUser({...newUser, email: e.target.value})}
+                                        required
+                                        className="modal-input"
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Password:</label>
+                                    <input
+                                        type="password"
+                                        value={newUser.password}
+                                        onChange={(e) => setNewUser({...newUser, password: e.target.value})}
+                                        required
+                                        className="modal-input"
+                                    />
+                                </div>
+                            </div>
+                            <div className="modal-actions">
+                                <button type="submit" className="submit-btn">Add User</button>
+                                <button type="button" onClick={() => setShowAddUserModal(false)} className="cancel-btn">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}

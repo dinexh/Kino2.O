@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
 import connectDB  from '../../../config/db';
 import User from '../../../model/users';
-import { withAuth } from '../../../middleware/withAuth';
+import { withAuth } from '../../../middleware/auth';
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(request) {
     try {
         // Verify superuser authorization
-        const authResult = await withAuth(request);
-        if (!authResult.success || authResult.user.role !== 'superuser') {
+        const user = await withAuth(request);
+        if (!user || user.role !== 'superuser') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

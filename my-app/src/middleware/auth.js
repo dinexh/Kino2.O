@@ -25,7 +25,7 @@ export async function withAuth(request) {
         }
 
         // Verify token
-        const decoded = verifyToken(token);
+        const decoded = await verifyToken(token);
         if (!decoded) {
             console.log('Token verification failed');
             return null;

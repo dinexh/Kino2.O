@@ -128,7 +128,9 @@ export async function PATCH(request) {
         }
 
         const data = await request.json();
-        const { registrationId, status } = data;
+        console.log('Received update data:', data);
+        
+        const { registrationId, status, action } = data;
 
         if (!registrationId || !status) {
             return createResponse({ 
@@ -136,10 +138,16 @@ export async function PATCH(request) {
             }, 400);
         }
 
+        if (action !== 'updateStatus') {
+            return createResponse({ 
+                error: "Invalid action" 
+            }, 400);
+        }
+
         const validStatuses = ['pending', 'verified', 'rejected'];
         if (!validStatuses.includes(status)) {
             return createResponse({ 
-                error: "Invalid status value" 
+                error: `Invalid status value. Must be one of: ${validStatuses.join(', ')}` 
             }, 400);
         }
 

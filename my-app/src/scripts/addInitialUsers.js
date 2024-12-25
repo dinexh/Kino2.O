@@ -11,7 +11,7 @@ const users = [
     {
         email: 'AvanFlix@chitramela.com',
         password: 'AvanFlix@123',
-        role: 'Superuser'
+        role: 'superuser'
     },
     {
         email: 'dinesh@chitramela.com',

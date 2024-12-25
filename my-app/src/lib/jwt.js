@@ -13,9 +13,9 @@ export const generateToken = (payload) => {
     }
 };
 
-export const verifyToken = (token) => {
+export const verifyToken = async (token) => {
     try {
-        const decoded = jwt.verify(token, JWT_SECRET);
+        const decoded = await jwt.verify(token, JWT_SECRET);
         console.log('JWT token verified successfully');
         return decoded;
     } catch (error) {

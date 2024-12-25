@@ -51,7 +51,6 @@ export default function Nav() {
     { href: 'gallery', label: 'Gallery', isSection: true },
     { href: 'team', label: 'Team', isSection: true },
     { href: 'sponsors', label: 'Partners', isSection: true },
-    { href: '/schedule', label: 'schedule', isSection: false },
   ]
 
   return (
