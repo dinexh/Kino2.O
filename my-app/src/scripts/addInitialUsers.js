@@ -4,8 +4,23 @@ import connectDB from '../config/db.js';
 
 const users = [
     {
-        email: 'admin@chitramela.com',
-        password: 'Admin@123',
+        email: 'amish@chitramela.com',
+        password: 'Amish@123',
+        role: 'superuser'
+    },
+    {
+        email: 'AvanFlix@chitramela.com',
+        password: 'AvanFlix@123',
+        role: 'Superuser'
+    },
+    {
+        email: 'dinesh@chitramela.com',
+        password: 'Dinesh@123',
+        role: 'superuser'
+    },
+    {
+        email: 'Karthik@chitramela.com',
+        password: 'Karthik@123',
         role: 'superuser'
     },
     {
