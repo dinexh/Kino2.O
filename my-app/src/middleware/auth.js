@@ -1,32 +1,39 @@
 import { verifyToken } from '../lib/jwt';
 
 export async function withAuth(request) {
-    // Get token from Authorization header or cookies
-    const authHeader = request.headers.get('Authorization');
-    const cookies = request.headers.get('cookie');
-    
-    let token;
-    
-    if (authHeader?.startsWith('Bearer ')) {
-        token = authHeader.substring(7);
-    } else if (cookies) {
-        const authCookie = cookies.split(';').find(c => c.trim().startsWith('auth='));
-        if (authCookie) {
-            token = authCookie.split('=')[1];
+    try {
+        // Get token from Authorization header or cookies
+        const authHeader = request.headers.get('Authorization');
+        const cookies = request.headers.get('cookie');
+        
+        let token;
+        
+        if (authHeader?.startsWith('Bearer ')) {
+            token = authHeader.substring(7);
+        } else if (cookies) {
+            const authCookie = cookies.split(';').find(c => c.trim().startsWith('auth='));
+            if (authCookie) {
+                token = decodeURIComponent(authCookie.split('=')[1].trim());
+            }
         }
-    }
 
-    if (!token) {
+        if (!token) {
+            console.log('No token found');
+            return null;
+        }
+
+        // Verify token
+        const decoded = verifyToken(token);
+        if (!decoded) {
+            console.log('Invalid token');
+            return null;
+        }
+
+        return decoded;
+    } catch (error) {
+        console.error('Auth middleware error:', error);
         return null;
     }
-
-    // Verify token
-    const decoded = verifyToken(token);
-    if (!decoded) {
-        return null;
-    }
-
-    return decoded;
 }
 
 export function withRole(roles) {

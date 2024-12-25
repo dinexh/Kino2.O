@@ -11,7 +11,8 @@ const userSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        minlength: 6
     },
     role: {
         type: String,
@@ -46,6 +47,7 @@ userSchema.methods.comparePassword = async function(candidatePassword) {
     }
 };
 
+// Ensure the model hasn't been compiled before
 const User = mongoose.models.User || mongoose.model('User', userSchema);
 
 export default User; 

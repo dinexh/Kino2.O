@@ -16,6 +16,8 @@ const ensureConnection = async () => {
     }
 };
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request) {
     try {
         const { email, password } = await request.json();
@@ -61,8 +63,17 @@ export async function POST(request) {
             role: user.role
         });
 
+        // Set cookie options
+        const cookieOptions = [
+            `auth=${token}`,
+            'Path=/',
+            'HttpOnly',
+            'Secure',
+            'SameSite=Strict',
+            'Max-Age=86400' // 24 hours
+        ].join('; ');
+
         return new Response(JSON.stringify({
-            token,
             user: {
                 email: user.email,
                 role: user.role
@@ -71,7 +82,7 @@ export async function POST(request) {
             status: 200,
             headers: {
                 'Content-Type': 'application/json',
-                'Set-Cookie': `auth=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=86400`
+                'Set-Cookie': cookieOptions
             }
         });
     } catch (error) {

@@ -1,35 +1,39 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
-const AuthContext = createContext({});
+const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
+export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    const checkAuth = async () => {
+        try {
+            const response = await fetch('/api/auth/user', {
+                credentials: 'include'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setUser(data);
+            } else {
+                setUser(null);
+                // Only redirect to login if we're not already there
+                if (window.location.pathname !== '/login') {
+                    router.push('/login');
+                }
+            }
+        } catch (error) {
+            console.error('Auth check error:', error);
+            setUser(null);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        // Check for existing auth token in cookie
-        const checkAuth = async () => {
-            try {
-                const response = await fetch('/api/auth/user', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                });
-
-                if (response.ok) {
-                    const userData = await response.json();
-                    setUser(userData);
-                }
-            } catch (error) {
-                console.error('Auth check error:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         checkAuth();
     }, []);
 
@@ -38,45 +42,30 @@ export const AuthProvider = ({ children }) => {
             const response = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ email, password }),
                 credentials: 'include'
             });
 
-            const data = await response.json();
-
             if (!response.ok) {
-                throw new Error(data.error || 'Login failed');
+                const error = await response.json();
+                throw new Error(error.error || 'Invalid login credentials');
             }
 
-            setUser(data.user);
-            return data;
-        } catch (error) {
-            throw error;
-        }
-    };
-
-    const register = async (email, password, role) => {
-        try {
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ email, password, role }),
-                credentials: 'include'
-            });
-
             const data = await response.json();
+            setUser(data);
 
-            if (!response.ok) {
-                throw new Error(data.error || 'Registration failed');
+            // Redirect based on user role
+            if (data.role === 'superuser') {
+                router.push('/dashboard');
+            } else {
+                router.push('/verify');
             }
 
-            setUser(data.user);
             return data;
         } catch (error) {
+            console.error('Login error:', error);
             throw error;
         }
     };
@@ -88,16 +77,31 @@ export const AuthProvider = ({ children }) => {
                 credentials: 'include'
             });
             setUser(null);
+            router.push('/login');
         } catch (error) {
             console.error('Logout error:', error);
+            throw error;
         }
     };
 
+    const value = {
+        user,
+        login,
+        logout,
+        loading
+    };
+
     return (
-        <AuthContext.Provider value={{ user, login, register, logout }}>
+        <AuthContext.Provider value={value}>
             {!loading && children}
         </AuthContext.Provider>
     );
-};
+}
 
-export const useAuth = () => useContext(AuthContext); 
+export function useAuth() {
+    const context = useContext(AuthContext);
+    if (!context) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+    return context;
+} 

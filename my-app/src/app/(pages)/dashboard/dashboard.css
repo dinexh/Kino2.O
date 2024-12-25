@@ -1,14 +1,25 @@
 .dashboard-container {
-    padding: 20px;
-    max-width: 1400px;
+    padding: 2rem;
+    /* max-width: 1400px; */
     margin: 0 auto;
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #000000, #1a1a1a);
 }
 
 .dashboard-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.dashboard-header h1 {
+    color: gold;
+    font-size: 2rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    margin: 0;
 }
 
 .stats-container {
@@ -19,16 +30,17 @@
 }
 
 .stat-card {
-    background: white;
+    background: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.1);
     text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.2);
 }
 
 .stat-card h3 {
     margin: 0;
-    color: #666;
+    color: #888;
     font-size: 0.9rem;
 }
 
@@ -36,7 +48,7 @@
     margin: 10px 0 0;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
+    color: gold;
 }
 
 .controls {
@@ -55,16 +67,40 @@
 
 .search-input {
     flex: 1;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 0.5rem;
+    color: gold;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: gold;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+}
+
+.search-input::placeholder {
+    color: #666;
 }
 
 .status-filter {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 0.75rem 1rem;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 0.5rem;
+    color: gold;
+    font-size: 0.9rem;
     min-width: 120px;
+    cursor: pointer;
+}
+
+.status-filter:focus {
+    outline: none;
+    border-color: gold;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
 }
 
 .action-buttons {
@@ -72,81 +108,129 @@
     gap: 10px;
 }
 
+.header-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.verify-button,
 .view-referrals-btn,
 .download-btn,
 .logout-button {
-    padding: 8px 16px;
-    border: none;
-    border-radius: 4px;
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    color: gold;
+    border: 1px solid gold;
+    border-radius: 0.5rem;
     cursor: pointer;
-    background: #007bff;
-    color: white;
-    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
+.verify-button:hover,
 .view-referrals-btn:hover,
 .download-btn:hover,
 .logout-button:hover {
-    background: #0056b3;
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 
 .registrations-table {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 0.8rem;
+    border: 1px solid rgba(255, 215, 0, 0.2);
     overflow-x: auto;
+    margin-bottom: 2rem;
 }
 
 table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: transparent;
 }
 
 th, td {
-    padding: 12px;
+    padding: 1rem 1.5rem;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
 }
 
 th {
-    background: #f8f9fa;
+    background: rgba(0, 0, 0, 0.95);
+    color: gold;
     font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
 }
 
-.status {
-    padding: 4px 8px;
-    border-radius: 4px;
+td {
+    color: #fff;
     font-size: 0.9rem;
 }
 
+tr:hover {
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.status {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 2rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
 .status.pending_verification {
-    background: #fff3cd;
-    color: #856404;
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.3);
 }
 
 .status.verified {
-    background: #d4edda;
-    color: #155724;
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.3);
 }
 
 .status.failed {
-    background: #f8d7da;
-    color: #721c24;
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.3);
 }
 
 .view-details-btn {
-    padding: 4px 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
+    padding: 0.4rem 0.8rem;
+    background: transparent;
+    color: gold;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 0.5rem;
     cursor: pointer;
     margin-right: 8px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.view-details-btn:hover {
+    border-color: gold;
+    background: rgba(255, 215, 0, 0.1);
 }
 
 .status-select {
-    padding: 4px 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 0.4rem 0.8rem;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 0.5rem;
+    color: gold;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: gold;
 }
 
 .pagination {
@@ -158,16 +242,30 @@ th {
 }
 
 .pagination button {
-    padding: 8px 16px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: white;
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    color: gold;
+    border: 1px solid gold;
+    border-radius: 0.5rem;
     cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 
 .pagination button:disabled {
-    background: #f8f9fa;
+    opacity: 0.5;
     cursor: not-allowed;
+    border-color: rgba(255, 215, 0, 0.2);
+}
+
+.pagination span {
+    color: gold;
+    font-size: 0.9rem;
 }
 
 .modal {
@@ -176,7 +274,7 @@ th {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -184,13 +282,23 @@ th {
 }
 
 .modal-content {
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.95);
+    padding: 2rem;
+    border-radius: 1rem;
     max-width: 600px;
     width: 90%;
     max-height: 90vh;
     overflow-y: auto;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.1);
+    color: #fff;
+}
+
+.modal-content h2 {
+    color: gold;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
 }
 
 .details-grid {
@@ -200,20 +308,32 @@ th {
     margin: 20px 0;
 }
 
+.details-grid div {
+    padding: 0.5rem;
+}
+
+.details-grid strong {
+    color: gold;
+    margin-right: 0.5rem;
+}
+
 .close-btn {
     display: block;
     width: 100%;
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    background: #dc3545;
-    color: white;
+    padding: 0.8rem;
+    background: transparent;
+    color: gold;
+    border: 1px solid gold;
+    border-radius: 0.5rem;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
 }
 
 .close-btn:hover {
-    background: #c82333;
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 
 .referral-stats {
@@ -223,11 +343,22 @@ th {
 .referral-item {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    color: #fff;
 }
 
 .referral-item:last-child {
     border-bottom: none;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    color: gold;
+    font-size: 1.2rem;
+    background: linear-gradient(to bottom, #000000, #1a1a1a);
 }
  

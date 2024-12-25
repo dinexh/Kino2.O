@@ -1,42 +1,55 @@
-'use client';
-import './page.css';
+"use client";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
+import ProtectedRoute from '../../../components/ProtectedRoute';
 import toast, { Toaster } from 'react-hot-toast';
+import { FaArrowLeft } from 'react-icons/fa';
+import './verify.css';
 
-export default function VerifyPage() {
+export default function Verify() {
+    return (
+        <ProtectedRoute allowedRoles={['user', 'superuser']}>
+            <VerifyContent />
+        </ProtectedRoute>
+    );
+}
+
+function VerifyContent() {
+    const { user, logout } = useAuth();
     const router = useRouter();
-    const { user } = useAuth();
     const [searchQuery, setSearchQuery] = useState('');
     const [registrations, setRegistrations] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    useEffect(() => {
-        if (!user) {
-            toast.error('Please login to access the verify page');
-            router.push('/login');
-            return;
-        }
-    }, [user, router]);
+    const handleDashboardClick = () => {
+        router.push('/dashboard');
+    };
 
     const fetchRegistrations = async (search = '') => {
+        setLoading(true);
+        setError(null);
         try {
-            const queryParams = new URLSearchParams();
-            if (search) {
-                queryParams.append('search', search);
-            }
-
-            const response = await fetch(`/api/verify?${queryParams}`);
+            const response = await fetch(`/api/verify?search=${encodeURIComponent(search)}`, {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
             if (!response.ok) {
-                throw new Error('Failed to fetch registrations');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to fetch registrations');
             }
 
             const data = await response.json();
-            setRegistrations(data.registrations);
+            setRegistrations(data.registrations || []);
         } catch (error) {
-            console.log('Error fetching registrations:', error);
-            toast.error('Failed to fetch registrations');
+            console.error('Error fetching registrations:', error);
+            setError(error.message);
+            toast.error(error.message || 'Failed to fetch registrations');
         } finally {
             setLoading(false);
         }
@@ -52,99 +65,95 @@ export default function VerifyPage() {
         fetchRegistrations(value);
     };
 
-    const formatPhoneNumber = (phone) => {
-        if (!phone) return '';
-        const cleaned = phone.toString().replace(/\D/g, '');
-        const match = cleaned.match(/^(\d{3})(\d{3})(\d{4})$/);
-        if (match) {
-            return `${match[1]}-${match[2]}-${match[3]}`;
-        }
-        return phone;
-    };
-
     const handleLogout = async () => {
-        const loadingToast = toast.loading('Logging out...');
         try {
-            await auth.signOut();
-            toast.success('Logged out successfully!', { id: loadingToast });
+            await logout();
             router.push('/login');
         } catch (error) {
             console.error('Error logging out:', error);
-            toast.error(error.message || 'Error logging out', { id: loadingToast });
+            toast.error('Failed to logout');
         }
     };
 
-    if (loading) {
-        return (
-            <div className="verify-component">
-                <div className="loading">Loading registrations...</div>
-            </div>
-        );
-    }
-
-    if (!user) {
-        return <div className="loading">Checking authentication...</div>;
-    }
-
     return (
-        <div className="verify-component">
+        <div className="verify-container">
             <Toaster position="top-center" />
-            <div className="verify-header">
-                <div className="verify-title">
-                    <h1>Total Registrations ({registrations.length})</h1>
-                    <div className="user-info">
-                        Welcome, {user?.email}
+            <div className="verify-content">
+                <div className="verify-header">
+                    <div className="header-content">
+                        <h1>Verification Portal</h1>
+                        <p className="user-info">Logged in as: {user?.email}</p>
+                    </div>
+                    <div className="header-actions">
+                        {user?.role === 'superuser' && (
+                            <button onClick={handleDashboardClick} className="back-button">
+                                <FaArrowLeft /> Dashboard
+                            </button>
+                        )}
+                        <button onClick={handleLogout} className="logout-button">
+                            Logout
+                        </button>
                     </div>
                 </div>
-                <div className="header-actions">
-                    <button className="logout-btn" onClick={handleLogout}>Logout</button>
-                </div>
-            </div>
-            <div className="verify-component-in">
-                <div className="search-container">
+
+                <div className="search-section">
                     <input
                         type="text"
                         placeholder="Search by ID number or phone number..."
                         value={searchQuery}
                         onChange={handleSearch}
                         className="search-input"
+                        disabled={loading}
                     />
                 </div>
-            </div>
-            <div className="verify-component-table">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID Number</th>
-                            <th>Name</th>
-                            <th>Phone Number</th>
-                            <th>College</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {registrations.map((registration) => (
-                            <tr key={registration._id}>
-                                <td>{registration.idNumber}</td>
-                                <td>{registration.name}</td>
-                                <td>{formatPhoneNumber(registration.phoneNumber)}</td>
-                                <td>{registration.college || 'N/A'}</td>
-                                <td>
-                                    <div className={`verify-status ${registration.verified ? 'verified' : 'not-verified'}`}>
-                                        {registration.verified ? 'Verified' : 'Not Verified'}
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                        {registrations.length === 0 && (
+
+                <div className="registrations-table">
+                    <table>
+                        <thead>
                             <tr>
-                                <td colSpan="5" className="no-results">
-                                    No registrations found
-                                </td>
+                                <th>ID Number</th>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Status</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="4" className="loading-cell">
+                                        <div className="loading-spinner"></div>
+                                        Loading...
+                                    </td>
+                                </tr>
+                            ) : error ? (
+                                <tr>
+                                    <td colSpan="4" className="error-cell">
+                                        {error}. Please try again.
+                                    </td>
+                                </tr>
+                            ) : registrations.length > 0 ? (
+                                registrations.map((reg) => (
+                                    <tr key={reg._id}>
+                                        <td>{reg.idNumber}</td>
+                                        <td>{reg.name}</td>
+                                        <td>{reg.phoneNumber}</td>
+                                        <td>
+                                            <span className={`status-badge ${reg.paymentStatus}`}>
+                                                {reg.paymentStatus}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="4" className="no-results">
+                                        No registrations found
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

@@ -1,7 +1,8 @@
 import mongoose from 'mongoose';
 import { withAuth } from '../../../../middleware/auth';
-import User from '../../../../model/users';
 import connectDB from '../../../../config/db';
+
+export const dynamic = 'force-dynamic';
 
 // Helper function to safely connect to MongoDB
 const ensureConnection = async () => {
@@ -17,15 +18,6 @@ const ensureConnection = async () => {
 };
 
 export async function GET(request) {
-    const decoded = await withAuth(request);
-    
-    if (!decoded) {
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-            status: 401,
-            headers: { 'Content-Type': 'application/json' }
-        });
-    }
-
     try {
         // Ensure database connection
         if (!(await ensureConnection())) {
@@ -35,26 +27,39 @@ export async function GET(request) {
             });
         }
 
-        // Get user from database
-        const user = await User.findById(decoded.id).select('-password');
-
+        const user = await withAuth(request);
+        
         if (!user) {
+            return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+                status: 401,
+                headers: { 'Content-Type': 'application/json' }
+            });
+        }
+
+        // Get user from database
+        const User = mongoose.models.User || mongoose.model('User', new mongoose.Schema({
+            email: String,
+            password: String,
+            role: String,
+            createdAt: { type: Date, default: Date.now }
+        }));
+
+        const dbUser = await User.findOne({ email: user.email }).select('-password');
+
+        if (!dbUser) {
             return new Response(JSON.stringify({ error: 'User not found' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
 
-        return new Response(JSON.stringify({
-            email: user.email,
-            role: user.role
-        }), {
+        return new Response(JSON.stringify(dbUser), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
         });
     } catch (error) {
         console.error('Error getting user:', error);
-        return new Response(JSON.stringify({ error: 'Failed to get user' }), {
+        return new Response(JSON.stringify({ error: 'Internal server error' }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
+import ProtectedRoute from '../../../components/ProtectedRoute';
 import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -64,6 +65,14 @@ const downloadCSV = (data, filename) => {
 };
 
 export default function Dashboard() {
+    return (
+        <ProtectedRoute allowedRoles={['superuser']}>
+            <DashboardContent />
+        </ProtectedRoute>
+    );
+}
+
+function DashboardContent() {
     const router = useRouter();
     const { user, logout } = useAuth();
     const [registrations, setRegistrations] = useState([]);
@@ -84,12 +93,8 @@ export default function Dashboard() {
     const [showReferralModal, setShowReferralModal] = useState(false);
 
     useEffect(() => {
-        if (!user) {
-            router.push('/login');
-            return;
-        }
         fetchDashboardData();
-    }, [user, router, currentPage, searchQuery, statusFilter]);
+    }, [currentPage, searchQuery, statusFilter]);
 
     const fetchDashboardData = async () => {
         try {
@@ -195,6 +200,10 @@ export default function Dashboard() {
         downloadCSV(registrations, 'registrations.csv');
     };
 
+    const handleVerifyClick = () => {
+        router.push('/verify');
+    };
+
     if (loading) {
         return <div className="loading">Loading dashboard...</div>;
     }
@@ -209,6 +218,9 @@ export default function Dashboard() {
             <div className="dashboard-header">
                 <h1>Dashboard</h1>
                 <div className="header-actions">
+                    <button onClick={handleVerifyClick} className="verify-button">
+                        Verify
+                    </button>
                     <button onClick={handleLogout} className="logout-button">
                         Logout
                     </button>

@@ -14,24 +14,34 @@ export default function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (user) {
-            router.push('/dashboard');
+            // Always redirect regular users to verify page
+            if (user.role === 'user') {
+                router.push('/verify');
+            } else {
+                // Superusers go to dashboard by default
+                router.push('/dashboard');
+            }
         }
     }, [user, router]);
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         const loadingToast = toast.loading('Logging in...');
         
         try {
-            await login(email, password);
+            const data = await login(email, password);
             toast.success('Logged in successfully!', { id: loadingToast });
-            router.push('/dashboard');
+            // Redirection is handled in useEffect when user state updates
         } catch (error) {
             console.error('Login error:', error);
             toast.error(error.message || 'Invalid login credentials', { id: loadingToast });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -62,6 +72,7 @@ export default function Login() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
+                        disabled={isLoading}
                     />
                     <div className="password-input-container">
                         <input
@@ -70,16 +81,20 @@ export default function Login() {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
+                            disabled={isLoading}
                         />
                         <button
                             type="button"
                             className="password-toggle-btn"
                             onClick={() => setShowPassword(!showPassword)}
+                            disabled={isLoading}
                         >
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
                     </div>
-                    <button type="submit">Login</button>
+                    <button type="submit" disabled={isLoading}>
+                        {isLoading ? 'Logging in...' : 'Login'}
+                    </button>
                 </form>
             </div>
         </div>
