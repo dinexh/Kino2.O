@@ -1,35 +1,31 @@
 import mongoose from 'mongoose';
 import { withAuth } from '../../../../middleware/auth';
 import connectDB from '../../../../config/db';
+import User from '../../../../model/users';
 
 export const dynamic = 'force-dynamic';
 
-// Helper function to safely connect to MongoDB
-const ensureConnection = async () => {
-    try {
-        if (!mongoose.connections[0].readyState) {
-            await connectDB();
-        }
-        return true;
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-        return false;
-    }
-};
-
 export async function GET(request) {
+    console.log('GET /api/auth/user called');
     try {
-        // Ensure database connection
-        if (!(await ensureConnection())) {
+        // Connect to database first
+        try {
+            await connectDB();
+            console.log('Connected to MongoDB');
+        } catch (error) {
+            console.error('MongoDB connection error:', error);
             return new Response(JSON.stringify({ error: 'Database connection failed' }), {
                 status: 500,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
 
-        const user = await withAuth(request);
+        // Check authentication
+        const authResult = await withAuth(request);
+        console.log('Auth result:', authResult);
         
-        if (!user) {
+        if (!authResult) {
+            console.log('Authentication failed - no valid token');
             return new Response(JSON.stringify({ error: 'Unauthorized' }), {
                 status: 401,
                 headers: { 'Content-Type': 'application/json' }
@@ -37,29 +33,29 @@ export async function GET(request) {
         }
 
         // Get user from database
-        const User = mongoose.models.User || mongoose.model('User', new mongoose.Schema({
-            email: String,
-            password: String,
-            role: String,
-            createdAt: { type: Date, default: Date.now }
-        }));
+        const user = await User.findOne({ email: authResult.email }).select('-password');
+        console.log('User found:', user ? 'yes' : 'no');
 
-        const dbUser = await User.findOne({ email: user.email }).select('-password');
-
-        if (!dbUser) {
+        if (!user) {
+            console.log('User not found in database');
             return new Response(JSON.stringify({ error: 'User not found' }), {
                 status: 404,
                 headers: { 'Content-Type': 'application/json' }
             });
         }
 
-        return new Response(JSON.stringify(dbUser), {
+        console.log('Successfully retrieved user data');
+        return new Response(JSON.stringify({
+            email: user.email,
+            role: user.role,
+            id: user._id
+        }), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }
         });
     } catch (error) {
-        console.error('Error getting user:', error);
-        return new Response(JSON.stringify({ error: 'Internal server error' }), {
+        console.error('Error in /api/auth/user:', error);
+        return new Response(JSON.stringify({ error: 'Internal server error', details: error.message }), {
             status: 500,
             headers: { 'Content-Type': 'application/json' }
         });

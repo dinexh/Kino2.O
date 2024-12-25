@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { connectDB } from '../../../config/db';
+import connectDB  from '../../../config/db';
 import User from '../../../model/users';
 import { withAuth } from '../../../middleware/withAuth';
 

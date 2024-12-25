@@ -42,6 +42,7 @@ async function addUsers() {
         // Close the connection
         await mongoose.connection.close();
         console.log('Database connection closed');
+        process.exit(0);
     }
 }
 

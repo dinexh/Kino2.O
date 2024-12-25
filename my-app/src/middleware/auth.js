@@ -10,25 +10,28 @@ export async function withAuth(request) {
         
         if (authHeader?.startsWith('Bearer ')) {
             token = authHeader.substring(7);
+            console.log('Found token in Authorization header');
         } else if (cookies) {
             const authCookie = cookies.split(';').find(c => c.trim().startsWith('auth='));
             if (authCookie) {
                 token = decodeURIComponent(authCookie.split('=')[1].trim());
+                console.log('Found token in cookies');
             }
         }
 
         if (!token) {
-            console.log('No token found');
+            console.log('No token found in request');
             return null;
         }
 
         // Verify token
         const decoded = verifyToken(token);
         if (!decoded) {
-            console.log('Invalid token');
+            console.log('Token verification failed');
             return null;
         }
 
+        console.log('Token verified successfully for user:', decoded.email);
         return decoded;
     } catch (error) {
         console.error('Auth middleware error:', error);
@@ -48,6 +51,7 @@ export function withRole(roles) {
         }
 
         if (!roles.includes(user.role)) {
+            console.log('User role not authorized:', user.role, 'Required roles:', roles);
             return new Response(JSON.stringify({ error: 'Forbidden' }), {
                 status: 403,
                 headers: { 'Content-Type': 'application/json' }
