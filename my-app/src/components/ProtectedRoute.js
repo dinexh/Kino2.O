@@ -4,39 +4,31 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/AuthContext';
 
 export default function ProtectedRoute({ children, allowedRoles }) {
-    const { user } = useAuth();
+    const { user, loading } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
-        if (!user) {
+        if (!loading && !user) {
             router.push('/login');
             return;
         }
 
-        // If user is a regular user
-        if (user.role === 'user') {
-            // Regular users can only access verify page
-            if (!allowedRoles.includes('user')) {
+        if (!loading && user) {
+            // For dashboard, only allow superusers
+            if (window.location.pathname === '/dashboard' && user.role !== 'superuser') {
                 router.push('/verify');
                 return;
             }
         }
-
-        // Superusers can access all pages, so no additional checks needed
-    }, [user, router, allowedRoles]);
+    }, [user, loading, router]);
 
     // Show nothing while checking auth
-    if (!user) {
+    if (loading || !user) {
         return null;
     }
 
-    // Allow superusers to access any page
-    if (user.role === 'superuser') {
-        return children;
-    }
-
-    // For regular users, only show content if they have permission
-    if (!allowedRoles.includes(user.role)) {
+    // For regular users, only allow verify page
+    if (user.role === 'user' && !allowedRoles.includes('user')) {
         return null;
     }
 

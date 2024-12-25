@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 const AuthContext = createContext();
 
@@ -8,21 +8,36 @@ export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const router = useRouter();
+    const pathname = usePathname();
 
     const checkAuth = async () => {
         try {
-            const response = await fetch('/api/auth/user', {
-                credentials: 'include'
-            });
+            // Only check auth for protected routes
+            if (pathname === '/dashboard' || pathname === '/verify') {
+                const response = await fetch('/api/auth/user', {
+                    credentials: 'include'
+                });
 
-            if (response.ok) {
-                const data = await response.json();
-                setUser(data);
-            } else {
-                setUser(null);
-                // Only redirect to login if we're not already there
-                if (window.location.pathname !== '/login') {
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data);
+                    
+                    // Enforce role-based access
+                    if (pathname === '/dashboard' && data.role !== 'superuser') {
+                        router.push('/verify');
+                    }
+                } else {
+                    setUser(null);
                     router.push('/login');
+                }
+            } else {
+                // For non-protected routes, just check if user is logged in
+                const response = await fetch('/api/auth/user', {
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setUser(data);
                 }
             }
         } catch (error) {
@@ -35,7 +50,7 @@ export function AuthProvider({ children }) {
 
     useEffect(() => {
         checkAuth();
-    }, []);
+    }, [pathname]);
 
     const login = async (email, password) => {
         try {
@@ -54,10 +69,10 @@ export function AuthProvider({ children }) {
             }
 
             const data = await response.json();
-            setUser(data);
+            setUser(data.user);
 
             // Redirect based on user role
-            if (data.role === 'superuser') {
+            if (data.user.role === 'superuser') {
                 router.push('/dashboard');
             } else {
                 router.push('/verify');
