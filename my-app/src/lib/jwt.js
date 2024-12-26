@@ -1,40 +1,34 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
 
-export const generateToken = (payload) => {
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET environment variable is not set');
+}
+
+export function generateAuthToken(payload) {
     try {
-        const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' });
-        console.log('JWT token generated successfully');
-        return token;
+        return jwt.sign(payload, JWT_SECRET, { 
+            expiresIn: '24h',
+            algorithm: 'HS256'
+        });
     } catch (error) {
-        console.error('Error generating JWT token:', error);
+        console.error('Token generation error:', error);
         throw error;
     }
-};
+}
 
-export const verifyToken = async (token) => {
+export async function verifyAuthToken(token) {
     try {
-        const decoded = await jwt.verify(token, JWT_SECRET);
-        console.log('JWT token verified successfully');
-        return decoded;
+        return jwt.verify(token, JWT_SECRET);
     } catch (error) {
-        console.error('JWT verification error:', error.message);
+        if (error.name === 'JsonWebTokenError') {
+            console.error('Invalid token:', error.message);
+        } else if (error.name === 'TokenExpiredError') {
+            console.error('Token expired');
+        } else {
+            console.error('Token verification error:', error);
+        }
         return null;
     }
-};
-
-export const generateAuthToken = (user) => {
-    try {
-        const payload = {
-            id: user.id || user._id,
-            email: user.email,
-            role: user.role
-        };
-        console.log('Generating auth token for user:', user.email);
-        return generateToken(payload);
-    } catch (error) {
-        console.error('Error generating auth token:', error);
-        throw error;
-    }
-}; 
+} 

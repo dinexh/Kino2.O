@@ -16,15 +16,11 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    // Redirect if already logged in
     useEffect(() => {
         if (user) {
-            // Always redirect regular users to verify page
-            if (user.role === 'user') {
-                router.push('/verify');
-            } else {
-                // Superusers go to dashboard by default
-                router.push('/dashboard');
-            }
+            const redirectPath = user.role === 'user' ? '/verify' : '/dashboard';
+            router.replace(redirectPath);
         }
     }, [user, router]);
 
@@ -34,25 +30,32 @@ export default function Login() {
         const loadingToast = toast.loading('Logging in...');
         
         try {
-            const data = await login(email, password);
+            if (!email || !password) {
+                throw new Error('Please fill in all fields');
+            }
+
+            const result = await login(email, password);
             toast.success('Logged in successfully!', { id: loadingToast });
-            // Redirection is handled in useEffect when user state updates
+
+            // Immediate redirect based on role
+            const redirectPath = result.user.role === 'user' ? '/verify' : '/dashboard';
+            router.replace(redirectPath);
+
         } catch (error) {
             console.error('Login error:', error);
-            toast.error(error.message || 'Invalid login credentials', { id: loadingToast });
-        } finally {
+            toast.error(
+                error.response?.data?.message || 
+                error.message || 
+                'Login failed. Please check your credentials.',
+                { id: loadingToast }
+            );
             setIsLoading(false);
         }
     };
 
-    // Render loading state or redirect
-    if (user) {
-        return null; // or a loading spinner
-    }
-
+    // Remove the film-reel-overlay div since we're not using it
     return (
         <div className="login-container">
-            <div className="film-reel-overlay"></div>
             <Toaster position="top-center" />
             <div className="login-form">
                 <div className="logo-container">
@@ -70,7 +73,7 @@ export default function Login() {
                         type="email"
                         placeholder="Email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => setEmail(e.target.value.trim())}
                         required
                         disabled={isLoading}
                     />
@@ -92,7 +95,11 @@ export default function Login() {
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
                     </div>
-                    <button type="submit" disabled={isLoading}>
+                    <button 
+                        type="submit" 
+                        disabled={isLoading || !email || !password}
+                        className={!email || !password ? 'disabled-btn' : ''}
+                    >
                         {isLoading ? 'Logging in...' : 'Login'}
                     </button>
                 </form>

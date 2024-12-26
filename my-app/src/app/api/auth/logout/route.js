@@ -1,20 +1,24 @@
-export async function POST() {
-    // Set cookie options to clear the token
-    const cookieOptions = [
-        'auth=',
-        'Path=/',
-        'HttpOnly',
-        'Secure',
-        'SameSite=Strict',
-        'Max-Age=0',
-        'Expires=Thu, 01 Jan 1970 00:00:00 GMT'
-    ].join('; ');
+import { cookies } from 'next/headers';
 
-    return new Response(JSON.stringify({ message: 'Logged out successfully' }), {
-        status: 200,
-        headers: {
-            'Content-Type': 'application/json',
-            'Set-Cookie': cookieOptions
-        }
-    });
+export async function POST() {
+    try {
+        const cookieStore = cookies();
+        cookieStore.delete('auth');
+
+        return new Response(JSON.stringify({ 
+            message: 'Logged out successfully' 
+        }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    } catch (error) {
+        console.error('Logout error:', error);
+        return new Response(JSON.stringify({ 
+            error: 'Logout failed',
+            details: error.message 
+        }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' }
+        });
+    }
 } 

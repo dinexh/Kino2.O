@@ -1,23 +1,10 @@
-import { verifyToken } from '../lib/jwt';
+import { verifyAuthToken } from '../lib/jwt';
 
 export async function withAuth(request) {
     try {
-        // Get token from Authorization header or cookies
-        const authHeader = request.headers.get('Authorization');
-        const cookies = request.headers.get('cookie');
-        
-        let token;
-        
-        if (authHeader?.startsWith('Bearer ')) {
-            token = authHeader.substring(7);
-            console.log('Found token in Authorization header');
-        } else if (cookies) {
-            const authCookie = cookies.split(';').find(c => c.trim().startsWith('auth='));
-            if (authCookie) {
-                token = decodeURIComponent(authCookie.split('=')[1].trim());
-                console.log('Found token in cookies');
-            }
-        }
+        // Get token from cookies
+        const cookies = request.cookies;
+        const token = cookies.get('auth')?.value;
 
         if (!token) {
             console.log('No token found in request');
@@ -25,39 +12,31 @@ export async function withAuth(request) {
         }
 
         // Verify token
-        const decoded = await verifyToken(token);
+        const decoded = await verifyAuthToken(token);
         if (!decoded) {
-            console.log('Token verification failed');
+            console.log('Invalid or expired token');
             return null;
         }
 
-        console.log('Token verified successfully for user:', decoded.email);
         return decoded;
     } catch (error) {
-        console.error('Auth middleware error:', error);
+        console.error('Authentication error:', error);
         return null;
     }
 }
 
-export function withRole(roles) {
-    return async (request) => {
-        const user = await withAuth(request);
-        
-        if (!user) {
-            return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-                status: 401,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
+export async function isAuthenticated(request) {
+    const user = await withAuth(request);
+    return !!user;
+}
 
-        if (!roles.includes(user.role)) {
-            console.log('User role not authorized:', user.role, 'Required roles:', roles);
-            return new Response(JSON.stringify({ error: 'Forbidden' }), {
-                status: 403,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
-        return user;
-    };
+export async function hasRole(request, allowedRoles) {
+    const user = await withAuth(request);
+    if (!user) return false;
+    
+    if (typeof allowedRoles === 'string') {
+        return user.role === allowedRoles;
+    }
+    
+    return allowedRoles.includes(user.role);
 } 
