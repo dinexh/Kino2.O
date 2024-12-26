@@ -54,22 +54,23 @@ const downloadCSV = async () => {
         const csvData = allRegistrations.map(item => {
             const phoneNumber = item.phoneNumber ? item.phoneNumber.toString().padStart(10, '0') : '';
             const idNumber = item.idNumber ? String(item.idNumber) : '';
-            const name = parseInt(item.name) || '';
-            const transactionId = item.transactionId ? `'${item.transactionId.toString()}'` : '';
+            const name = item.name || '';
+            const transactionId = item.transactionId ? item.transactionId.toString() : '';
+            
             return [
                 name,
                 item.email || '',
                 `'${phoneNumber}'`,
                 item.profession || '',
                 item.idType || '',
-                idNumber,
+                `'${idNumber}'`,
                 item.college || '',
                 item.gender || '',
                 item.referralName || '',
                 (item.selectedEvents || []).join('; '),
                 item.registrationDate ? new Date(item.registrationDate).toLocaleString() : '',
                 item.paymentStatus || '',
-                transactionId,
+                `'${transactionId}'`,
                 item.paymentDate ? new Date(item.paymentDate).toLocaleString() : '',
                 item.paymentMethod || ''
             ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',');
