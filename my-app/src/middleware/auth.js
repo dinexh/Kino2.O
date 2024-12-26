@@ -39,4 +39,19 @@ export async function hasRole(request, allowedRoles) {
     }
     
     return allowedRoles.includes(user.role);
+}
+
+export function withRole(allowedRoles) {
+    return async (request) => {
+        const user = await withAuth(request);
+        if (!user) {
+            return null;
+        }
+
+        if (typeof allowedRoles === 'string') {
+            return user.role === allowedRoles ? user : null;
+        }
+
+        return allowedRoles.includes(user.role) ? user : null;
+    };
 } 
