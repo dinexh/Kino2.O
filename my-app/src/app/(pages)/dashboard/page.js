@@ -10,61 +10,88 @@ import { Pie, Bar } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const downloadCSV = (data, filename) => {
-    // Define CSV headers based on your requirements
-    const headers = [
-        'Name',
-        'Email',
-        'Phone',
-        'Profession',
-        'ID Type',
-        'ID Number',
-        'College',
-        'Gender',
-        'Referral Name',
-        'Selected Events',
-        'Registration Date',
-        'Payment Status',
-        'Transaction ID',
-        'Payment Date',
-        'Payment Method'
-    ];
+const downloadCSV = async () => {
+    try {
+        const loadingToast = toast.loading('Preparing CSV download...');
+        
+        // Fetch all registrations
+        const response = await fetch('/api/dashboard?limit=1000000', {
+            credentials: 'include'
+        });
 
-    // Convert data to CSV format
-    const csvData = data.map(item => {
-        return [
-            item.name,
-            item.email,
-            item.phoneNumber,
-            item.profession,
-            item.idType || '',
-            item.idNumber,
-            item.college || '',
-            item.gender,
-            item.referralName || '',
-            item.selectedEvents.join('; '),
-            new Date(item.registrationDate).toLocaleString(),
-            item.paymentStatus,
-            item.transactionId,
-            new Date(item.paymentDate).toLocaleString(),
-            item.paymentMethod
-        ].map(field => `"${field}"`).join(',');
-    });
+        if (!response.ok) {
+            throw new Error('Failed to fetch data for CSV');
+        }
 
-    // Add headers to CSV data
-    const csv = [headers.join(','), ...csvData].join('\n');
+        const data = await response.json();
+        const allRegistrations = data.registrations;
 
-    // Create and download the file
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const link = document.createElement('a');
-    if (link.download !== undefined) {
+        if (allRegistrations.length === 0) {
+            toast.error('No data to download');
+            return;
+        }
+
+        // Define CSV headers
+        const headers = [
+            'Name',
+            'Email',
+            'Phone',
+            'Profession',
+            'ID Type',
+            'ID Number',
+            'College',
+            'Gender',
+            'Referral Name',
+            'Selected Events',
+            'Registration Date',
+            'Payment Status',
+            'Transaction ID',
+            'Payment Date',
+            'Payment Method'
+        ];
+
+        // Convert data to CSV format
+        const csvData = allRegistrations.map(item => {
+            const phoneNumber = item.phoneNumber ? item.phoneNumber.toString().padStart(10, '0') : '';
+            const idNumber = item.idNumber ? String(item.idNumber) : '';
+            const name = parseInt(item.name) || '';
+            const transactionId = item.transactionId ? `'${item.transactionId.toString()}'` : '';
+            return [
+                name,
+                item.email || '',
+                `'${phoneNumber}'`,
+                item.profession || '',
+                item.idType || '',
+                idNumber,
+                item.college || '',
+                item.gender || '',
+                item.referralName || '',
+                (item.selectedEvents || []).join('; '),
+                item.registrationDate ? new Date(item.registrationDate).toLocaleString() : '',
+                item.paymentStatus || '',
+                transactionId,
+                item.paymentDate ? new Date(item.paymentDate).toLocaleString() : '',
+                item.paymentMethod || ''
+            ].map(field => `"${String(field).replace(/"/g, '""')}"`).join(',');
+        });
+
+        // Add headers to CSV data
+        const csv = [headers.join(','), ...csvData].join('\n');
+
+        // Create and download the file
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
         link.setAttribute('href', url);
-        link.setAttribute('download', filename);
-        link.style.visibility = 'hidden';
+        link.setAttribute('download', `registrations_${new Date().toISOString()}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        toast.success('CSV downloaded successfully', { id: loadingToast });
+    } catch (error) {
+        console.error('Error downloading CSV:', error);
+        toast.error('Failed to download CSV');
     }
 };
 
