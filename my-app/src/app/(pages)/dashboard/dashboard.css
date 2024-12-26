@@ -117,31 +117,42 @@
 .verify-button,
 .view-referrals-btn,
 .download-btn,
-.logout-button {
+.logout-button,
+.stats-button,
+.add-user-btn {
     padding: 0.8rem 1.5rem;
-    background: transparent;
+    background: rgba(0, 0, 0, 0.6);
     color: gold;
-    border: 1px solid gold;
+    border: 1px solid rgba(255, 215, 0, 0.4);
     border-radius: 0.5rem;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 500;
     transition: all 0.3s ease;
+    white-space: nowrap;
+    min-width: 120px;
+    text-align: center;
 }
 
 .verify-button:hover,
 .view-referrals-btn:hover,
 .download-btn:hover,
-.logout-button:hover {
+.logout-button:hover,
+.stats-button:hover,
+.add-user-btn:hover {
     background: rgba(255, 215, 0, 0.1);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    border-color: gold;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
+    transform: translateY(-2px);
 }
 
 .registrations-table {
     background: rgba(0, 0, 0, 0.8);
-    border-radius: 0.8rem;
+    border-radius: 1rem;
     border: 1px solid rgba(255, 215, 0, 0.2);
     overflow-x: auto;
-    margin-bottom: 2rem;
+    margin: 0 1rem 2rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
 table {
@@ -152,9 +163,23 @@ table {
 }
 
 th, td {
-    padding: 1rem 1.5rem;
+    padding: 1rem;
     text-align: left;
     border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+    vertical-align: middle;
+}
+
+th:last-child, td:last-child {
+    width: 160px;
+    max-width: 160px;
+}
+
+td {
+    height: 100%;
+}
+
+tr:last-child td {
+    border-bottom: none;
 }
 
 th {
@@ -201,40 +226,66 @@ tr:hover {
     border: 1px solid rgba(220, 53, 69, 0.3);
 }
 
-.view-details-btn {
-    padding: 0.4rem 0.8rem;
-    background: transparent;
+.view-details-btn,
+.send-mail-btn {
+    padding: 0.6rem 1rem;
+    background: rgba(0, 0, 0, 0.6);
     color: gold;
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    border: 1px solid rgba(255, 215, 0, 0.4);
     border-radius: 0.5rem;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
     transition: all 0.3s ease;
     white-space: nowrap;
+    min-width: 100px;
+    text-align: center;
 }
 
-.view-details-btn:hover {
-    border-color: gold;
+.view-details-btn:hover,
+.send-mail-btn:hover {
     background: rgba(255, 215, 0, 0.1);
+    border-color: gold;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
 }
 
 td:last-child {
-    min-width: 320px;
+    min-width: 160px;
     display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.view-details-btn,
+.send-mail-btn,
+.status-select,
+.delete-btn {
+    width: 100%;
+    padding: 0.5rem;
+    margin: 0;
+    text-align: center;
+    min-width: unset;
 }
 
 .status-select {
-    padding: 0.4rem 0.8rem;
-    background: rgba(0, 0, 0, 0.9);
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    text-align: center;
+    text-align-last: center;
+    -moz-text-align-last: center;
+}
+
+.status-select {
+    padding: 0.6rem 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 215, 0, 0.4);
     border-radius: 0.5rem;
     color: gold;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
     cursor: pointer;
-    min-width: 120px;
+    min-width: 160px;
     transition: all 0.3s ease;
 }
 
@@ -411,37 +462,24 @@ td:last-child {
 }
 
 .delete-btn {
-    background: transparent;
+    padding: 0.6rem 1rem;
+    background: rgba(220, 53, 69, 0.1);
     color: #dc3545;
-    border: 1px solid #dc3545;
-    padding: 0.4rem 0.8rem;
+    border: 1px solid rgba(220, 53, 69, 0.4);
     border-radius: 0.5rem;
     cursor: pointer;
-    font-size: 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
     transition: all 0.3s ease;
     white-space: nowrap;
+    min-width: 100px;
+    text-align: center;
 }
 
 .delete-btn:hover {
-    background: rgba(220, 53, 69, 0.1);
-    box-shadow: 0 0 10px rgba(220, 53, 69, 0.2);
-}
-
-.add-user-btn {
-    background: transparent;
-    color: gold;
-    border: 1px solid gold;
-    padding: 0.8rem 1.5rem;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    margin-right: 10px;
-}
-
-.add-user-btn:hover {
-    background: rgba(255, 215, 0, 0.1);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+    background: rgba(220, 53, 69, 0.2);
+    border-color: #dc3545;
+    box-shadow: 0 0 15px rgba(220, 53, 69, 0.2);
 }
 
 .view-mode-filter {
@@ -531,23 +569,6 @@ td:last-child {
 .cancel-btn:hover {
     background: rgba(220, 53, 69, 0.1);
     box-shadow: 0 0 10px rgba(220, 53, 69, 0.2);
-}
-
-.stats-button {
-    padding: 0.8rem 1.5rem;
-    background: transparent;
-    color: gold;
-    border: 1px solid gold;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: all 0.3s ease;
-    margin-right: 1rem;
-}
-
-.stats-button:hover {
-    background: rgba(255, 215, 0, 0.1);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 
 .analytics-modal {

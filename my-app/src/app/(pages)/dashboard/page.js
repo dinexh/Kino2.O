@@ -151,6 +151,32 @@ function DashboardContent() {
         }
     };
 
+    const SendMail = async (registration) => {
+        const loadingToast = toast.loading('Sending email...');
+        try {
+            const response = await fetch('/api/dashboard', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    registrationId: registration._id,
+                    action: 'sendEmail'
+                }),
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to send email');
+            }
+
+            toast.success('Email sent successfully', { id: loadingToast });
+        } catch (error) {
+            console.error('Error sending email:', error);
+            toast.error('Failed to send email', { id: loadingToast });
+        }
+    };
+
     const handleStatusChange = async (registrationId, newStatus) => {
         const loadingToast = toast.loading('Updating status...');
         try {
@@ -401,6 +427,8 @@ function DashboardContent() {
                         className="view-mode-filter"
                     >
                         <option value="pending_verification">Pending Verifications</option>
+
+                    
                         <option value="verify">Verified Registrations</option>
                         <option value="all">All Registrations</option>
                     </select>
@@ -447,6 +475,11 @@ function DashboardContent() {
                                         <option value="verified">Verified</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
+                                    <button onClick={() => SendMail(registration)}
+                                          className="send-mail-btn"
+                                    >
+                                        Send Mail
+                                    </button>
                                     <button
                                         onClick={() => handleDelete(registration._id)}
                                         className="delete-btn"

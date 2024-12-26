@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 import connectDB from '../../../config/db';
 import Registration from '../../../model/registrations';
+import { NextResponse } from 'next/server';
+import { withAuth } from '../../../middleware/auth';
+import { sendEmail } from '../../../utils/emailService';
+import { getVerificationEmailTemplate } from '../../../utils/emailTemplates';
 
 // Helper function to ensure response is properly formatted
 const createResponse = (data, status = 200) => {
@@ -24,6 +28,8 @@ const ensureConnection = async () => {
         return false;
     }
 };
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
     console.log('GET dashboard data called');
@@ -168,66 +174,133 @@ export async function GET(request) {
 }
 
 export async function PATCH(request) {
-    console.log('PATCH registration status called');
     try {
-        // Ensure database connection
-        if (!(await ensureConnection())) {
-            return createResponse({ 
-                error: "Database connection failed" 
-            }, 500);
+        const user = await withAuth(request);
+        if (!user || user.role !== 'superuser') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const data = await request.json();
-        console.log('Received update data:', data);
-        
         const { registrationId, status, action } = data;
 
-        if (!registrationId || !status) {
-            return createResponse({ 
-                error: "Registration ID and status are required" 
-            }, 400);
+        if (!registrationId || !status || !action) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        if (action !== 'updateStatus') {
-            return createResponse({ 
-                error: "Invalid action" 
-            }, 400);
+        // Ensure database connection
+        if (!(await ensureConnection())) {
+            return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
         }
 
-        const validStatuses = ['pending_verification', 'verified', 'rejected'];
-        if (!validStatuses.includes(status)) {
-            return createResponse({ 
-                error: `Invalid status value. Must be one of: ${validStatuses.join(', ')}` 
-            }, 400);
-        }
+        // Get Registration model
+        const Registration = mongoose.models.Registration || mongoose.model('Registration', new mongoose.Schema({
+            name: String,
+            email: String,
+            phoneNumber: String,
+            profession: String,
+            idType: String,
+            idNumber: String,
+            college: String,
+            gender: String,
+            referralName: String,
+            selectedEvents: [String],
+            registrationDate: Date,
+            paymentStatus: String,
+            transactionId: String,
+            paymentDate: Date,
+            paymentMethod: String,
+            otherPaymentMethod: String
+        }));
 
+        // Update registration status
         const registration = await Registration.findByIdAndUpdate(
             registrationId,
             { paymentStatus: status },
             { new: true }
-        ).lean();
+        );
 
         if (!registration) {
-            return createResponse({ 
-                error: "Registration not found" 
-            }, 404);
+            return NextResponse.json({ error: 'Registration not found' }, { status: 404 });
         }
 
-        return createResponse({
-            message: "Status updated successfully",
-            registration: {
-                ...registration,
-                registrationDate: registration.registrationDate?.toISOString(),
-                paymentDate: registration.paymentDate?.toISOString()
+        // Send verification email if status is changed to 'verified'
+        if (status === 'verified') {
+            try {
+                const emailTemplate = getVerificationEmailTemplate(registration);
+                await sendEmail({
+                    to: registration.email,
+                    subject: 'Registration Verified',
+                    html: emailTemplate
+                });
+            } catch (error) {
+                console.error('Error sending verification email:', error);
+                // Don't return error response here, as the status update was successful
             }
+        }
+
+        return NextResponse.json({ 
+            message: 'Status updated successfully',
+            registration 
         });
 
     } catch (error) {
-        console.error('Error updating registration status:', error);
-        return createResponse({ 
-            error: "Failed to update status",
-            details: error.message
-        }, 500);
+        console.error('Error updating status:', error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    }
+}
+
+export async function POST(request) {
+    try {
+        const user = await withAuth(request);
+        if (!user || user.role !== 'superuser') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const data = await request.json();
+        const { registrationId, action } = data;
+
+        if (!registrationId || !action) {
+            return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+        }
+
+        // Ensure database connection
+        if (!(await ensureConnection())) {
+            return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
+        }
+
+        // Get registration details
+        const registration = await Registration.findById(registrationId);
+
+        if (!registration) {
+            return NextResponse.json({ error: 'Registration not found' }, { status: 404 });
+        }
+
+        if (action === 'sendEmail') {
+            try {
+                const emailTemplate = getVerificationEmailTemplate(registration);
+                await sendEmail({
+                    to: registration.email,
+                    subject: 'Registration Verified',
+                    html: emailTemplate
+                });
+
+                return NextResponse.json({ 
+                    message: 'Email sent successfully'
+                });
+            } catch (error) {
+                console.error('Error sending email:', error);
+                return NextResponse.json({ 
+                    error: 'Failed to send email',
+                    details: error.message 
+                }, { status: 500 });
+            }
+        }
+
+        return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
+
+    } catch (error) {
+        console.error('Error in POST request:', error);
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
 
