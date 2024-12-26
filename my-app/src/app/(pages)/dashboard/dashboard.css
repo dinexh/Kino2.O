@@ -208,14 +208,22 @@ tr:hover {
     border: 1px solid rgba(255, 215, 0, 0.2);
     border-radius: 0.5rem;
     cursor: pointer;
-    margin-right: 8px;
     font-size: 0.8rem;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .view-details-btn:hover {
     border-color: gold;
     background: rgba(255, 215, 0, 0.1);
+}
+
+td:last-child {
+    min-width: 320px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
 }
 
 .status-select {
@@ -226,8 +234,8 @@ tr:hover {
     color: gold;
     font-size: 0.8rem;
     cursor: pointer;
-    margin: 0 8px;
-    min-width: 140px;
+    min-width: 120px;
+    transition: all 0.3s ease;
 }
 
 .status-select:focus {
@@ -341,6 +349,29 @@ tr:hover {
 
 .referral-stats {
     margin: 20px 0;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+}
+
+.referral-stats::-webkit-scrollbar {
+    width: 8px;
+}
+
+.referral-stats::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 4px;
+}
+
+.referral-stats::-webkit-scrollbar-thumb {
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 4px;
+}
+
+.referral-stats::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 215, 0, 0.5);
 }
 
 .referral-item {
@@ -349,10 +380,24 @@ tr:hover {
     padding: 1rem;
     border-bottom: 1px solid rgba(255, 215, 0, 0.1);
     color: #fff;
+    transition: background-color 0.3s ease;
+}
+
+.referral-item:hover {
+    background: rgba(255, 215, 0, 0.05);
 }
 
 .referral-item:last-child {
     border-bottom: none;
+}
+
+.referral-item span:first-child {
+    font-weight: 500;
+    color: gold;
+}
+
+.referral-item span:last-child {
+    color: #888;
 }
 
 .loading {
@@ -372,9 +417,9 @@ tr:hover {
     padding: 0.4rem 0.8rem;
     border-radius: 0.5rem;
     cursor: pointer;
-    margin-left: 8px;
     font-size: 0.8rem;
     transition: all 0.3s ease;
+    white-space: nowrap;
 }
 
 .delete-btn:hover {
@@ -401,8 +446,9 @@ tr:hover {
 
 .view-mode-filter {
     padding: 0.75rem 1rem;
-    background: rgba(0, 0, 0, 0.9);
-    border: 1px solid rgba(255, 215, 0, 0.2);
+    /* background: rgba(0, 0, 0, 0.9); */
+    background-color: black;
+    border: 1px solid gold;
     border-radius: 0.5rem;
     color: gold;
     font-size: 0.9rem;
@@ -485,5 +531,64 @@ tr:hover {
 .cancel-btn:hover {
     background: rgba(220, 53, 69, 0.1);
     box-shadow: 0 0 10px rgba(220, 53, 69, 0.2);
+}
+
+.stats-button {
+    padding: 0.8rem 1.5rem;
+    background: transparent;
+    color: gold;
+    border: 1px solid gold;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    margin-right: 1rem;
+}
+
+.stats-button:hover {
+    background: rgba(255, 215, 0, 0.1);
+    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+}
+
+.analytics-modal {
+    max-width: 90%;
+    width: 1200px;
+}
+
+.analytics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+.analytics-card {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    border-radius: 0.8rem;
+    padding: 1.5rem;
+}
+
+.analytics-card h3 {
+    color: gold;
+    margin: 0 0 1rem 0;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+@media (max-width: 1200px) {
+    .analytics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .analytics-card {
+        max-width: 100%;
+    }
 }
  

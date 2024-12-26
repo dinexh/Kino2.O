@@ -41,6 +41,8 @@ export async function GET(request) {
         const limit = parseInt(searchParams.get('limit')) || 10;
         const status = searchParams.get('status');
         const search = searchParams.get('search');
+        const getReferrals = searchParams.get('getReferrals') === 'true';
+        const getAnalytics = searchParams.get('analytics') === 'true';
 
         // Build query
         let query = {};
@@ -60,6 +62,53 @@ export async function GET(request) {
             ];
         }
 
+        if (getAnalytics) {
+            // Fetch all registrations for analytics
+            const allRegistrations = await Registration.find({}).lean();
+
+            // Calculate gender distribution
+            const genderDistribution = allRegistrations.reduce((acc, reg) => {
+                acc[reg.gender] = (acc[reg.gender] || 0) + 1;
+                return acc;
+            }, { male: 0, female: 0 });
+
+            // Calculate daily registrations
+            const dailyRegistrations = allRegistrations.reduce((acc, reg) => {
+                const date = new Date(reg.registrationDate).toLocaleDateString();
+                acc[date] = (acc[date] || 0) + 1;
+                return acc;
+            }, {});
+
+            // Calculate hourly distribution
+            const hourlyDistribution = Array(24).fill(0);
+            allRegistrations.forEach(reg => {
+                const hour = new Date(reg.registrationDate).getHours();
+                hourlyDistribution[hour]++;
+            });
+
+            // Calculate event popularity
+            const eventPopularity = allRegistrations.reduce((acc, reg) => {
+                reg.selectedEvents.forEach(event => {
+                    acc[event] = (acc[event] || 0) + 1;
+                });
+                return acc;
+            }, {});
+
+            // Format daily registrations for chart
+            const dailyRegArray = Object.entries(dailyRegistrations)
+                .map(([date, count]) => ({ date, count }))
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            return createResponse({
+                analytics: {
+                    genderDistribution,
+                    dailyRegistrations: dailyRegArray,
+                    hourlyDistribution,
+                    eventPopularity
+                }
+            });
+        }
+
         // Calculate stats
         const [
             totalRegistrations,
@@ -72,19 +121,20 @@ export async function GET(request) {
             Registration.countDocuments({ paymentStatus: { $ne: 'verified' } }),
             Registration.countDocuments({ paymentStatus: 'verified' }),
             Registration.countDocuments({ referralName: { $exists: true, $ne: null } }),
-            Registration.find(query)
-                .sort({ registrationDate: -1 })
-                .skip((page - 1) * limit)
-                .limit(limit)
-                .lean()
+            getReferrals 
+                ? Registration.find({}).select('referralName').lean()
+                : Registration.find(query)
+                    .sort({ registrationDate: -1 })
+                    .skip((page - 1) * limit)
+                    .limit(limit)
+                    .lean()
         ]);
 
         // Calculate total amount collected (₹350 per verified registration)
         const totalAmountCollected = verifiedPayments * 350;
 
-        // Get total pages
-        const totalDocuments = await Registration.countDocuments(query);
-        const totalPages = Math.ceil(totalDocuments / limit);
+        // Get total pages (not needed for referrals request)
+        const totalPages = getReferrals ? 1 : Math.ceil(await Registration.countDocuments(query) / limit);
 
         return createResponse({
             stats: {
@@ -102,7 +152,7 @@ export async function GET(request) {
             pagination: {
                 currentPage: page,
                 totalPages,
-                totalDocuments,
+                totalDocuments: totalRegistrations,
                 hasNextPage: page < totalPages,
                 hasPrevPage: page > 1
             }
@@ -144,7 +194,7 @@ export async function PATCH(request) {
             }, 400);
         }
 
-        const validStatuses = ['pending', 'verified', 'rejected'];
+        const validStatuses = ['pending_verification', 'verified', 'rejected'];
         if (!validStatuses.includes(status)) {
             return createResponse({ 
                 error: `Invalid status value. Must be one of: ${validStatuses.join(', ')}` 

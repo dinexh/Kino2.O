@@ -5,6 +5,10 @@ import { useAuth } from '../../../context/AuthContext';
 import ProtectedRoute from '../../../components/ProtectedRoute';
 import './dashboard.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement, Title } from 'chart.js';
+import { Pie, Bar } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const downloadCSV = (data, filename) => {
     // Define CSV headers based on your requirements
@@ -98,6 +102,13 @@ function DashboardContent() {
         password: '',
         role: 'user'
     });
+    const [showStatsModal, setShowStatsModal] = useState(false);
+    const [analyticsData, setAnalyticsData] = useState({
+        dailyRegistrations: [],
+        genderDistribution: { male: 0, female: 0 },
+        hourlyDistribution: Array(24).fill(0),
+        eventPopularity: {}
+    });
 
     useEffect(() => {
         fetchDashboardData();
@@ -107,8 +118,8 @@ function DashboardContent() {
         try {
             // Set status filter based on view mode
             let currentStatus = statusFilter;
-            if (viewMode === 'pending') {
-                currentStatus = 'pending';
+            if (viewMode === 'pending_verification') {
+                currentStatus = 'pending_verification';
             } else if (viewMode === 'verify') {
                 currentStatus = 'verified';
             }
@@ -183,20 +194,36 @@ function DashboardContent() {
         setSelectedDetails(item);
     };
 
-    const calculateReferralStats = () => {
-        const referralCounts = registrations.reduce((acc, registration) => {
-            if (registration.referralName) {
-                acc[registration.referralName] = (acc[registration.referralName] || 0) + 1;
+    const calculateReferralStats = async () => {
+        try {
+            const response = await fetch('/api/dashboard?limit=1000&getReferrals=true', {
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch referral data');
             }
-            return acc;
-        }, {});
 
-        const stats = Object.entries(referralCounts)
-            .map(([name, count]) => ({ name, count }))
-            .sort((a, b) => b.count - a.count);
+            const data = await response.json();
+            const allRegistrations = data.registrations;
 
-        setReferralStats(stats);
-        setShowReferralModal(true);
+            const referralCounts = allRegistrations.reduce((acc, registration) => {
+                if (registration.referralName) {
+                    acc[registration.referralName] = (acc[registration.referralName] || 0) + 1;
+                }
+                return acc;
+            }, {});
+
+            const stats = Object.entries(referralCounts)
+                .map(([name, count]) => ({ name, count }))
+                .sort((a, b) => b.count - a.count);
+
+            setReferralStats(stats);
+            setShowReferralModal(true);
+        } catch (error) {
+            console.error('Error fetching referral stats:', error);
+            toast.error('Failed to fetch referral statistics');
+        }
     };
 
     const handleSearch = (e) => {
@@ -281,6 +308,24 @@ function DashboardContent() {
         setCurrentPage(1);
     };
 
+    const fetchAnalyticsData = async () => {
+        try {
+            const response = await fetch('/api/dashboard?analytics=true', {
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch analytics data');
+            }
+
+            const data = await response.json();
+            setAnalyticsData(data.analytics);
+        } catch (error) {
+            console.error('Error fetching analytics:', error);
+            toast.error('Failed to fetch analytics data');
+        }
+    };
+
     if (loading) {
         return <div className="loading">Loading dashboard...</div>;
     }
@@ -295,9 +340,23 @@ function DashboardContent() {
             <div className="dashboard-header">
                 <h1>Dashboard</h1>
                 <div className="header-actions">
-                    <button onClick={handleVerifyClick} className="verify-button" >
-                        Verify
+                    <button onClick={() => {
+                        setShowStatsModal(true);
+                        fetchAnalyticsData();
+                    }} className="stats-button">
+                        View Analytics
                     </button>
+                    <div className="action-buttons">
+                    <button onClick={() => setShowAddUserModal(true)} className="add-user-btn">
+                        Add User
+                    </button>
+                    <button onClick={calculateReferralStats} className="view-referrals-btn">
+                        View Referrals
+                    </button>
+                    <button onClick={handleDownload} className="download-btn">
+                        Download CSV
+                    </button>
+                </div>
                     <button onClick={handleLogout} className="logout-button">
                         Logout
                     </button>
@@ -341,20 +400,10 @@ function DashboardContent() {
                         onChange={handleViewModeChange}
                         className="view-mode-filter"
                     >
-                        <option value="pending">Pending Verifications</option>
+                        <option value="pending_verification">Pending Verifications</option>
                         <option value="verify">Verified Registrations</option>
+                        <option value="all">All Registrations</option>
                     </select>
-                </div>
-                <div className="action-buttons">
-                    <button onClick={() => setShowAddUserModal(true)} className="add-user-btn">
-                        Add User
-                    </button>
-                    <button onClick={calculateReferralStats} className="view-referrals-btn">
-                        View Referrals
-                    </button>
-                    <button onClick={handleDownload} className="download-btn">
-                        Download CSV
-                    </button>
                 </div>
             </div>
 
@@ -394,7 +443,7 @@ function DashboardContent() {
                                         onChange={(e) => handleStatusChange(registration._id, e.target.value)}
                                         className="status-select"
                                     >
-                                        <option value="pending">Pending</option>
+                                        <option value="pending_verification">Pending Verification</option>
                                         <option value="verified">Verified</option>
                                         <option value="rejected">Rejected</option>
                                     </select>
@@ -537,6 +586,192 @@ function DashboardContent() {
                                 </button>
                             </div>
                         </form>
+                    </div>
+                </div>
+            )}
+
+            {showStatsModal && (
+                <div className="modal">
+                    <div className="modal-content analytics-modal">
+                        <h2>Registration Analytics</h2>
+                        <div className="analytics-grid">
+                            <div className="analytics-card">
+                                <h3>Gender Distribution</h3>
+                                <div className="chart-container">
+                                    <Pie
+                                        data={{
+                                            labels: ['Male', 'Female'],
+                                            datasets: [{
+                                                data: [
+                                                    analyticsData.genderDistribution.male,
+                                                    analyticsData.genderDistribution.female
+                                                ],
+                                                backgroundColor: [
+                                                    'rgba(54, 162, 235, 0.8)',
+                                                    'rgba(255, 99, 132, 0.8)'
+                                                ]
+                                            }]
+                                        }}
+                                        options={{
+                                            plugins: {
+                                                legend: {
+                                                    position: 'bottom',
+                                                    labels: {
+                                                        color: '#fff'
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="analytics-card">
+                                <h3>Daily Registrations</h3>
+                                <div className="chart-container">
+                                    <Bar
+                                        data={{
+                                            labels: analyticsData.dailyRegistrations.map(d => new Date(d.date).toLocaleDateString()),
+                                            datasets: [{
+                                                label: 'Registrations',
+                                                data: analyticsData.dailyRegistrations.map(d => d.count),
+                                                backgroundColor: 'rgba(255, 215, 0, 0.5)',
+                                                borderColor: 'gold',
+                                                borderWidth: 1
+                                            }]
+                                        }}
+                                        options={{
+                                            responsive: true,
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true,
+                                                    ticks: {
+                                                        color: '#fff'
+                                                    },
+                                                    grid: {
+                                                        color: 'rgba(255, 255, 255, 0.1)'
+                                                    }
+                                                },
+                                                x: {
+                                                    ticks: {
+                                                        color: '#fff'
+                                                    },
+                                                    grid: {
+                                                        color: 'rgba(255, 255, 255, 0.1)'
+                                                    }
+                                                }
+                                            },
+                                            plugins: {
+                                                legend: {
+                                                    labels: {
+                                                        color: '#fff'
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="analytics-card">
+                                <h3>Hourly Distribution</h3>
+                                <div className="chart-container">
+                                    <Bar
+                                        data={{
+                                            labels: Array.from({length: 24}, (_, i) => `${i}:00`),
+                                            datasets: [{
+                                                label: 'Registrations',
+                                                data: analyticsData.hourlyDistribution,
+                                                backgroundColor: 'rgba(255, 215, 0, 0.5)',
+                                                borderColor: 'gold',
+                                                borderWidth: 1
+                                            }]
+                                        }}
+                                        options={{
+                                            responsive: true,
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true,
+                                                    ticks: {
+                                                        color: '#fff'
+                                                    },
+                                                    grid: {
+                                                        color: 'rgba(255, 255, 255, 0.1)'
+                                                    }
+                                                },
+                                                x: {
+                                                    ticks: {
+                                                        color: '#fff'
+                                                    },
+                                                    grid: {
+                                                        color: 'rgba(255, 255, 255, 0.1)'
+                                                    }
+                                                }
+                                            },
+                                            plugins: {
+                                                legend: {
+                                                    labels: {
+                                                        color: '#fff'
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="analytics-card">
+                                <h3>Event Popularity</h3>
+                                <div className="chart-container">
+                                    <Bar
+                                        data={{
+                                            labels: Object.keys(analyticsData.eventPopularity),
+                                            datasets: [{
+                                                label: 'Registrations',
+                                                data: Object.values(analyticsData.eventPopularity),
+                                                backgroundColor: 'rgba(255, 215, 0, 0.5)',
+                                                borderColor: 'gold',
+                                                borderWidth: 1
+                                            }]
+                                        }}
+                                        options={{
+                                            responsive: true,
+                                            scales: {
+                                                y: {
+                                                    beginAtZero: true,
+                                                    ticks: {
+                                                        color: '#fff'
+                                                    },
+                                                    grid: {
+                                                        color: 'rgba(255, 255, 255, 0.1)'
+                                                    }
+                                                },
+                                                x: {
+                                                    ticks: {
+                                                        color: '#fff',
+                                                        maxRotation: 45,
+                                                        minRotation: 45
+                                                    },
+                                                    grid: {
+                                                        color: 'rgba(255, 255, 255, 0.1)'
+                                                    }
+                                                }
+                                            },
+                                            plugins: {
+                                                legend: {
+                                                    labels: {
+                                                        color: '#fff'
+                                                    }
+                                                }
+                                            }
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                        <button onClick={() => setShowStatsModal(false)} className="close-btn">
+                            Close
+                        </button>
                     </div>
                 </div>
             )}
