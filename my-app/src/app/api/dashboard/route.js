@@ -64,7 +64,9 @@ export async function GET(request) {
                 { name: { $regex: search, $options: 'i' } },
                 { email: { $regex: search, $options: 'i' } },
                 { phoneNumber: { $regex: search, $options: 'i' } },
-                { college: { $regex: search, $options: 'i' } }
+                { college: { $regex: search, $options: 'i' } },
+                { idNumber: { $regex: search, $options: 'i' } },
+                { transactionId: { $regex: search, $options: 'i' } }
             ];
         }
 

@@ -45,8 +45,12 @@ export async function GET(request) {
         if (search) {
             query = {
                 $or: [
+                    { name: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } },
+                    { phoneNumber: { $regex: search, $options: 'i' } },
                     { idNumber: { $regex: search, $options: 'i' } },
-                    { phoneNumber: { $regex: search, $options: 'i' } }
+                    { selectedEvents: { $regex: search, $options: 'i' } },
+                    { referralName: { $regex: search, $options: 'i' } }
                 ]
             };
         }
@@ -58,11 +62,13 @@ export async function GET(request) {
             phoneNumber: String,
             idNumber: String,
             paymentStatus: String,
+            selectedEvents: [String],
+            referralName: String,
             createdAt: { type: Date, default: Date.now }
         }));
 
         const registrations = await Registration.find(query)
-            .select('name email phoneNumber idNumber paymentStatus')
+            .select('name email phoneNumber idNumber paymentStatus selectedEvents referralName')
             .sort({ createdAt: -1 })
             .limit(50);
 

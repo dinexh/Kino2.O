@@ -62,10 +62,7 @@ function VerifyContent() {
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearchQuery(value);
-    };
-
-    const handleSearchClick = () => {
-        fetchRegistrations(searchQuery);
+        fetchRegistrations(value);
     };
 
     const handleLogout = async () => {
@@ -108,13 +105,6 @@ function VerifyContent() {
                         className="search-input"
                         disabled={loading}
                     />
-                    <button 
-                        onClick={handleSearchClick} 
-                        className="search-button"
-                        disabled={loading}
-                    >
-                        Search
-                    </button>
                 </div>
 
                 <div className="registrations-table">
