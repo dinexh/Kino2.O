@@ -365,18 +365,35 @@ function DashboardContent() {
     const fetchAnalyticsData = async () => {
         try {
             const response = await fetch('/api/dashboard?analytics=true', {
-                credentials: 'include'
+                credentials: 'include',
+                headers: {
+                    'Cache-Control': 'no-cache'
+                }
             });
 
             if (!response.ok) {
-                throw new Error('Failed to fetch analytics data');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to fetch analytics data');
             }
 
             const data = await response.json();
-            setAnalyticsData(data.analytics);
+            if (!data.analytics) {
+                throw new Error('Invalid analytics data format');
+            }
+            
+            // Ensure all required properties exist with default values
+            const analytics = {
+                genderDistribution: { male: 0, female: 0, ...data.analytics.genderDistribution },
+                dailyRegistrations: data.analytics.dailyRegistrations || [],
+                hourlyDistribution: data.analytics.hourlyDistribution || Array(24).fill(0),
+                eventPopularity: data.analytics.eventPopularity || {}
+            };
+            
+            setAnalyticsData(analytics);
         } catch (error) {
             console.error('Error fetching analytics:', error);
-            toast.error('Failed to fetch analytics data');
+            toast.error(error.message || 'Failed to fetch analytics data');
+            setShowStatsModal(false);
         }
     };
 

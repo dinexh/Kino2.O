@@ -69,50 +69,82 @@ export async function GET(request) {
         }
 
         if (getAnalytics) {
-            // Fetch all registrations for analytics
-            const allRegistrations = await Registration.find({}).lean();
+            try {
+                // Fetch all registrations for analytics
+                const allRegistrations = await Registration.find({})
+                    .select('gender registrationDate selectedEvents')
+                    .lean();
 
-            // Calculate gender distribution
-            const genderDistribution = allRegistrations.reduce((acc, reg) => {
-                acc[reg.gender] = (acc[reg.gender] || 0) + 1;
-                return acc;
-            }, { male: 0, female: 0 });
-
-            // Calculate daily registrations
-            const dailyRegistrations = allRegistrations.reduce((acc, reg) => {
-                const date = new Date(reg.registrationDate).toLocaleDateString();
-                acc[date] = (acc[date] || 0) + 1;
-                return acc;
-            }, {});
-
-            // Calculate hourly distribution
-            const hourlyDistribution = Array(24).fill(0);
-            allRegistrations.forEach(reg => {
-                const hour = new Date(reg.registrationDate).getHours();
-                hourlyDistribution[hour]++;
-            });
-
-            // Calculate event popularity
-            const eventPopularity = allRegistrations.reduce((acc, reg) => {
-                reg.selectedEvents.forEach(event => {
-                    acc[event] = (acc[event] || 0) + 1;
-                });
-                return acc;
-            }, {});
-
-            // Format daily registrations for chart
-            const dailyRegArray = Object.entries(dailyRegistrations)
-                .map(([date, count]) => ({ date, count }))
-                .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-            return createResponse({
-                analytics: {
-                    genderDistribution,
-                    dailyRegistrations: dailyRegArray,
-                    hourlyDistribution,
-                    eventPopularity
+                if (!allRegistrations) {
+                    return createResponse({ 
+                        error: "No registration data found" 
+                    }, 404);
                 }
-            });
+
+                // Calculate gender distribution with safe defaults
+                const genderDistribution = allRegistrations.reduce((acc, reg) => {
+                    const gender = (reg.gender || '').toLowerCase();
+                    if (gender === 'male' || gender === 'female') {
+                        acc[gender] = (acc[gender] || 0) + 1;
+                    }
+                    return acc;
+                }, { male: 0, female: 0 });
+
+                // Calculate daily registrations with validation
+                const dailyRegistrations = allRegistrations.reduce((acc, reg) => {
+                    if (reg.registrationDate) {
+                        const date = new Date(reg.registrationDate).toLocaleDateString();
+                        acc[date] = (acc[date] || 0) + 1;
+                    }
+                    return acc;
+                }, {});
+
+                // Calculate hourly distribution with validation
+                const hourlyDistribution = Array(24).fill(0);
+                allRegistrations.forEach(reg => {
+                    if (reg.registrationDate) {
+                        const hour = new Date(reg.registrationDate).getHours();
+                        if (hour >= 0 && hour < 24) {
+                            hourlyDistribution[hour]++;
+                        }
+                    }
+                });
+
+                // Calculate event popularity with validation
+                const eventPopularity = allRegistrations.reduce((acc, reg) => {
+                    if (Array.isArray(reg.selectedEvents)) {
+                        reg.selectedEvents.forEach(event => {
+                            if (event && typeof event === 'string') {
+                                acc[event] = (acc[event] || 0) + 1;
+                            }
+                        });
+                    }
+                    return acc;
+                }, {});
+
+                // Format daily registrations for chart
+                const dailyRegArray = Object.entries(dailyRegistrations)
+                    .map(([date, count]) => ({ 
+                        date, 
+                        count 
+                    }))
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                return createResponse({
+                    analytics: {
+                        genderDistribution,
+                        dailyRegistrations: dailyRegArray,
+                        hourlyDistribution,
+                        eventPopularity
+                    }
+                });
+            } catch (error) {
+                console.error('Analytics calculation error:', error);
+                return createResponse({ 
+                    error: "Failed to calculate analytics",
+                    details: error.message 
+                }, 500);
+            }
         }
 
         // Calculate stats
