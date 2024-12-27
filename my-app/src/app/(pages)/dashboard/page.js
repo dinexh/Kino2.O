@@ -472,6 +472,8 @@ function DashboardContent() {
                             <th>Phone</th>
                             <th>Events</th>
                             <th>Payment Status</th>
+                            <th>Referred By</th>
+                            <th>Time</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -485,8 +487,10 @@ function DashboardContent() {
                                 <td>
                                     <span>
                                         {registration.paymentStatus}
-                                            </span>
+                                    </span>
                                 </td>
+                                <td>{registration.referralName || '-'}</td>
+                                <td>{new Date(registration.registrationDate).toLocaleString()}</td>
                                 <td>
                                     <button
                                         onClick={() => openModal(registration)}

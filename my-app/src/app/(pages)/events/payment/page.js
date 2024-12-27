@@ -60,29 +60,19 @@ function PaymentPage() {
         return () => clearTimeout(timeout); // Cleanup on unmount
     }, [router]);
 
-    // Add validation function for transaction ID
+    // Add validation function for UTR number
     const validateTransactionId = (id) => {
-        // Basic validation rules
-        if (!id || id.trim().length < 8) {
-            toast.error("Transaction ID must be at least 8 characters long");
+        // Basic validation rules for UTR number
+        if (!id || id.trim().length < 12 || id.trim().length > 22) {
+            toast.error("UTR number must be between 12 and 22 characters long");
             return false;
         }
 
-        // Remove spaces and special characters for consistent format
-        const cleanId = id.replace(/[^a-zA-Z0-9]/g, '');
-        
-        // Common payment platform patterns
-        const patterns = {
-            'Google Pay': /^[a-zA-Z0-9]{10,}$/i,  // GPay usually has alphanumeric IDs
-            'PhonePe': /^[A-Z0-9]{6,}$/,          // PhonePe typically uses uppercase and numbers
-            'Paytm': /^[0-9]{10,}$/,              // Paytm usually has numeric IDs
-        };
-
-        if (paymentMethod !== 'Other' && patterns[paymentMethod]) {
-            if (!patterns[paymentMethod].test(cleanId)) {
-                toast.error(`Invalid ${paymentMethod} transaction ID format`);
-                return false;
-            }
+        // UTR number format validation (alphanumeric)
+        const utrPattern = /^[A-Z0-9]+$/;
+        if (!utrPattern.test(id.trim())) {
+            toast.error("Invalid UTR number format. Only uppercase letters and numbers are allowed");
+            return false;
         }
 
         return true;
@@ -403,7 +393,7 @@ function PaymentPage() {
                             </div>
                         )}
                          <div className="form-group-screenshot">
-                            <p>Please look at the screenshots to locate your payment ID/transaction ID/UPI reference/UTR number</p>
+                            <p>Please enter the UTR number from your payment confirmation</p>
                             <button 
                                 className="view-screenshot-btn" 
                                 onClick={() => setShowScreenshotModal(true)}
@@ -412,14 +402,15 @@ function PaymentPage() {
                             </button>
                         </div>
                         <div className="form-group">
-                            <label>Transaction ID / UPI Reference / UTR Number: *</label>
+                            <label>UTR Number: *</label>
                             <input
                                 type="text"
                                 value={transactionId}
-                                onChange={(e) => setTransactionId(e.target.value)}
-                                placeholder="Enter transaction ID/UPI reference/UTR number"
+                                onChange={(e) => setTransactionId(e.target.value.toUpperCase())}
+                                placeholder="Enter UTR number (e.g., HDFC1234567890)"
                                 required
                             />
+                            <small className="input-help">UTR (Unique Transaction Reference) number is a 12-22 character code that appears in your payment confirmation</small>
                         </div>
                         <button 
                             type="submit" 
