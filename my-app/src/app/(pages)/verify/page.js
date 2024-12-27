@@ -28,8 +28,6 @@ function VerifyContent() {
     };
 
     const fetchRegistrations = async (search = '') => {
-        setLoading(true);
-        setError(null);
         try {
             const response = await fetch(`/api/verify?search=${encodeURIComponent(search)}`, {
                 method: 'GET',
@@ -46,23 +44,30 @@ function VerifyContent() {
 
             const data = await response.json();
             setRegistrations(data.registrations || []);
+            setError(null);
         } catch (error) {
             console.error('Error fetching registrations:', error);
             setError(error.message);
             toast.error(error.message || 'Failed to fetch registrations');
-        } finally {
-            setLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchRegistrations();
+        if (loading) {
+            fetchRegistrations();
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        if (!loading) {
+            fetchRegistrations(searchQuery);
+        }
+    }, [searchQuery]);
 
     const handleSearch = (e) => {
         const value = e.target.value;
         setSearchQuery(value);
-        fetchRegistrations(value);
     };
 
     const handleLogout = async () => {
