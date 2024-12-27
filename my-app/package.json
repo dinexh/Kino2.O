@@ -8,8 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "add-users": "node src/scripts/addInitialUsers.js",
-    "postbuild": "next-sitemap --config next-sitemap.config.cjs",
-    "export-firebase": "node src/scripts/exportFirebaseData.js"
+    "postbuild": "next-sitemap --config next-sitemap.config.cjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
