@@ -62,9 +62,15 @@ function PaymentPage() {
 
     // Add validation function for UTR number
     const validateTransactionId = (id) => {
+        // Check for @ symbol
+        if (id.includes('@')) {
+            toast.error("UTR/Transaction ID cannot contain '@' symbol");
+            return false;
+        }
+
         // Basic validation rules for UTR number
         if (!id || id.trim().length < 12 || id.trim().length > 22) {
-            toast.error("UTR number must be between 12 and 22 characters long");
+            toast.error("UTR/Transaction ID must be between 12 and 22 characters long");
             return false;
         }
 
@@ -402,7 +408,7 @@ function PaymentPage() {
                             </button>
                         </div>
                         <div className="form-group">
-                            <label>UTR Number: *</label>
+                            <label>Transaction ID/UTR Number: *</label>
                             <input
                                 type="text"
                                 value={transactionId}
