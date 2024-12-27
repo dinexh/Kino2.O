@@ -1,19 +1,12 @@
 import nodemailer from 'nodemailer';
 
-// Create reusable transporter object using SMTP transport
+// Create reusable transporter object using Gmail SMTP transport
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: process.env.SMTP_PORT,
-    secure: process.env.SMTP_SECURE === 'true',
+    service: 'gmail',
     auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
-    },
-    tls: {
-        ciphers: 'SSLv3',
-        rejectUnauthorized: false
-    },
-    debug: true // Enable debug logs
+        pass: process.env.SMTP_APP_PASSWORD
+    }
 });
 
 export const sendEmail = async ({ to, subject, html }) => {
@@ -22,7 +15,7 @@ export const sendEmail = async ({ to, subject, html }) => {
         await transporter.verify();
 
         const info = await transporter.sendMail({
-            from: `"${process.env.EMAIL_FROM_NAME}" <${process.env.EMAIL_FROM_ADDRESS}>`,
+            from: `"chitramela" <chitramela2k25@gmail.com>`,
             to,
             subject,
             html,
