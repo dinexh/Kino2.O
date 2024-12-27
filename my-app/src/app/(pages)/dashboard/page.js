@@ -32,21 +32,21 @@ const downloadCSV = async () => {
         }
 
         // Define CSV headers
-        const headers = [
-            'Name',
-            'Email',
+    const headers = [
+        'Name',
+        'Email',
             'Phone',
             'Profession',
             'ID Type',
             'ID Number',
-            'College',
+        'College',
             'Gender',
             'Referral Name',
             'Selected Events',
             'Registration Date',
-            'Payment Status',
+        'Payment Status',
             'Transaction ID',
-            'Payment Date',
+        'Payment Date',
             'Payment Method'
         ];
 
@@ -56,8 +56,8 @@ const downloadCSV = async () => {
             const idNumber = item.idNumber ? String(item.idNumber) : '';
             const name = item.name || '';
             const transactionId = item.transactionId ? item.transactionId.toString() : '';
-            
-            return [
+
+        return [
                 name,
                 item.email || '',
                 `'${phoneNumber}'`,
@@ -82,12 +82,12 @@ const downloadCSV = async () => {
         // Create and download the file
         const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
         link.setAttribute('download', `registrations_${new Date().toISOString()}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
         
         toast.success('CSV downloaded successfully', { id: loadingToast });
     } catch (error) {
@@ -262,17 +262,17 @@ function DashboardContent() {
             const allRegistrations = data.registrations;
 
             const referralCounts = allRegistrations.reduce((acc, registration) => {
-                if (registration.referralName) {
-                    acc[registration.referralName] = (acc[registration.referralName] || 0) + 1;
-                }
-                return acc;
-            }, {});
+            if (registration.referralName) {
+                acc[registration.referralName] = (acc[registration.referralName] || 0) + 1;
+            }
+            return acc;
+        }, {});
 
-            const stats = Object.entries(referralCounts)
-                .map(([name, count]) => ({ name, count }))
-                .sort((a, b) => b.count - a.count);
+        const stats = Object.entries(referralCounts)
+            .map(([name, count]) => ({ name, count }))
+            .sort((a, b) => b.count - a.count);
 
-            setReferralStats(stats);
+        setReferralStats(stats);
             setShowReferralModal(true);
         } catch (error) {
             console.error('Error fetching referral stats:', error);
@@ -393,7 +393,7 @@ function DashboardContent() {
             <Toaster position="top-center" />
             <div className="dashboard-header">
                 <h1>Dashboard</h1>
-                <div className="header-actions">
+                    <div className="header-actions">
                     <button onClick={() => {
                         setShowStatsModal(true);
                         fetchAnalyticsData();
@@ -408,9 +408,9 @@ function DashboardContent() {
                         View Referrals
                     </button>
                     <button onClick={handleDownload} className="download-btn">
-                        Download CSV
-                    </button>
-                </div>
+                            Download CSV
+                        </button>
+                    </div>
                     <button onClick={handleLogout} className="logout-button">
                         Logout
                     </button>
@@ -419,23 +419,23 @@ function DashboardContent() {
 
             <div className="stats-container">
                 <div className="stat-card">
-                    <h3>Total Registrations</h3>
+                        <h3>Total Registrations</h3>
                     <p>{stats.totalRegistrations}</p>
                 </div>
                 <div className="stat-card">
                     <h3>Pending Payments</h3>
                     <p>{stats.pendingPayments}</p>
-                </div>
+                    </div>
                 <div className="stat-card">
                     <h3>Verified Payments</h3>
                     <p>{stats.verifiedPayments}</p>
-                </div>
+                    </div>
                 <div className="stat-card">
                     <h3>Total Referrals</h3>
                     <p>{stats.totalReferrals}</p>
-                </div>
+                    </div>
                 <div className="stat-card">
-                    <h3>Amount Collected</h3>
+                        <h3>Amount Collected</h3>
                     <p>₹{stats.totalAmountCollected}</p>
                 </div>
             </div>
@@ -449,7 +449,7 @@ function DashboardContent() {
                         onChange={handleSearch}
                         className="search-input"
                     />
-                    <select
+                    <select 
                         value={viewMode}
                         onChange={handleViewModeChange}
                         className="view-mode-filter"
@@ -485,7 +485,7 @@ function DashboardContent() {
                                 <td>
                                     <span>
                                         {registration.paymentStatus}
-                                    </span>
+                                            </span>
                                 </td>
                                 <td>
                                     <button
@@ -494,7 +494,7 @@ function DashboardContent() {
                                     >
                                         View Details
                                     </button>
-                                    <select
+                                    <select 
                                         value={registration.paymentStatus}
                                         onChange={(e) => handleStatusChange(registration._id, e.target.value)}
                                         className="status-select"
@@ -508,7 +508,7 @@ function DashboardContent() {
                                     >
                                         Send Mail
                                     </button>
-                                    <button
+                                    <button 
                                         onClick={() => handleDelete(registration._id)}
                                         className="delete-btn"
                                     >
@@ -521,20 +521,20 @@ function DashboardContent() {
                 </table>
             </div>
 
-            <div className="pagination">
-                <button
+                <div className="pagination">
+                    <button 
                     onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                     disabled={currentPage === 1}
-                >
-                    Previous
-                </button>
+                    >
+                        Previous
+                    </button>
                 <span>Page {currentPage} of {totalPages}</span>
-                <button
+                        <button
                     onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                     disabled={currentPage === totalPages}
-                >
-                    Next
-                </button>
+                    >
+                        Next
+                    </button>
             </div>
 
             {selectedDetails && (
@@ -605,7 +605,7 @@ function DashboardContent() {
                                     <span>{count} referrals</span>
                                 </div>
                             ))}
-                        </div>
+            </div>
                         <button onClick={() => setShowReferralModal(false)} className="close-btn">
                             Close
                         </button>

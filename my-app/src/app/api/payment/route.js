@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import connectDB from '../../../config/db';
 import Registration from '../../../model/registrations';
+import { addRegistrationToFirebase } from '../../../lib/firebase';
 
 // Helper function to ensure response is properly formatted
 const createResponse = (data, status = 200) => {
@@ -140,6 +141,14 @@ export async function POST(request) {
             const savedRegistration = await registration.save();
             console.log('Registration saved:', savedRegistration._id);
 
+            // Add to Firebase
+            try {
+                await addRegistrationToFirebase(savedRegistration);
+            } catch (firebaseError) {
+                console.error('Failed to sync with Firebase:', firebaseError);
+                // Don't fail the request if Firebase sync fails
+            }
+
             return createResponse({
                 message: "Payment recorded successfully",
                 registrationId: savedRegistration._id,
@@ -157,7 +166,7 @@ export async function POST(request) {
         }
 
     } catch (error) {
-        console.error('Payment processing error:', error);
+        console.error('Error processing payment:', error);
         return createResponse({ 
             error: "Payment processing failed",
             details: error.message

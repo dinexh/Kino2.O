@@ -1,5 +1,11 @@
 import { Inter } from 'next/font/google'
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-inter'
+})
 import "./globals.css";
 import Offline from './offline/offline';
 import { AuthProvider } from '../context/AuthContext';
