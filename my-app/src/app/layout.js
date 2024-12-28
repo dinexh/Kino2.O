@@ -1,10 +1,10 @@
-import { Inter } from 'next/font/google'
-const inter = Inter({
+import { Poppins } from 'next/font/google'
+const poppins = Poppins({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
   weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-inter'
+  variable: '--font-poppins'
 })
 import "./globals.css";
 import Offline from './offline/offline';
@@ -154,7 +154,7 @@ export function generateMetadata() {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={poppins.className}>
         <AuthProvider>
           <Offline />
           {children}
