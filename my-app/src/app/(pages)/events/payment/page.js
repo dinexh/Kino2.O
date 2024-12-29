@@ -70,14 +70,14 @@ function PaymentPage() {
 
         // Basic validation rules for UTR number
         if (!id || id.trim().length !== 12) {
-            toast.error("UTR must be 12 characters long");
+            toast.error("UTR must be exactly 12 digits long");
             return false;
         }
 
-        // UTR number format validation (alphanumeric)
-        const utrPattern = /^[A-Z0-9]+$/;
+        // UTR number format validation (numbers only)
+        const utrPattern = /^\d+$/;
         if (!utrPattern.test(id.trim())) {
-            toast.error("Invalid UTR number format. Only uppercase letters and numbers are allowed");
+            toast.error("Invalid UTR number format. Only numbers are allowed");
             return false;
         }
 
@@ -412,11 +412,17 @@ function PaymentPage() {
                             <input
                                 type="text"
                                 value={transactionId}
-                                onChange={(e) => setTransactionId(e.target.value.toUpperCase())}
-                                placeholder="Enter UTR number (e.g., HDFC1234567890)"
+                                onChange={(e) => {
+                                    const value = e.target.value.replace(/[^\d]/g, ''); // Only allow digits
+                                    if (value.length <= 12) { // Limit to 12 digits
+                                        setTransactionId(value);
+                                    }
+                                }}
+                                placeholder="Enter 12-digit UTR number"
                                 required
+                                maxLength="12"
                             />
-                            <small className="input-help">UTR (Unique Transaction Reference) number is a 12-22 character code that appears in your payment confirmation</small>
+                            <small className="input-help">UTR number is a 12-digit code that appears in your payment confirmation</small>
                         </div>
                         <button 
                             type="submit" 
