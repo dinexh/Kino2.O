@@ -18,7 +18,7 @@ function ResetPasswordForm() {
     const [isTokenValid, setIsTokenValid] = useState(false);
 
     const token = searchParams.get('token');
-    const baseUrl = process.env.NODE_ENV === 'development' ? '' : process.env.NEXT_PUBLIC_APP_URL;
+    const baseUrl = 'https://chitramela.in';
 
     useEffect(() => {
         if (!token) {
