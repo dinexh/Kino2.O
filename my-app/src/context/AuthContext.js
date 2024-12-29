@@ -1,11 +1,36 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    const refreshToken = async () => {
+        try {
+            const response = await fetch('/api/auth/refresh', {
+                method: 'POST',
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                // If refresh fails, log out the user
+                setUser(null);
+                router.push('/login');
+                return false;
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Token refresh error:', error);
+            setUser(null);
+            router.push('/login');
+            return false;
+        }
+    };
 
     const checkAuth = async () => {
         try {
@@ -18,7 +43,11 @@ export function AuthProvider({ children }) {
                 const data = await response.json();
                 setUser(data.user);
             } else {
-                setUser(null);
+                // Try to refresh token if auth check fails
+                const refreshed = await refreshToken();
+                if (!refreshed) {
+                    setUser(null);
+                }
             }
         } catch (error) {
             console.error('Auth check error:', error);
@@ -29,7 +58,27 @@ export function AuthProvider({ children }) {
     };
 
     useEffect(() => {
+        // Skip auth check on reset password page
+        if (window.location.pathname === '/reset-password') {
+            setLoading(false);
+            return;
+        }
+
         checkAuth();
+
+        // Set up periodic token refresh (every 9 minutes)
+        const refreshInterval = setInterval(refreshToken, 9 * 60 * 1000);
+
+        // Set up auto-logout after 30 minutes
+        const logoutTimeout = setTimeout(() => {
+            logout();
+            router.push('/login');
+        }, 30 * 60 * 1000);
+
+        return () => {
+            clearInterval(refreshInterval);
+            clearTimeout(logoutTimeout);
+        };
     }, []);
 
     const login = async (email, password) => {
@@ -64,6 +113,7 @@ export function AuthProvider({ children }) {
                 credentials: 'include'
             });
             setUser(null);
+            router.push('/login');
         } catch (error) {
             console.error('Logout error:', error);
         }

@@ -6,14 +6,26 @@ if (!JWT_SECRET) {
     throw new Error('JWT_SECRET environment variable is not set');
 }
 
-export function generateAuthToken(payload) {
+export function generateAccessToken(payload) {
     try {
         return jwt.sign(payload, JWT_SECRET, { 
-            expiresIn: '24h',
+            expiresIn: '10m', // 10 minutes
             algorithm: 'HS256'
         });
     } catch (error) {
-        console.error('Token generation error:', error);
+        console.error('Access token generation error:', error);
+        throw error;
+    }
+}
+
+export function generateRefreshToken(payload) {
+    try {
+        return jwt.sign(payload, JWT_SECRET, { 
+            expiresIn: '30m', // 30 minutes
+            algorithm: 'HS256'
+        });
+    } catch (error) {
+        console.error('Refresh token generation error:', error);
         throw error;
     }
 }
@@ -29,6 +41,22 @@ export async function verifyAuthToken(token) {
         } else {
             console.error('Token verification error:', error);
         }
+        return null;
+    }
+}
+
+export async function refreshAccessToken(refreshToken) {
+    try {
+        const decoded = jwt.verify(refreshToken, JWT_SECRET);
+        // Generate new access token with user data from refresh token
+        const accessToken = generateAccessToken({
+            id: decoded.id,
+            email: decoded.email,
+            role: decoded.role
+        });
+        return { accessToken };
+    } catch (error) {
+        console.error('Token refresh error:', error);
         return null;
     }
 } 

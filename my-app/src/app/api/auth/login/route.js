@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import User from '../../../../model/users';
 import connectDB from '../../../../config/db';
-import { generateAuthToken } from '../../../../lib/jwt';
+import { generateAccessToken, generateRefreshToken } from '../../../../lib/jwt';
 import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
@@ -27,9 +27,15 @@ export async function POST(request) {
             });
         }
 
-        // Generate JWT token
-        const token = generateAuthToken({
-            id: user._id.toString(), // Convert ObjectId to string
+        // Generate both tokens
+        const accessToken = generateAccessToken({
+            id: user._id.toString(),
+            email: user.email,
+            role: user.role
+        });
+
+        const refreshToken = generateRefreshToken({
+            id: user._id.toString(),
             email: user.email,
             role: user.role
         });
@@ -37,13 +43,22 @@ export async function POST(request) {
         // Get the cookies instance
         const cookieStore = cookies();
 
-        // Set the auth cookie
-        cookieStore.set('auth', token, {
+        // Set the access token cookie
+        cookieStore.set('auth', accessToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             path: '/',
-            maxAge: 60 * 60 * 24 // 24 hours
+            maxAge: 60 * 10 // 10 minutes
+        });
+
+        // Set the refresh token cookie
+        cookieStore.set('refresh', refreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 60 * 30 // 30 minutes
         });
 
         return new Response(JSON.stringify({

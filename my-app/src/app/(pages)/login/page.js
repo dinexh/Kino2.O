@@ -53,7 +53,6 @@ export default function Login() {
         }
     };
 
-    // Remove the film-reel-overlay div since we're not using it
     return (
         <div className="login-container">
             <Toaster position="top-center" />
@@ -93,6 +92,15 @@ export default function Login() {
                             disabled={isLoading}
                         >
                             {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
+                    </div>
+                    <div className="forgot-password-link">
+                        <button 
+                            type="button" 
+                            onClick={() => router.push('/forgot-password')}
+                            className="text-button"
+                        >
+                            Forgot Password?
                         </button>
                     </div>
                     <button 

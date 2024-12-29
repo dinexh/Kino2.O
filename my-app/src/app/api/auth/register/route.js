@@ -1,83 +1,70 @@
-import mongoose from 'mongoose';
-import User from '../../../../model/users';
-import connectDB from '../../../../config/db';
-import { generateAuthToken } from '../../../../lib/jwt';
+import { NextResponse } from 'next/server';
+import User from '@/model/users';
+import connectDB from '@/config/db';
+import { generateAccessToken } from '@/lib/jwt';
 
-// Helper function to safely connect to MongoDB
-const ensureConnection = async () => {
-    try {
-        if (!mongoose.connections[0].readyState) {
-            await connectDB();
-        }
-        return true;
-    } catch (error) {
-        console.error('MongoDB connection error:', error);
-        return false;
-    }
-};
+export const dynamic = 'force-dynamic';
 
 export async function POST(request) {
     try {
-        const { email, password, role } = await request.json();
+        const { email, password } = await request.json();
+        console.log('Received registration request for:', email);
 
         if (!email || !password) {
-            return new Response(JSON.stringify({ error: 'Email and password are required' }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            return NextResponse.json({ 
+                error: 'Email and password are required' 
+            }, { status: 400 });
         }
 
-        // Ensure database connection
-        if (!(await ensureConnection())) {
-            return new Response(JSON.stringify({ error: 'Database connection failed' }), {
-                status: 500,
-                headers: { 'Content-Type': 'application/json' }
-            });
-        }
-
+        await connectDB();
+        console.log('Looking for existing user with email:', email.toLowerCase());
+        
         // Check if user already exists
-        const existingUser = await User.findOne({ email: email.toLowerCase() });
+        const existingUser = await User.findOne({ 
+            email: { $regex: new RegExp('^' + email + '$', 'i') }
+        });
+
         if (existingUser) {
-            return new Response(JSON.stringify({ error: 'Email already registered' }), {
-                status: 400,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            console.log('User already exists with email:', email.toLowerCase());
+            return NextResponse.json({ 
+                error: 'Email already registered' 
+            }, { status: 400 });
         }
 
         // Create new user
         const user = new User({
             email: email.toLowerCase(),
             password,
-            role: role || 'user' // Default to 'user' if no role specified
+            role: 'user'
         });
 
         await user.save();
+        console.log('New user created:', user.email);
 
         // Generate JWT token
-        const token = generateAuthToken({
-            id: user._id,
+        const token = generateAccessToken({
+            id: user._id.toString(),
             email: user.email,
             role: user.role
         });
 
-        return new Response(JSON.stringify({
-            token,
+        return NextResponse.json({
+            message: 'Registration successful',
             user: {
                 email: user.email,
                 role: user.role
             }
-        }), {
+        }, {
             status: 201,
             headers: {
-                'Content-Type': 'application/json',
-                'Set-Cookie': `auth=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=86400`
+                'Set-Cookie': `auth=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=600`
             }
         });
+
     } catch (error) {
         console.error('Registration error:', error);
-        return new Response(JSON.stringify({ error: 'Registration failed' }), {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' }
-        });
+        return NextResponse.json({ 
+            error: 'Registration failed' 
+        }, { status: 500 });
     }
 } 

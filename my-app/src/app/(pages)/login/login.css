@@ -222,4 +222,25 @@
 .login-form button:disabled:hover {
     transform: none;
     box-shadow: none;
+}
+
+.forgot-password-link {
+    text-align: right;
+    margin-bottom: 1rem;
+}
+
+.text-button {
+    background: none;
+    border: none;
+    color: gold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 0;
+    text-decoration: underline;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.text-button:hover {
+    opacity: 1;
 } 
