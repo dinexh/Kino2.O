@@ -69,8 +69,8 @@ function PaymentPage() {
         }
 
         // Basic validation rules for UTR number
-        if (!id || id.trim().length < 12 || id.trim().length > 22) {
-            toast.error("UTR/Transaction ID must be between 12 and 22 characters long");
+        if (!id || id.trim().length !== 12) {
+            toast.error("UTR must be 12 characters long");
             return false;
         }
 
@@ -408,7 +408,7 @@ function PaymentPage() {
                             </button>
                         </div>
                         <div className="form-group">
-                            <label>Transaction ID/UTR Number: *</label>
+                            <label>UTR Number: *</label>
                             <input
                                 type="text"
                                 value={transactionId}
