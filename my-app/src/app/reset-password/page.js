@@ -89,16 +89,16 @@ function ResetPasswordForm() {
             console.log('Password reset response:', data);
 
             if (!response.ok) {
-                throw new Error(data.error || 'Failed to reset password');
+                throw new Error(data.error || data.details || 'Failed to reset password');
             }
 
-            toast.success('Password reset successful!', { id: loadingToast });
+            toast.success('Password reset successful! Redirecting to login...', { id: loadingToast });
             setTimeout(() => {
                 router.push('/login');
             }, 2000);
         } catch (error) {
             console.error('Reset password error:', error);
-            toast.error(error.message || 'Failed to reset password', { id: loadingToast });
+            toast.error(error.message || 'Failed to reset password. Please try again.', { id: loadingToast });
         } finally {
             setIsLoading(false);
         }
