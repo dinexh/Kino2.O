@@ -242,7 +242,7 @@ function PaymentPage() {
                     Payments are non-refundable. Please ensure you are ready to proceed before making the payment.
                     Acceptance of Terms:
                     By paying, you confirm that you have read, understood, and agree to these terms.
-                    For queries, contact us at: 📧 chitrmela@example.com</p>
+                    For queries, contact us at: 📧 chitramela2k25@gmail.com</p>
                 <label>
                     <input
                         className='check'

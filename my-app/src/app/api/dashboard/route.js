@@ -3,7 +3,7 @@ import connectDB from '../../../config/db';
 import Registration from '../../../model/registrations';
 import { NextResponse } from 'next/server';
 import { withAuth } from '../../../middleware/auth';
-import { sendEmail } from '../../../utils/emailService';
+import { POST as sendEmail } from '../../../utils/emailService';
 import { getVerificationEmailTemplate } from '../../../utils/emailTemplates';
 
 // Helper function to ensure response is properly formatted
@@ -226,26 +226,6 @@ export async function PATCH(request) {
             return NextResponse.json({ error: 'Database connection failed' }, { status: 500 });
         }
 
-        // Get Registration model
-        const Registration = mongoose.models.Registration || mongoose.model('Registration', new mongoose.Schema({
-            name: String,
-            email: String,
-            phoneNumber: String,
-            profession: String,
-            idType: String,
-            idNumber: String,
-            college: String,
-            gender: String,
-            referralName: String,
-            selectedEvents: [String],
-            registrationDate: Date,
-            paymentStatus: String,
-            transactionId: String,
-            paymentDate: Date,
-            paymentMethod: String,
-            otherPaymentMethod: String
-        }));
-
         // Update registration status
         const registration = await Registration.findByIdAndUpdate(
             registrationId,
@@ -260,12 +240,15 @@ export async function PATCH(request) {
         // Send verification email if status is changed to 'verified'
         if (status === 'verified') {
             try {
-                const emailTemplate = getVerificationEmailTemplate(registration);
-                await sendEmail({
-                    to: registration.email,
-                    subject: 'Registration Verified',
-                    html: emailTemplate
+                const emailRequest = new Request('http://localhost', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: registration.email,
+                        registration: registration
+                    })
                 });
+                await sendEmail(emailRequest);
             } catch (error) {
                 console.error('Error sending verification email:', error);
                 // Don't return error response here, as the status update was successful
@@ -311,12 +294,15 @@ export async function POST(request) {
 
         if (action === 'sendEmail') {
             try {
-                const emailTemplate = getVerificationEmailTemplate(registration);
-                await sendEmail({
-                    to: registration.email,
-                    subject: 'Registration Verified',
-                    html: emailTemplate
+                const emailRequest = new Request('http://localhost', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: registration.email,
+                        registration: registration
+                    })
                 });
+                await sendEmail(emailRequest);
 
                 return NextResponse.json({ 
                     message: 'Email sent successfully'
@@ -331,9 +317,8 @@ export async function POST(request) {
         }
 
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
-
     } catch (error) {
-        console.error('Error in POST request:', error);
+        console.error('Error in dashboard API:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

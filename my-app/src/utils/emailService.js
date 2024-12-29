@@ -1,40 +1,56 @@
-import nodemailer from 'nodemailer';
+import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
+import { getVerificationEmailTemplate } from "./emailTemplates";
 
-// Create reusable transporter object using Gmail SMTP transport
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
+export async function POST(req) {
+  try {
+    const { email, registration } = await req.json();
+    console.log("Received email request for:", email);
+
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+      throw new Error("Email credentials not configured");
+    }
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST || "smtp.gmail.com",
+      port: parseInt(process.env.SMTP_PORT) || 465,
+      secure: process.env.SMTP_SECURE === 'false' ? false : true,
+      auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_APP_PASSWORD
-    }
-});
+        pass: process.env.SMTP_PASS,
+      },
+    });
 
-export const sendEmail = async ({ to, subject, html }) => {
-    try {
-        // Verify SMTP connection configuration
-        await transporter.verify();
+    const mailOptions = {
+      from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
+      to: email,
+      subject: "Registration Verification - Chitramela 2025",
+      html: getVerificationEmailTemplate(registration)
+    };
 
-        const info = await transporter.sendMail({
-            from: `"chitramela" <chitramela2k25@gmail.com>`,
-            to,
-            subject,
-            html,
-            priority: 'high'
-        });
-
-        console.log('Email sent:', info.messageId);
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('Error sending email:', error);
-        // Log detailed error information
-        if (error.code === 'ESOCKET') {
-            console.error('SMTP Connection Error Details:', {
-                code: error.code,
-                command: error.command,
-                syscall: error.syscall,
-                errno: error.errno
-            });
+    // Convert callback-based sendMail to Promise
+    const info = await new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error("Error sending email:", error);
+          reject(error);
+        } else {
+          console.log("Email sent:", info.response);
+          resolve(info);
         }
-        return { success: false, error: error.message };
-    }
-}; 
+      });
+    });
+
+    return NextResponse.json(
+      { message: "Email sent successfully" },
+      { status: 200 }
+    );
+
+  } catch (error) {
+    console.error("Error sending email:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to send email" },
+      { status: 500 }
+    );
+  }
+}
