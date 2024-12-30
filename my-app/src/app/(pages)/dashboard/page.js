@@ -483,32 +483,34 @@ function DashboardContent() {
             <div className="registrations-table">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Sno</th>
+                        <tr className="bg-gray-100">
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Phone</th>
+                            {/* <th>Phone</th> */}
                             <th>Events</th>
+                            {/* <th>Transaction ID</th> */}
+                            {/* <th>Payment Method</th> */}
+                            <th>Referral Name</th>
                             <th>Payment Status</th>
-                            <th>Referred By</th>
-                            <th>Time</th>
+                            <th>Registration Date</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {registrations.map((registration) => (
                             <tr key={registration._id}>
-                                <td>{registration.Sno}</td>
                                 <td>{registration.name}</td>
                                 <td>{registration.email}</td>
-                                <td>{registration.phoneNumber}</td>
+                                {/* <td>{registration.phoneNumber}</td> */}
                                 <td>{registration.selectedEvents.join(', ')}</td>
+                                {/* <td>{registration.transactionId}</td> */}
+                                {/* <td>{registration.paymentMethod}</td> */}
+                                <td>{registration.referralName}</td>
                                 <td>
                                     <span>
                                         {registration.paymentStatus}
                                     </span>
                                 </td>
-                                <td>{registration.referralName || '-'}</td>
                                 <td>{new Date(registration.registrationDate).toLocaleString()}</td>
                                 <td>
                                     <button

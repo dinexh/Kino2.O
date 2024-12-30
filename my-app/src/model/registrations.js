@@ -1,11 +1,6 @@
 import mongoose from 'mongoose';
 
 const registrationSchema = new mongoose.Schema({
-  Sno: {
-    type: Number,
-    required: true,
-    unique: true,
-  },
   name: {
     type: String,
     required: true,
@@ -102,21 +97,12 @@ const registrationSchema = new mongoose.Schema({
   },
 });
 
-// Add a pre-save middleware to auto-increment Sno
-registrationSchema.pre('save', async function(next) {
-  if (this.isNew) {
-    try {
-      // Find the last registration by registration date
-      const lastRegistration = await this.constructor.findOne({}, {}, { sort: { 'registrationDate': -1 } });
-      this.Sno = lastRegistration ? lastRegistration.Sno + 1 : 1;
-    } catch (error) {
-      next(error);
-    }
-  }
-  next();
-});
+// Delete existing model if it exists
+if (mongoose.models.Registration) {
+  delete mongoose.models.Registration;
+}
 
-// Create the model only if it hasn't been created before
-const Registration = mongoose.models.Registration || mongoose.model('Registration', registrationSchema);
+// Create a new model instance
+const Registration = mongoose.model('Registration', registrationSchema);
 
 export default Registration;

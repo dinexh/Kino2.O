@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import { withAuth } from '../../../middleware/auth';
 import connectDB from '../../../config/db';
+import Registration from '../../../model/registrations';
 
 // Helper function to safely connect to MongoDB
 const ensureConnection = async () => {
@@ -55,21 +56,9 @@ export async function GET(request) {
             };
         }
 
-        // Get registrations from database
-        const Registration = mongoose.models.Registration || mongoose.model('Registration', new mongoose.Schema({
-            name: String,
-            email: String,
-            phoneNumber: String,
-            idNumber: String,
-            paymentStatus: String,
-            selectedEvents: [String],
-            referralName: String,
-            createdAt: { type: Date, default: Date.now }
-        }));
-
         const registrations = await Registration.find(query)
             .select('name email phoneNumber idNumber paymentStatus selectedEvents referralName')
-            .sort({ createdAt: -1 })
+            .sort({ registrationDate: -1 })
             .limit(50);
 
         return new Response(JSON.stringify({ registrations }), {

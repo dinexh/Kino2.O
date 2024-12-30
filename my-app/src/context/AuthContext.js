@@ -42,8 +42,8 @@ export function AuthProvider({ children }) {
                 const data = await response.json();
                 setUser(data.user);
 
-                // Check if the user is verified
-                if (!data.user.verified) {
+                // Only redirect to verify if user is not verified AND not a superuser
+                if (!data.user.verified && data.user.role !== 'superuser') {
                     router.push('/verify');
                 }
             } else {
