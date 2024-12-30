@@ -17,8 +17,8 @@ export function AuthProvider({ children }) {
             });
 
             if (!response.ok) {
-                // If refresh fails, just update the user state
                 setUser(null);
+                router.push('/login');
                 return false;
             }
 
@@ -26,6 +26,7 @@ export function AuthProvider({ children }) {
         } catch (error) {
             console.error('Token refresh error:', error);
             setUser(null);
+            router.push('/login');
             return false;
         }
     };
@@ -40,38 +41,47 @@ export function AuthProvider({ children }) {
             if (response.ok) {
                 const data = await response.json();
                 setUser(data.user);
+
+                // Check if the user is verified
+                if (!data.user.verified) {
+                    router.push('/verify');
+                }
             } else {
                 // Try to refresh token if auth check fails
                 const refreshed = await refreshToken();
                 if (!refreshed) {
                     setUser(null);
+                    router.push('/login');
                 }
             }
         } catch (error) {
             console.error('Auth check error:', error);
             setUser(null);
+            router.push('/login');
         } finally {
             setLoading(false);
         }
     };
 
     useEffect(() => {
-        // Skip auth check on reset password page
-        if (window.location.pathname === '/reset-password') {
+        // Skip auth check on login and reset password pages
+        if (window.location.pathname === '/login' || window.location.pathname === '/reset-password') {
             setLoading(false);
             return;
         }
 
-        checkAuth();
+        // Check auth on protected routes
+        if (window.location.pathname === '/dashboard' || window.location.pathname === '/verify') {
+            checkAuth();
+        }
 
         // Set up periodic token refresh (every 9 minutes)
         const refreshInterval = setInterval(refreshToken, 9 * 60 * 1000);
 
-        // Remove auto-logout timeout
         return () => {
             clearInterval(refreshInterval);
         };
-    }, []);
+    }, [router.pathname]);
 
     const login = async (email, password) => {
         try {
@@ -100,12 +110,18 @@ export function AuthProvider({ children }) {
 
     const logout = async () => {
         try {
-            await fetch('/api/auth/logout', {
+            const response = await fetch('/api/auth/logout', {
                 method: 'POST',
                 credentials: 'include'
             });
             
+            // Clear user state
             setUser(null);
+            
+            // Clear any stored tokens
+            document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+            
+            // Redirect to login
             router.push('/login');
         } catch (error) {
             console.error('Logout error:', error);

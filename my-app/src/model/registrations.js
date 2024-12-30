@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 
 const registrationSchema = new mongoose.Schema({
+  Sno: {
+    type: Number,
+    required: true,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
@@ -95,6 +100,20 @@ const registrationSchema = new mongoose.Schema({
       return this.profession === 'working';
     },
   },
+});
+
+// Add a pre-save middleware to auto-increment Sno
+registrationSchema.pre('save', async function(next) {
+  if (this.isNew) {
+    try {
+      // Find the last registration by registration date
+      const lastRegistration = await this.constructor.findOne({}, {}, { sort: { 'registrationDate': -1 } });
+      this.Sno = lastRegistration ? lastRegistration.Sno + 1 : 1;
+    } catch (error) {
+      next(error);
+    }
+  }
+  next();
 });
 
 // Create the model only if it hasn't been created before
