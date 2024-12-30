@@ -135,7 +135,7 @@
 .password-toggle-btn:hover {
     color: #FFD700 !important;
     background: none !important;
-    transform: translateY(-50%) scale(1.1);
+    transform:scale(1.1);
 }
 
 .password-toggle-btn svg {

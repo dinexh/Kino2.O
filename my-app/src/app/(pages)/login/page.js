@@ -95,13 +95,13 @@ export default function Login() {
                         </button>
                     </div>
                     <div className="forgot-password-link">
-                        <button 
+                        <div 
                             type="button" 
                             onClick={() => router.push('/forgot-password')}
                             className="text-button"
                         >
                             Forgot Password?
-                        </button>
+                        </div>
                     </div>
                     <button 
                         type="submit" 

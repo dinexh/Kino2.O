@@ -112,6 +112,7 @@ export function AuthProvider({ children }) {
                 method: 'POST',
                 credentials: 'include'
             });
+            
             setUser(null);
             router.push('/login');
         } catch (error) {
