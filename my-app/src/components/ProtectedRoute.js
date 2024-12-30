@@ -8,11 +8,6 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     const router = useRouter();
 
     useEffect(() => {
-        if (!loading && !user) {
-            router.push('/login');
-            return;
-        }
-
         if (!loading && user) {
             // For dashboard, only allow superusers
             if (window.location.pathname === '/dashboard' && user.role !== 'superuser') {
@@ -23,12 +18,12 @@ export default function ProtectedRoute({ children, allowedRoles }) {
     }, [user, loading, router]);
 
     // Show nothing while checking auth
-    if (loading || !user) {
+    if (loading) {
         return null;
     }
 
     // For regular users, only allow verify page
-    if (user.role === 'user' && !allowedRoles.includes('user')) {
+    if (user && user.role === 'user' && !allowedRoles.includes('user')) {
         return null;
     }
 

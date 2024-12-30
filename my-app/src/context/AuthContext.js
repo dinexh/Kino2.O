@@ -17,9 +17,8 @@ export function AuthProvider({ children }) {
             });
 
             if (!response.ok) {
-                // If refresh fails, log out the user
+                // If refresh fails, just update the user state
                 setUser(null);
-                router.push('/login');
                 return false;
             }
 
@@ -27,7 +26,6 @@ export function AuthProvider({ children }) {
         } catch (error) {
             console.error('Token refresh error:', error);
             setUser(null);
-            router.push('/login');
             return false;
         }
     };
@@ -69,15 +67,9 @@ export function AuthProvider({ children }) {
         // Set up periodic token refresh (every 9 minutes)
         const refreshInterval = setInterval(refreshToken, 9 * 60 * 1000);
 
-        // Set up auto-logout after 30 minutes
-        const logoutTimeout = setTimeout(() => {
-            logout();
-            router.push('/login');
-        }, 30 * 60 * 1000);
-
+        // Remove auto-logout timeout
         return () => {
             clearInterval(refreshInterval);
-            clearTimeout(logoutTimeout);
         };
     }, []);
 
