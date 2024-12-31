@@ -60,7 +60,7 @@ function transformRegistrationData(data) {
 async function insertData() {
     try {
         // Read data from JSON file
-        const filePath = path.join(process.cwd(), 'src', 'oldData', 'backup.json');
+        const filePath = path.join(process.cwd(), 'src', 'oldData', 'backup2.json');
         const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
         
         // Convert object to array if it's not already an array
