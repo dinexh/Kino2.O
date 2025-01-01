@@ -5,7 +5,7 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './payment.css';
 import Image from 'next/image';
-import DemoQR from '../../../Assets/QR.png';
+import DemoQR from '../../../Assets/logo.png';
 import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 import screenshot1 from '../../../Assets/1.png';
@@ -230,7 +230,6 @@ function PaymentPage() {
     const TermsModal = () => (
         <div className="terms-modal" onClick={() => setShowTermsModal(false)}>
             <div className="terms-content" onClick={(e) => e.stopPropagation()}>
-                {/* <button className="close-button" onClick={() => setShowTermsModal(false)}>×</button> */}
                 <h2>Terms and Conditions</h2>
                 <p>Payment Amount:
                     The registration fee is ₹350. Only this exact amount will be accepted.
