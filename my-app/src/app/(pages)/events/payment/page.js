@@ -5,7 +5,7 @@ import Footer from '../../../components/Footer/Footer';
 import backgroundImage from '../../../Assets/register3.webp';
 import './payment.css';
 import Image from 'next/image';
-import DemoQR from '../../../Assets/logo.png';
+import DemoQR from '../../../Assets/logo.png'
 import { toast, Toaster } from 'react-hot-toast';
 import Link from 'next/link';
 import screenshot1 from '../../../Assets/1.png';
