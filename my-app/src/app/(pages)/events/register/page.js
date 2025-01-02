@@ -442,7 +442,7 @@ function RegisterPage() {
     
                     <div className="form-group-register" style={{ textDecoration: "underline" }}>
 
-                        End Date to Register and Submit : 30th December 2024                   
+                        End Date to Register and Submit : 7th January 2025                   
                     </div>
                     <button type="submit" className="submit-button">Next</button>
                 </form>
