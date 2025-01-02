@@ -484,6 +484,7 @@ function DashboardContent() {
                 <table>
                     <thead>
                         <tr className="bg-gray-100">
+                            <th>S.No</th>
                             <th>Name</th>
                             <th>Email</th>
                             {/* <th>Phone</th> */}
@@ -499,6 +500,7 @@ function DashboardContent() {
                     <tbody>
                         {registrations.map((registration) => (
                             <tr key={registration._id}>
+                                <td>{registration.Sno}</td>
                                 <td>{registration.name}</td>
                                 <td>{registration.email}</td>
                                 {/* <td>{registration.phoneNumber}</td> */}

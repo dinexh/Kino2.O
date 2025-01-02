@@ -1,6 +1,10 @@
 import mongoose from 'mongoose';
 
 const registrationSchema = new mongoose.Schema({
+  Sno: {
+    type: Number,
+    unique: true,
+  },
   name: {
     type: String,
     required: true,
@@ -95,6 +99,23 @@ const registrationSchema = new mongoose.Schema({
       return this.profession === 'working';
     },
   },
+});
+
+// Add pre-save hook to automatically assign Sno
+registrationSchema.pre('save', async function(next) {
+  try {
+    if (this.isNew) {
+      // Find the highest Sno
+      const highestRecord = await this.constructor.findOne({}, { Sno: 1 })
+        .sort({ Sno: -1 })
+        .lean();
+      
+      // Assign next Sno (if no records exist, start from 1)
+      this.Sno = highestRecord ? highestRecord.Sno + 1 : 1;
+    }
+  } catch (error) {
+    return next(error);
+  }
 });
 
 // Delete existing model if it exists
