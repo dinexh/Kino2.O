@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import './nav.css'
 import Image from 'next/image'
-import Promotion from '../../(pages)/promotions/page';
 
 export default function Nav() {
   const [isVisible, setIsVisible] = useState(false)
@@ -25,10 +24,10 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const handleNavClick = (sectionId) => {
+  const handleNavClick = (event, sectionId) => {
     // Prevent default behavior
     event.preventDefault();
-    
+
     // Add a small delay to ensure the element exists
     setTimeout(() => {
       const element = document.getElementById(sectionId)
@@ -51,6 +50,7 @@ export default function Nav() {
     { href: 'gallery', label: 'Gallery', isSection: true },
     { href: 'team', label: 'Team', isSection: true },
     { href: 'sponsors', label: 'Partners', isSection: true },
+    { href: '/schedule', label: 'Schedule', isSection: false },
   ]
 
   return (
@@ -58,14 +58,14 @@ export default function Nav() {
       <div className="nav-in">
         <div className="nav-in-one">
           <Link href="/" className="nav-in-one-link">
-          <Image
-            src="https://i.imghippo.com/files/FHCK9908LI.png"
-            alt="Chitramela Logo"
-            width={100} /* Larger dimensions to preserve quality */
-            height={20}
-            layout="intrinsic" /* Keeps the image's natural dimensions */
-            priority
-          />
+            <Image
+              src="https://i.imghippo.com/files/FHCK9908LI.png"
+              alt="Chitramela Logo"
+              width={100} /* Larger dimensions to preserve quality */
+              height={20}
+              layout="intrinsic" /* Keeps the image's natural dimensions */
+              priority
+            />
           </Link>
         </div>
 
@@ -84,15 +84,12 @@ export default function Nav() {
             <Link 
               key={href}
               href={isSection ? `#${href}` : href}
-              onClick={isSection ? () => handleNavClick(href) : undefined}
+              onClick={isSection ? (event) => handleNavClick(event, href) : undefined}
               className="navigation-link"
             >
               {label}
             </Link>
           ))}
-           {/* <Link href="/promotions" className="navigation-link-register">
-            Promotional
-          </Link> */}
           <Link href="/events/register" className="navigation-link-register">
             Register
           </Link>

@@ -132,7 +132,6 @@ html {
   letter-spacing: 1px;
   width: 115%;
 }
-
 /* Only show rocket for Register Now button */
 .floating-register-btn-pomo[href="/events/register"]::before {
   content: '🚀';
