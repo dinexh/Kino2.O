@@ -1,15 +1,12 @@
 import mongoose from 'mongoose';
 import connectDB from '../../../config/db';
 import Registration from '../../../model/registrations';
+import { NextResponse } from 'next/server';
+import { withAuth } from '../../../middleware/auth';
 
 // Helper function to ensure response is properly formatted
 const createResponse = (data, status = 200) => {
-    return new Response(JSON.stringify(data), {
-        status,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    return NextResponse.json(data, { status });
 };
 
 // Helper function to safely connect to MongoDB
@@ -97,6 +94,12 @@ export async function POST(request) {
 
 export async function GET(request) {
     try {
+        // Check authentication for GET requests
+        const user = await withAuth(request);
+        if (!user || !['admin', 'superuser'].includes(user.role)) {
+            return createResponse({ error: "Unauthorized access" }, 401);
+        }
+
         if (!(await ensureConnection())) {
             return createResponse({ 
                 error: "Database connection failed" 

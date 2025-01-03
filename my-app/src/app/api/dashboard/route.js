@@ -8,12 +8,7 @@ import { getVerificationEmailTemplate } from '../../../utils/emailTemplates';
 
 // Helper function to ensure response is properly formatted
 const createResponse = (data, status = 200) => {
-    return new Response(JSON.stringify(data), {
-        status,
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    return NextResponse.json(data, { status });
 };
 
 // Helper function to safely connect to MongoDB
@@ -32,178 +27,189 @@ const ensureConnection = async () => {
 export const dynamic = 'force-dynamic';
 
 export async function GET(request) {
-    console.log('GET dashboard data called');
     try {
-        // Ensure database connection
-        if (!(await ensureConnection())) {
-            return createResponse({ 
-                error: "Database connection failed" 
-            }, 500);
+        // Check authentication
+        const user = await withAuth(request);
+        if (!user || !['admin', 'superuser'].includes(user.role)) {
+            return createResponse({ error: "Unauthorized access" }, 401);
         }
 
-        // Get query parameters
-        const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get('page')) || 1;
-        const limit = parseInt(searchParams.get('limit')) || 10;
-        const status = searchParams.get('status');
-        const search = searchParams.get('search');
-        const getReferrals = searchParams.get('getReferrals') === 'true';
-        const getAnalytics = searchParams.get('analytics') === 'true';
-
-        // Build query
-        let query = {};
-        
-        // Add status filter if provided
-        if (status && status !== 'all') {
-            query.paymentStatus = status;
-        }
-
-        // Add search filter if provided
-        if (search) {
-            query.$or = [
-                { name: { $regex: search, $options: 'i' } },
-                { email: { $regex: search, $options: 'i' } },
-                { phoneNumber: { $regex: search, $options: 'i' } },
-                { college: { $regex: search, $options: 'i' } },
-                { idNumber: { $regex: search, $options: 'i' } },
-                { transactionId: { $regex: search, $options: 'i' } }
-            ];
-        }
-
-        if (getAnalytics) {
-            try {
-                // Fetch all registrations for analytics
-                const allRegistrations = await Registration.find({})
-                    .select('gender registrationDate selectedEvents')
-                    .lean();
-
-                if (!allRegistrations) {
-                    return createResponse({ 
-                        error: "No registration data found" 
-                    }, 404);
-                }
-
-                // Calculate gender distribution with safe defaults
-                const genderDistribution = allRegistrations.reduce((acc, reg) => {
-                    const gender = (reg.gender || '').toLowerCase();
-                    if (gender === 'male' || gender === 'female') {
-                        acc[gender] = (acc[gender] || 0) + 1;
-                    }
-                    return acc;
-                }, { male: 0, female: 0 });
-
-                // Calculate daily registrations with validation
-                const dailyRegistrations = allRegistrations.reduce((acc, reg) => {
-                    if (reg.registrationDate) {
-                        const date = new Date(reg.registrationDate).toLocaleDateString();
-                        acc[date] = (acc[date] || 0) + 1;
-                    }
-                    return acc;
-                }, {});
-
-                // Calculate hourly distribution with validation
-                const hourlyDistribution = Array(24).fill(0);
-                allRegistrations.forEach(reg => {
-                    if (reg.registrationDate) {
-                        const hour = new Date(reg.registrationDate).getHours();
-                        if (hour >= 0 && hour < 24) {
-                            hourlyDistribution[hour]++;
-                        }
-                    }
-                });
-
-                // Calculate event popularity with validation
-                const eventPopularity = allRegistrations.reduce((acc, reg) => {
-                    if (Array.isArray(reg.selectedEvents)) {
-                        reg.selectedEvents.forEach(event => {
-                            if (event && typeof event === 'string') {
-                                acc[event] = (acc[event] || 0) + 1;
-                            }
-                        });
-                    }
-                    return acc;
-                }, {});
-
-                // Format daily registrations for chart
-                const dailyRegArray = Object.entries(dailyRegistrations)
-                    .map(([date, count]) => ({ 
-                        date, 
-                        count 
-                    }))
-                    .sort((a, b) => new Date(a.date) - new Date(b.date));
-
-                return createResponse({
-                    analytics: {
-                        genderDistribution,
-                        dailyRegistrations: dailyRegArray,
-                        hourlyDistribution,
-                        eventPopularity
-                    }
-                });
-            } catch (error) {
-                console.error('Analytics calculation error:', error);
+        console.log('GET dashboard data called');
+        try {
+            // Ensure database connection
+            if (!(await ensureConnection())) {
                 return createResponse({ 
-                    error: "Failed to calculate analytics",
-                    details: error.message 
+                    error: "Database connection failed" 
                 }, 500);
             }
-        }
 
-        // Calculate stats
-        const [
-            totalRegistrations,
-            pendingPayments,
-            verifiedPayments,
-            totalReferrals,
-            registrations
-        ] = await Promise.all([
-            Registration.countDocuments({}),
-            Registration.countDocuments({ paymentStatus: { $ne: 'verified' } }),
-            Registration.countDocuments({ paymentStatus: 'verified' }),
-            Registration.countDocuments({ referralName: { $exists: true, $ne: null } }),
-            getReferrals 
-                ? Registration.find({}).select('referralName').lean()
-                : Registration.find(query)
-                    .sort({ registrationDate: -1 })
-                    .skip((page - 1) * limit)
-                    .limit(limit)
-                    .lean()
-        ]);
+            // Get query parameters
+            const { searchParams } = new URL(request.url);
+            const page = parseInt(searchParams.get('page')) || 1;
+            const limit = parseInt(searchParams.get('limit')) || 10;
+            const status = searchParams.get('status');
+            const search = searchParams.get('search');
+            const getReferrals = searchParams.get('getReferrals') === 'true';
+            const getAnalytics = searchParams.get('analytics') === 'true';
 
-        // Calculate total amount collected (₹350 per verified registration)
-        const totalAmountCollected = verifiedPayments * 350;
+            // Build query
+            let query = {};
+            
+            // Add status filter if provided
+            if (status && status !== 'all') {
+                query.paymentStatus = status;
+            }
 
-        // Get total pages (not needed for referrals request)
-        const totalPages = getReferrals ? 1 : Math.ceil(await Registration.countDocuments(query) / limit);
+            // Add search filter if provided
+            if (search) {
+                query.$or = [
+                    { name: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } },
+                    { phoneNumber: { $regex: search, $options: 'i' } },
+                    { college: { $regex: search, $options: 'i' } },
+                    { idNumber: { $regex: search, $options: 'i' } },
+                    { transactionId: { $regex: search, $options: 'i' } }
+                ];
+            }
 
-        return createResponse({
-            stats: {
+            if (getAnalytics) {
+                try {
+                    // Fetch all registrations for analytics
+                    const allRegistrations = await Registration.find({})
+                        .select('gender registrationDate selectedEvents')
+                        .lean();
+
+                    if (!allRegistrations) {
+                        return createResponse({ 
+                            error: "No registration data found" 
+                        }, 404);
+                    }
+
+                    // Calculate gender distribution with safe defaults
+                    const genderDistribution = allRegistrations.reduce((acc, reg) => {
+                        const gender = (reg.gender || '').toLowerCase();
+                        if (gender === 'male' || gender === 'female') {
+                            acc[gender] = (acc[gender] || 0) + 1;
+                        }
+                        return acc;
+                    }, { male: 0, female: 0 });
+
+                    // Calculate daily registrations with validation
+                    const dailyRegistrations = allRegistrations.reduce((acc, reg) => {
+                        if (reg.registrationDate) {
+                            const date = new Date(reg.registrationDate).toLocaleDateString();
+                            acc[date] = (acc[date] || 0) + 1;
+                        }
+                        return acc;
+                    }, {});
+
+                    // Calculate hourly distribution with validation
+                    const hourlyDistribution = Array(24).fill(0);
+                    allRegistrations.forEach(reg => {
+                        if (reg.registrationDate) {
+                            const hour = new Date(reg.registrationDate).getHours();
+                            if (hour >= 0 && hour < 24) {
+                                hourlyDistribution[hour]++;
+                            }
+                        }
+                    });
+
+                    // Calculate event popularity with validation
+                    const eventPopularity = allRegistrations.reduce((acc, reg) => {
+                        if (Array.isArray(reg.selectedEvents)) {
+                            reg.selectedEvents.forEach(event => {
+                                if (event && typeof event === 'string') {
+                                    acc[event] = (acc[event] || 0) + 1;
+                                }
+                            });
+                        }
+                        return acc;
+                    }, {});
+
+                    // Format daily registrations for chart
+                    const dailyRegArray = Object.entries(dailyRegistrations)
+                        .map(([date, count]) => ({ 
+                            date, 
+                            count 
+                        }))
+                        .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+                    return createResponse({
+                        analytics: {
+                            genderDistribution,
+                            dailyRegistrations: dailyRegArray,
+                            hourlyDistribution,
+                            eventPopularity
+                        }
+                    });
+                } catch (error) {
+                    console.error('Analytics calculation error:', error);
+                    return createResponse({ 
+                        error: "Failed to calculate analytics",
+                        details: error.message 
+                    }, 500);
+                }
+            }
+
+            // Calculate stats
+            const [
                 totalRegistrations,
                 pendingPayments,
                 verifiedPayments,
                 totalReferrals,
-                totalAmountCollected
-            },
-            registrations: registrations.map(reg => ({
-                ...reg,
-                registrationDate: reg.registrationDate?.toISOString(),
-                paymentDate: reg.paymentDate?.toISOString()
-            })),
-            pagination: {
-                currentPage: page,
-                totalPages,
-                totalDocuments: totalRegistrations,
-                hasNextPage: page < totalPages,
-                hasPrevPage: page > 1
-            }
-        });
+                registrations
+            ] = await Promise.all([
+                Registration.countDocuments({}),
+                Registration.countDocuments({ paymentStatus: { $ne: 'verified' } }),
+                Registration.countDocuments({ paymentStatus: 'verified' }),
+                Registration.countDocuments({ referralName: { $exists: true, $ne: null } }),
+                getReferrals 
+                    ? Registration.find({}).select('referralName').lean()
+                    : Registration.find(query)
+                        .sort({ registrationDate: -1 })
+                        .skip((page - 1) * limit)
+                        .limit(limit)
+                        .lean()
+            ]);
 
+            // Calculate total amount collected (₹350 per verified registration)
+            const totalAmountCollected = verifiedPayments * 350;
+
+            // Get total pages (not needed for referrals request)
+            const totalPages = getReferrals ? 1 : Math.ceil(await Registration.countDocuments(query) / limit);
+
+            return createResponse({
+                stats: {
+                    totalRegistrations,
+                    pendingPayments,
+                    verifiedPayments,
+                    totalReferrals,
+                    totalAmountCollected
+                },
+                registrations: registrations.map(reg => ({
+                    ...reg,
+                    registrationDate: reg.registrationDate?.toISOString(),
+                    paymentDate: reg.paymentDate?.toISOString()
+                })),
+                pagination: {
+                    currentPage: page,
+                    totalPages,
+                    totalDocuments: totalRegistrations,
+                    hasNextPage: page < totalPages,
+                    hasPrevPage: page > 1
+                }
+            });
+
+        } catch (error) {
+            console.error('Error fetching dashboard data:', error);
+            return createResponse({ 
+                error: "Failed to fetch dashboard data",
+                details: error.message
+            }, 500);
+        }
     } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        return createResponse({ 
-            error: "Failed to fetch dashboard data",
-            details: error.message
-        }, 500);
+        console.error('Error in dashboard API:', error);
+        return createResponse({ error: 'Internal server error' }, 500);
     }
 }
 

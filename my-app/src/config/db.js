@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = "mongodb+srv://pavankarthik107:kar188123@cluster0.atnjd.mongodb.net/chitramela?retryWrites=true&w=majority&appName=Cluster0" ;
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
     throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
@@ -15,24 +15,31 @@ const connectDB = async () => {
     }
 
     try {
+        console.log('Initiating database connection...');
         const db = await mongoose.connect(MONGODB_URI, {
-            serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
-            socketTimeoutMS: 45000, // Increase socket timeout to 45 seconds
-            connectTimeoutMS: 30000, // Connection timeout
-            maxPoolSize: 10, // Maximum number of connections in the pool
-            minPoolSize: 5, // Minimum number of connections in the pool
-            maxIdleTimeMS: 10000, // Maximum time a connection can remain idle
+            serverSelectionTimeoutMS: 30000,
+            socketTimeoutMS: 45000,
+            connectTimeoutMS: 30000,
+            maxPoolSize: 10,
+            minPoolSize: 5,
+            maxIdleTimeMS: 10000,
             retryWrites: true,
             retryReads: true,
             w: 'majority'
         });
 
         isConnected = db.connections[0].readyState;
-        console.log('New database connection established');
+        console.log('Database connection state:', isConnected);
+        console.log('Database connected successfully to:', db.connection.host);
 
         // Handle connection errors
         mongoose.connection.on('error', (err) => {
             console.error('MongoDB connection error:', err);
+            console.error('Error details:', {
+                name: err.name,
+                message: err.message,
+                stack: err.stack
+            });
             if (!isConnected) {
                 throw err;
             }
