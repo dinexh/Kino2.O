@@ -1,0 +1,122 @@
+.submission-page {
+    min-height: 100vh;
+    padding: 2rem;
+    background-color: #0a0a0a;
+    color: #ffffff;
+    background-image: linear-gradient(45deg, #0a0a0a 0%, #1a1a1a 100%);
+}
+
+.submission-page-in {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #151515;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(218, 165, 32, 0.1);
+    border: 1px solid rgba(218, 165, 32, 0.1);
+}
+
+.submission-page-in-heading {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.submission-page-in-heading h1 {
+    color: #D4AF37;  /* Royal Gold */
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.submission-form {
+    margin-bottom: 1.5rem;
+}
+
+.submission-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #D4AF37;
+    font-weight: 500;
+}
+
+.submission-form input,
+.submission-form select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #B8860B;  /* Dark Golden Rod */
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.submission-form input:focus,
+.submission-form select:focus {
+    outline: none;
+    border-color: #FFD700;  /* Gold */
+    box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.2);
+}
+
+.submission-form-instructions {
+    margin: 1rem 0;
+    padding: 1rem;
+    background-color: #1a1a1a;
+    border-radius: 4px;
+    border: 1px solid #B8860B;
+}
+
+.instruction-text {
+    color: #FFD700;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.submission-form-button {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.submission-form-button button {
+    padding: 0.75rem 2.5rem;
+    background: linear-gradient(135deg, #D4AF37 0%, #B8860B 100%);
+    color: #000000;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.submission-form-button button:hover {
+    background: linear-gradient(135deg, #FFD700 0%, #D4AF37 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(218, 165, 32, 0.3);
+}
+
+.submission-form input::placeholder {
+    color: #666666;
+}
+
+/* Add subtle gold glow to inputs on hover */
+.submission-form input:hover,
+.submission-form select:hover {
+    border-color: #D4AF37;
+}
+
+@media (max-width: 768px) {
+    .submission-page {
+        padding: 1rem;
+    }
+    
+    .submission-page-in {
+        padding: 1.5rem;
+    }
+    
+    .submission-page-in-heading h1 {
+        font-size: 1.5rem;
+    }
+}
