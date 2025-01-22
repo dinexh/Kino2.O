@@ -7,7 +7,7 @@ const CountdownTimer = () => {
 
   const calculateTimeLeft = () => {
     const currentYear = new Date().getFullYear();
-    const targetDate = new Date(`${currentYear}-02-10T00:00:00`).getTime();
+    const targetDate = new Date(`${currentYear}-02-04T00:00:00`).getTime();
     const now = new Date().getTime();
     const difference = targetDate - now;
 
