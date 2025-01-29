@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import User from '@/model/users';
-import connectDB from '@/config/db';
-import { verifyAuthToken } from '@/lib/jwt';
+import User from '../../../../model/users';
+import connectDB from '../../../../config/db';
+import { verifyAuthToken } from '../../../../lib/jwt';
 
 export const dynamic = 'force-dynamic';
 

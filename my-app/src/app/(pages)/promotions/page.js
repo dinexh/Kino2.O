@@ -1,6 +1,6 @@
 import "./page.css";
 import { scheduleData } from "../../Data/scheduleData";
-import Footer from "@/app/components/Footer/Footer";
+import Footer from '../../components/Footer/Footer';
 export default function Schedule() {
   return (
     <div className="schedule-component">

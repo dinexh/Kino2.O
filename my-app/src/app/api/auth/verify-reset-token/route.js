@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { verifyAuthToken } from '@/lib/jwt';
+import { verifyAuthToken } from '../../../../lib/jwt';
 
 export const dynamic = 'force-dynamic';
 

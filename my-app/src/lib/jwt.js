@@ -6,6 +6,14 @@ if (!JWT_SECRET) {
     throw new Error('JWT_SECRET environment variable is not set');
 }
 
+export function sign(payload, options = {}) {
+    return jwt.sign(payload, JWT_SECRET, options);
+}
+
+export function verify(token) {
+    return jwt.verify(token, JWT_SECRET);
+}
+
 export function generateAccessToken(payload) {
     try {
         return jwt.sign(payload, JWT_SECRET, { 

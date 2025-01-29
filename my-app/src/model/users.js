@@ -3,6 +3,10 @@ import bcrypt from 'bcryptjs';
 
 // Define the schema
 const userSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
     email: {
         type: String,
         required: true,
@@ -20,10 +24,10 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'superuser'],
         default: 'user'
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
+    resetToken: String,
+    resetTokenExpiry: Date
+}, {
+    timestamps: true
 });
 
 // Hash password before saving
