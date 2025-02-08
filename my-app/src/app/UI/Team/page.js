@@ -11,7 +11,7 @@ const Team = () => {
                 </div>
                 <div className="team-container-in-image">
                     <Image 
-                        src="https://i.imghippo.com/files/VTB4360BXY.png" 
+                        src="https://i.imghippo.com/files/FjY2807tqs.png" 
                         width={1200} 
                         height={500} 
                         alt="Team"
