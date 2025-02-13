@@ -52,9 +52,16 @@ export const getVerificationEmailTemplate = (registration) => {
                         <p><strong>Events:</strong> ${eventsList}</p>
                         <p><strong>Registration ID:</strong> ${registration._id}</p>
                         <p><strong>Transaction ID:</strong> ${registration.transactionId}</p>
+                        <p><strong>Payment Date:</strong> ${registration.paymentDate}</p>
+                        <p><strong>Phone Number:</strong> ${registration.phoneNumber}</p>
+                        <p><strong>Email:</strong> ${registration.email}</p>
+                        <p><strong>Payment Method:</strong> ${registration.paymentMethod}</p>
+                        <p><strong>ID Number:</strong> ${registration.idNumber}</p>            
                     </div>
                     <p>You can now proceed with participating in the events. Please keep this email for your records.</p>
                     <p>If you have any questions or concerns, please don't hesitate to contact us.</p>
+                    <p>Please find the schedule of the events below:</p>
+                    <p>https://chitramela.in/schedule</p>
                 </div>
                 <div class="footer">
                     <p>This is an automated message. Please do not reply to this email.</p>
