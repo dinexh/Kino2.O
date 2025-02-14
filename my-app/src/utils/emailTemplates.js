@@ -62,6 +62,14 @@ export const getVerificationEmailTemplate = (registration) => {
                     <p>If you have any questions or concerns, please don't hesitate to contact us.</p>
                     <p>Please find the schedule of the events below:</p>
                     <p>https://chitramela.in/schedule</p>
+                    
+                    <div class="details">
+                        <h3>Transportation Information</h3>
+                        <p>If you require transportation services, please fill out our transportation form:</p>
+                        <p><a href="https://forms.gle/jVyfruq6n56D9RjH9" style="color: #0066cc; text-decoration: underline;">Click here to fill Transportation Form</a></p>
+                       
+                        <p>Note: Please make sure to fill in your correct ID Number and Year in the transportation form.</p>
+                    </div>
                 </div>
                 <div class="footer">
                     <p>This is an automated message. Please do not reply to this email.</p>
