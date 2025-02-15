@@ -23,73 +23,9 @@ const ensureConnection = async () => {
 };
 
 export async function POST(request) {
-    try {
-        // Parse request body first
-        let data;
-        try {
-            data = await request.json();
-        } catch (error) {
-            return createResponse({ error: "Invalid request body" }, 400);
-        }
-
-        // Ensure database connection
-        if (!(await ensureConnection())) {
-            return createResponse({ 
-                error: "Database connection failed" 
-            }, 500);
-        }
-
-        // Validate required fields
-        const requiredFields = ['name', 'email', 'phoneNumber', 'profession', 'gender'];
-        const missingFields = requiredFields.filter(field => !data[field]);
-        
-        if (missingFields.length > 0) {
-            return createResponse({ 
-                error: `Missing required fields: ${missingFields.join(', ')}` 
-            }, 400);
-        }
-
-        // Clean and normalize data
-        const cleanData = {
-            ...data,
-            email: data.email.toLowerCase().trim(),
-            phoneNumber: data.phoneNumber.trim(),
-            name: data.name.trim()
-        };
-
-        // Check for duplicate phone number
-        const existingPhone = await Registration.findOne({ 
-            phoneNumber: cleanData.phoneNumber 
-        }).lean();
-
-        if (existingPhone) {
-            return createResponse({ 
-                error: "Phone number already registered" 
-            }, 400);
-        }
-
-        // Check for duplicate email
-        const existingEmail = await Registration.findOne({ 
-            email: cleanData.email
-        }).lean();
-        
-        if (existingEmail) {
-            return createResponse({ 
-                error: "Email already registered" 
-            }, 400);
-        }
-
-        return createResponse({
-            message: "Validation successful",
-            status: "ok"
-        });
-
-    } catch (error) {
-        console.error('Registration validation error:', error);
-        return createResponse({ 
-            error: "Validation failed. Please try again." 
-        }, 500);
-    }
+    return createResponse({ 
+        error: "Registrations are closed. Thank you for your interest." 
+    }, 403);
 }
 
 export async function GET(request) {
