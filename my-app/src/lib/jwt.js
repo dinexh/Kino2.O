@@ -1,22 +1,24 @@
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET;
-
-if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET environment variable is not set');
-}
+const getJWTSecret = () => {
+    const JWT_SECRET = process.env.JWT_SECRET;
+    if (!JWT_SECRET) {
+        throw new Error('JWT_SECRET environment variable is not set');
+    }
+    return JWT_SECRET;
+};
 
 export function sign(payload, options = {}) {
-    return jwt.sign(payload, JWT_SECRET, options);
+    return jwt.sign(payload, getJWTSecret(), options);
 }
 
 export function verify(token) {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, getJWTSecret());
 }
 
 export function generateAccessToken(payload) {
     try {
-        return jwt.sign(payload, JWT_SECRET, { 
+        return jwt.sign(payload, getJWTSecret(), { 
             expiresIn: '10m', // 10 minutes
             algorithm: 'HS256'
         });
@@ -28,7 +30,7 @@ export function generateAccessToken(payload) {
 
 export function generateRefreshToken(payload) {
     try {
-        return jwt.sign(payload, JWT_SECRET, { 
+        return jwt.sign(payload, getJWTSecret(), { 
             expiresIn: '30m', // 30 minutes
             algorithm: 'HS256'
         });
@@ -40,7 +42,7 @@ export function generateRefreshToken(payload) {
 
 export async function verifyAuthToken(token) {
     try {
-        return jwt.verify(token, JWT_SECRET);
+        return jwt.verify(token, getJWTSecret());
     } catch (error) {
         if (error.name === 'JsonWebTokenError') {
             console.error('Invalid token:', error.message);
@@ -55,7 +57,7 @@ export async function verifyAuthToken(token) {
 
 export async function refreshAccessToken(refreshToken) {
     try {
-        const decoded = jwt.verify(refreshToken, JWT_SECRET);
+        const decoded = jwt.verify(refreshToken, getJWTSecret());
         // Generate new access token with user data from refresh token
         const accessToken = generateAccessToken({
             id: decoded.id,

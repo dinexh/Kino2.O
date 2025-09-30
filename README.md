@@ -1,211 +1,268 @@
-# Chitramela 🎨
+# Chitramela 2025 - Kino 2.O
 
-A sophisticated event management platform built with Next.js 14, featuring real-time updates and seamless user experiences.
+A comprehensive event management platform for Chitramela 2025, built with Next.js 14, featuring event registration, payment verification, admin dashboard, and real-time analytics.
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
-[![Firebase](https://img.shields.io/badge/Firebase-9.x-orange)](https://firebase.google.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-14.2-black)](https://nextjs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-8.9-green)](https://www.mongodb.com/)
+[![React](https://img.shields.io/badge/React-18-blue)](https://reactjs.org/)
+[![JWT](https://img.shields.io/badge/JWT-Auth-orange)](https://jwt.io/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-## ✨ Features
+## About The Project
 
-- **Event Management**
-  - Create and manage events with rich media support
-  - Real-time event updates and notifications
-  - Advanced event filtering and search capabilities
-  - Interactive event calendar
+Chitramela is a film festival event management system that handles multiple contests and festival attendance:
+- **Photography Contest**
+- **Short Film Contest**
+- **Reel Making Contest**
+- **Festival Attendance Registration**
 
-- **Authentication & Authorization**
-  - Secure Firebase Authentication integration
-  - Role-based access control (Admin, Organizer, User)
-  - Social media login options
-  - Protected routes and API endpoints
+The platform provides complete event lifecycle management from registration to payment verification, event submission, and analytics.
 
-- **User Experience**
-  - Responsive design with Tailwind CSS
-  - Dark/Light mode support
-  - Progressive Web App (PWA) capabilities
-  - Optimized performance with Next.js 14 features
+## Highlights
 
-- **Backend Integration**
-  - Firebase Realtime Database/Firestore integration
-  - Cloud Functions for serverless operations
-  - Secure file storage with Firebase Storage
-  - Real-time data synchronization
+### Event Features
+- Multiple event registration with custom forms
+- Payment integration (Google Pay, PhonePe, Paytm, Others)
+- Payment verification system for admins
+- Event submission portal for participants
+- Detailed rules and guidelines for each contest
+- Event schedule and promotional pages
 
-## 🚀 Quick Start
+### Authentication & Security
+- JWT-based authentication with refresh tokens
+- Password hashing with bcrypt
+- Role-based access control (User & Superuser)
+- Protected routes and API endpoints
+- Password recovery via email
+- Secure session management
+
+### Admin Dashboard
+- Registration management (view, search, filter, verify)
+- Payment verification workflow
+- Real-time analytics and charts:
+  - Daily registration trends
+  - Gender distribution
+  - Hourly registration patterns
+  - Event popularity metrics
+  - Referral statistics
+- User management system
+- Export and reporting features
+
+### Communication
+- Automated email notifications
+- Registration confirmations
+- Payment verification updates
+- Password reset emails
+- Custom branded templates
+
+### User Experience
+- Responsive mobile-first design
+- Modern and intuitive interface
+- Interactive landing page with:
+  - Hero section with video
+  - Event countdown timer
+  - About section
+  - Events showcase
+  - Photo gallery
+  - Team showcase
+  - Sponsors section
+  - FAQ section
+- Smooth transitions and loading states
+- SEO optimized with auto-generated sitemaps
+
+## Tech Stack
+
+**Frontend:** Next.js 14.2, React 18, Custom CSS, React Icons  
+**Backend:** Node.js, MongoDB with Mongoose  
+**Authentication:** JWT (jsonwebtoken), bcrypt.js  
+**Email:** Nodemailer  
+**Charts:** Chart.js, Recharts, React-chartjs-2  
+**Deployment:** Docker, PM2  
+**SEO:** next-sitemap
+
+## Project Structure
+
+```
+Kino2.O/
+├── my-app/                              # Main application
+│   ├── src/
+│   │   ├── app/
+│   │   │   ├── (pages)/                # Route groups
+│   │   │   │   ├── dashboard/          # Admin dashboard
+│   │   │   │   ├── events/
+│   │   │   │   │   ├── register/       # Event registration
+│   │   │   │   │   └── payment/        # Payment confirmation
+│   │   │   │   ├── login/              # Login page
+│   │   │   │   ├── forgot-password/    # Password recovery
+│   │   │   │   ├── verify/             # Email verification
+│   │   │   │   ├── promotions/         # Promotional events
+│   │   │   │   ├── schedule/           # Event schedule
+│   │   │   │   ├── stats/              # Statistics page
+│   │   │   │   ├── submission/         # Event submission
+│   │   │   │   ├── Rules/              # Contest rules
+│   │   │   │   └── maintenace/         # Support, Terms, Privacy
+│   │   │   ├── api/                    # API routes
+│   │   │   │   ├── auth/               # Authentication endpoints
+│   │   │   │   ├── dashboard/          # Dashboard data
+│   │   │   │   ├── payment/            # Payment verification
+│   │   │   │   ├── register/           # Registration
+│   │   │   │   ├── stats/              # Analytics
+│   │   │   │   ├── submission/         # Submissions
+│   │   │   │   ├── support/            # Support
+│   │   │   │   ├── users/              # User management
+│   │   │   │   └── verify/             # Verification
+│   │   │   ├── components/             # Shared components
+│   │   │   │   ├── Footer/
+│   │   │   │   ├── Loader/
+│   │   │   │   ├── Modal/
+│   │   │   │   ├── Nav/
+│   │   │   │   └── ProtectedRoute.js
+│   │   │   ├── UI/                     # Landing page sections
+│   │   │   │   ├── Hero/
+│   │   │   │   ├── Counter/
+│   │   │   │   ├── About/
+│   │   │   │   ├── Events/
+│   │   │   │   ├── Gallery/
+│   │   │   │   ├── FAQ/
+│   │   │   │   ├── Team/
+│   │   │   │   └── Sponcers/
+│   │   │   ├── Data/                   # Static data
+│   │   │   │   ├── activities.js       # Event details
+│   │   │   │   ├── faqs.js
+│   │   │   │   ├── gallery.js
+│   │   │   │   ├── logo.js
+│   │   │   │   ├── rules.js
+│   │   │   │   ├── scheduleData.js
+│   │   │   │   ├── team.js
+│   │   │   │   └── about.js
+│   │   │   ├── Assets/                 # Images and media
+│   │   │   ├── layout.js
+│   │   │   ├── page.js
+│   │   │   └── globals.css
+│   │   ├── config/
+│   │   │   └── db.js                   # MongoDB connection
+│   │   ├── context/
+│   │   │   └── AuthContext.js          # Auth context
+│   │   ├── lib/
+│   │   │   └── jwt.js                  # JWT utilities
+│   │   ├── middleware/
+│   │   │   ├── auth.js
+│   │   │   └── withAuth.js
+│   │   ├── model/
+│   │   │   ├── users.js                # User model
+│   │   │   └── registrations.js        # Registration model
+│   │   ├── scripts/                    # Utility scripts
+│   │   │   ├── addInitialUsers.js
+│   │   │   ├── clearUsers.js
+│   │   │   ├── testRegistration.js
+│   │   │   └── updateSno.js
+│   │   └── utils/
+│   │       ├── emailService.js
+│   │       └── emailTemplates.js
+│   ├── public/                         # Static assets
+│   │   ├── logo/                       # Partner logos
+│   │   ├── HeroVideo.mp4
+│   │   ├── robots.txt
+│   │   └── sitemap.xml
+│   ├── Dockerfile
+│   ├── ecosystem.config.js             # PM2 config
+│   ├── next.config.mjs
+│   ├── next-sitemap.config.cjs
+│   ├── package.json
+│   └── tsconfig.json
+├── LICENSE
+└── README.md
+```
+
+## Quick Start
 
 ### Prerequisites
-
 - Node.js 18.x or higher
+- MongoDB 8.x or higher
 - npm/yarn
-- Firebase account
-- Git
 
 ### Installation
 
 1. **Clone the repository**
 ```bash
-git clone https://github.com/yourusername/chitramela.git
-cd chitramela
+git clone https://github.com/yourusername/Kino2.O.git
+cd Kino2.O/my-app
 ```
 
 2. **Install dependencies**
 ```bash
 npm install
-# or
-yarn install
 ```
 
 3. **Environment Setup**
-```bash
-cp .env.example .env.local
+
+Create `.env.local` file:
+```env
+# MongoDB
+MONGODB_URI=mongodb://localhost:27017/chitramela
+
+# JWT
+JWT_SECRET=your_secret_key
+
+# Email (SMTP)
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_USER=your-email@gmail.com
+SMTP_PASS=your-app-password
+EMAIL_FROM_NAME=Chitramela 2025
+EMAIL_FROM_ADDRESS=your-email@gmail.com
 ```
 
-4. **Start development server**
+4. **Start Development Server**
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000) to see your application.
+Visit [http://localhost:3000](http://localhost:3000)
 
-## 🔧 Firebase Configuration
-
-### Setting up Firebase
-
-1. Create a project in [Firebase Console](https://console.firebase.google.com/)
-2. Enable Authentication methods you want to use
-3. Set up Firestore/Realtime Database
-4. Configure Storage rules
-
-### Environment Variables
-
-Create `.env.local` with these Firebase configurations:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_auth_domain
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
+### Add Admin User
+```bash
+npm run add-users
 ```
 
-## 📁 Project Structure
-
-```
-chitramela/
-├── my-app/                          # Main application directory
-│   ├── src/
-│   │   └── app/
-│   │       ├── (pages)/            # Route groups
-│   │       │   └── events/
-│   │       │       └── register/
-│   │       │           └── page.js  # Event registration page
-│   │       ├── layout.js           # Root layout component
-│   │       └── page.js             # Home page component
-│   │
-│   ├── public/                     # Static assets
-│   │   ├── file.svg
-│   │   ├── globe.svg
-│   │   ├── next.svg
-│   │   ├── vercel.svg
-│   │   └── window.svg
-│   │
-│   ├── package.json               # Project dependencies and scripts
-│   ├── package-lock.json          # Locked dependencies (npm)
-│   ├── yarn.lock                  # Locked dependencies (yarn)
-│   └── .gitignore                # Git ignore rules for app directory
-│
-├── .env.local                    # Environment variables
-├── .gitignore                    # Root git ignore rules
-├── LICENSE                       # Project license
-└── README.md                     # Project documentation
-```
-
-### Key Directories and Files
-
-- **my-app/**: Contains the Next.js application
-  - **src/app/**: App router directory (Next.js 13+)
-  - **public/**: Static assets and images
-  - **package.json**: Project configuration and dependencies
-
-- **Root Level**:
-  - **.env.local**: Environment variables
-  - **LICENSE**: MIT license file
-  - **README.md**: Project documentation
-
-## 🛠️ Development
-
-### Available Scripts
+## Available Scripts
 
 ```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
-npm run test     # Run tests
+npm run dev          # Development server
+npm run build        # Production build
+npm run start        # Production server
+npm run lint         # Run linter
+npm run add-users    # Add admin users
 ```
 
-### Firebase Features Used
-
-- **Authentication**: User management and social auth
-- **Firestore/RTDB**: Data storage and real-time sync
-- **Storage**: Media file management
-- **Cloud Functions**: Serverless operations
-- **Security Rules**: Data access control
-
-## 🧪 Testing
+## Docker
 
 ```bash
-# Run all tests
-npm run test
+# Build
+docker build -t chitramela:latest .
 
-# Run tests in watch mode
-npm run test:watch
-
-# Generate coverage report
-npm run test:coverage
+# Run
+docker run -p 3000:3000 chitramela:latest
 ```
 
-## 📦 Deployment
-
-### Production Build
+## PM2 Deployment
 
 ```bash
 npm run build
-npm run start
+pm2 start ecosystem.config.js
 ```
 
-### Deploy to Vercel
-
-```bash
-vercel
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
-
-- Documentation: [docs.chitramela.com](https://docs.chitramela.com)
-- Issues: [GitHub Issues](https://github.com/yourusername/chitramela/issues)
-- Email: support@chitramela.com
-
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - [Next.js](https://nextjs.org/)
-- [Firebase](https://firebase.google.com/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Vercel](https://vercel.com/)
+- [MongoDB](https://www.mongodb.com/)
+- [Chart.js](https://www.chartjs.org/)
+- [React Icons](https://react-icons.github.io/react-icons/)
+
+---
+
+**Chitramela 2025** - Celebrating the Art of Cinema
